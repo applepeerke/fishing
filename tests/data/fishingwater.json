@@ -36,7 +36,7 @@
  "delete": {
    "expect": {
      "status_code": 200,
-     "message": "The fishings record has been deleted."
+     "message": "The fishingwaters record has been deleted."
    }
  }
 }

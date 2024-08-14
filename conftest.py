@@ -41,8 +41,8 @@ async def async_session() -> AsyncSession:
 
 
 @pytest.fixture(scope="function")
-def test_data_fishing() -> dict:
-    return _get_json('fishing')
+def test_data_fishingwater() -> dict:
+    return _get_json('fishingwater')
 
 
 @pytest.fixture(scope="function")
