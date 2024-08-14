@@ -1,0 +1,42 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+     "location": "Leiden-ZW",
+     "type": "Ongedefinieerd"
+   }
+ },
+ "create": {
+   "payload": {
+     "location": "Leiden-ZW-kanaal",
+     "type": "Meer"
+   },
+   "expect": {
+     "type": "Meer"
+   }
+ },
+ "read": {
+   "expect": {
+     "location": "Leiden-ZW",
+     "type": "Ongedefinieerd"
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+     "location": "Leiden-ZW",
+     "type": "Rivier"
+   },
+   "expect": {
+     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+     "location": "Leiden-ZW",
+     "type": "Rivier"
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The fishings record has been deleted."
+   }
+ }
+}

@@ -1,0 +1,22 @@
+{
+  "encrypt": {
+    "payload": {
+      "plain_text": "my-secret-password"
+    },
+    "expect": {
+      "status_code": 200,
+      "message": "The password is valid."
+    }
+  },
+  "encrypt_fail": {
+    "payload-1": {
+      "plain_text": "my-secret-password2"
+    },
+    "payload-2": {
+      "plain_text": "1"
+    },
+    "expect": {
+      "detail": "The password is not valid."
+    }
+  }
+}

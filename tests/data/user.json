@@ -1,0 +1,55 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "5443fc14-eef2-468d-8bd5-360bc9790090",
+     "email": "hello@heijlsongs.com",
+     "password": "test123longer",
+     "authentication_token": null,
+     "status": "New"
+   }
+ },
+ "create": {
+   "payload": {
+     "email": "hello2@heijlsongs.com",
+     "password": "test123456",
+     "authentication_token": null,
+     "status": "New"
+   },
+   "expect": {
+     "email": "hello2@heijlsongs.com",
+     "password": "**********",
+     "authentication_token": null,
+     "status": "New"
+   }
+ },
+ "read": {
+   "expect": {
+     "email": "hello@heijlsongs.com",
+     "password": "**********",
+     "authentication_token": null,
+     "status": "New"
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "5443fc14-eef2-468d-8bd5-360bc9790090",
+     "email": "hello@heijlsongs.com",
+     "password": "test444longer",
+     "authentication_token": "my-secret-token-minium-16",
+     "status": "New"
+   },
+   "expect": {
+     "id": "5443fc14-eef2-468d-8bd5-360bc9790090",
+     "email": "hello@heijlsongs.com",
+     "password": "**********",
+     "authentication_token": "my-secret-token-minium-16",
+     "status": "New"
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The users record has been deleted."
+   }
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "76c7bbbc-ae2b-4e5c-8700-f9c66f4aa41a",
+     "token_expiration_days": 1,
+     "max_login_failures": 5,
+     "block_minutes": 10
+   }
+ },
+ "create": {
+   "payload": {
+     "token_expiration_days": 1,
+     "max_login_failures": 5,
+     "block_minutes": 10
+   },
+   "expect": {
+     "token_expiration_days": 1,
+     "max_login_failures": 5,
+     "block_minutes": 10
+   }
+ },
+ "read": {
+   "expect": {
+     "token_expiration_days": 1,
+     "max_login_failures": 5,
+     "block_minutes": 10
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "76c7bbbc-ae2b-4e5c-8700-f9c66f4aa41a",
+     "token_expiration_days": 30,
+     "max_login_failures": 3,
+     "block_minutes": 3
+   },
+   "expect": {
+     "token_expiration_days": 30,
+     "max_login_failures": 3,
+     "block_minutes": 3
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The systemvalues record has been deleted."
+   }
+ }
+}
