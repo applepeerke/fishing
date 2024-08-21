@@ -17,7 +17,7 @@
    },
    "expect": {
      "email": "hello2@heijlsongs.com",
-     "password": "**********",
+     "password": null,
      "authentication_token": null,
      "status": "New"
    }

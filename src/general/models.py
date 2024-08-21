@@ -1,13 +1,10 @@
 import uuid
 from datetime import datetime
-from uuid import UUID, uuid4
 
-from fastapi import HTTPException
-from pydantic import Field, UUID4, model_validator, field_validator, ConfigDict
+from fastapi import HTTPException, Response
+
 from pydantic import BaseModel
-from pydantic.dataclasses import dataclass
-from sqlalchemy import text, func
-from sqlalchemy.orm import Mapped, mapped_column
+from pydantic import Field, model_validator, ConfigDict
 from starlette import status
 
 
@@ -41,18 +38,7 @@ def get_current_user():
 def get_delete_response(success: bool, table_name):
     if not success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{table_name} record was not found')
-    return StatusResponse(status_code=status.HTTP_200_OK, message=f'The {table_name} record has been deleted.')
-
-
-def get_authorization_response(success: bool, name):
-    if not success:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'The {name} is not valid.')
-    return StatusResponse(status_code=status.HTTP_200_OK, message=f'The {name} is valid.')
-
-
-class StatusResponse(BaseModel):
-    status_code: int
-    message: str
+    return Response(status_code=status.HTTP_200_OK, content=f'The {table_name} record has been deleted.')
 
 
 class AuditModel(BaseModel):

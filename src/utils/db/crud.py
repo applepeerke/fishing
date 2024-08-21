@@ -1,9 +1,10 @@
 from fastapi import HTTPException
+from pydantic import BaseModel, SecretStr
 from sqlalchemy.orm import selectinload
 from sqlalchemy.future import select
 
 """
-CRUD
+CRUD on SQLAlchemy
 """
 
 
@@ -58,11 +59,17 @@ async def get_one_where(db, obj_def, att_name, att_value):
     )
     return result.scalars().first()
 
+
 # U
-async def upd(db, obj_def, id, obj_upd):
+async def upd(db, obj_def, id, obj_upd: BaseModel):
+    # Get the record (SQLAlchemy model)
     obj = await _get(db, obj_def, id)
+    # Get the pydantic updated attributes
     atts = obj_upd.model_dump(exclude_unset=True)
+    # Copy the updated attributes to SQLAlchemy model
     for att_name, value in atts.items():
+        if isinstance(value, SecretStr):
+            value = value.get_secret_value()
         setattr(obj, att_name, value)
     await db.commit()
     await db.refresh(obj)  # Get the new values
@@ -82,6 +89,7 @@ Routines
 
 
 async def _get(db, obj_def, id: int):
+    """ Get db record as SQLAlchemy object """
     result = await db.execute(
         select(obj_def)
         .filter(obj_def.id == id)

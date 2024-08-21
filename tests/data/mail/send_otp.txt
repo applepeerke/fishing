@@ -1,0 +1,7 @@
+Please find enclosed the one time code needed to registrate in *APP_NAME*. 
+Navigate to url *OTP_URL* and specify the following code:
+
+*OTP*
+
+With kind regards, 
+Team *APP_NAME*.
