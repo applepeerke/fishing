@@ -41,6 +41,6 @@ def is_valid_password(password) -> bool:
             d['UC'] = True
         elif c.isnumeric():
             d['number'] = True
-        elif c is not ' ':
+        elif c != ' ':
             d['special'] = True
     return len(d) == 4
