@@ -19,15 +19,17 @@ import bcrypt
 
 def get_hashed_password(password: str) -> str:
     # Generate a salt and hash the password with the salt
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     return hashed_password.decode('utf-8')
 
 
 def verify_password(plain_text: str, hashed_password: str) -> bool:
     # Compare the plain password with the hashed password
-    return bcrypt.checkpw(plain_text.encode('utf-8'), hashed_password.encode('utf-8'))
+    try:
+        return bcrypt.checkpw(plain_text.encode('utf-8'), hashed_password.encode('utf-8'))
+    except (ValueError, AttributeError):
+        return False
 
 
 def get_otp_as_number() -> int:
-    return random.SystemRandom().randint(0, 99999)
+    return random.SystemRandom().randint(10000, 99999)

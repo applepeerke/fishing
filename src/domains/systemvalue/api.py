@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domains.systemvalue.models import SystemValue, SystemValueRead, SystemValueCreate
-from src.general.models import get_delete_response, StatusResponse
+from src.general.models import get_delete_response
 from src.utils.db import crud
 from src.utils.db.db import get_db_session
 
@@ -32,7 +32,7 @@ async def update_systemvalue(id: UUID, systemvalue_update: SystemValueCreate,
     return await crud.upd(db, SystemValue, id, systemvalue_update)
 
 
-@systemvalue.delete('/{id}', response_model=StatusResponse)
+@systemvalue.delete('/{id}')
 async def delete_systemvalue(id: UUID, db: AsyncSession = Depends(get_db_session)):
     success = await crud.delete(db, SystemValue, id)
     return get_delete_response(success, SystemValue.__tablename__)
