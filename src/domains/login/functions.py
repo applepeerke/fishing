@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from starlette import status
 
 from src.domains.user.functions import is_valid_password
-from src.domains.user.models import User, UserRead
+from src.domains.user.models import User, UserRead, UserStatus
 from src.utils.db import crud
 from src.utils.security.crypto import verify_password
 
@@ -34,8 +34,8 @@ async def validate_user(db, user: User, allow_blocked=False) -> User:
     if not user:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user does not exist.')
     # Blacklisted user
-    if user.black_listed:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user is on a blacklist.')
+    if user.status == UserStatus.Blacklisted:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user blacklisted.')
     # Blocked user
     if user.blocked_until:
         # a. Blocking time is over: reset the user
@@ -82,7 +82,7 @@ def reset_user_attributes(user: UserRead, reset_otp=False) -> UserRead:
     user.fail_count = 0
     if reset_otp:
         user.otp = None
-    user.otp_sent_time = None
+        user.expired = None
     user.authentication_token = None
     return user
 
@@ -95,10 +95,9 @@ def map_user(user: User) -> UserRead:
         authentication_token=user.authentication_token,
         status=user.status,
         otp=user.otp,
-        otp_sent_time=user.otp_sent_time,
+        expired=user.expired,
         fail_count=user.fail_count,
         blocked_until=user.blocked_until,
-        black_listed=user.black_listed
     )
     # This must be done afterwards
     user_read.password = user.password
