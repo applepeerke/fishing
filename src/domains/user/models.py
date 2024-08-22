@@ -27,12 +27,11 @@ class User(Base):
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
     email = Column(String, nullable=False, index=True)
     password = Column(String, nullable=True)
+    expired = Column(DateTime(timezone=True), nullable=True)
     authentication_token = Column(String, nullable=True)
     otp = Column(Integer, nullable=True)
-    otp_sent_time = Column(DateTime(timezone=True), nullable=True)
     fail_count = Column(Integer, default=0)
     blocked_until = Column(DateTime(timezone=True), nullable=True)
-    black_listed = Column(Boolean, default=False)
     status = Column(String, nullable=False, default=UserStatus.Inactive)
     # Audit
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -55,7 +54,7 @@ class UserRead(UserBase):
     password: Optional[SecretStr] = Field(min_length=8, max_length=64, default=None)
     authentication_token: Optional[SecretStr] = Field(min_length=16, max_length=1024, default=None)
     otp: Optional[int] = Field(ge=10000, lt=100000, default=None)
-    otp_sent_time: Optional[datetime] = Field(DateTime(timezone=True))
+    expired: Optional[datetime] = Field(DateTime(timezone=True))
     fail_count: int = 0
     blocked_until: Optional[datetime] = Field(DateTime(timezone=True))
     black_listed: bool = False

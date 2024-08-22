@@ -1,6 +1,6 @@
 import datetime
 import os
-
+from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, HTTPException
 from httpx import Response
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,9 +38,11 @@ async def register_user(payload: LoginBase, db: AsyncSession = Depends(get_db_se
     # Mail the otp to the specified address.
     send_otp(payload.email, otp)
     # Insert the user (N.B. password is null yet)
-    user = User(email=payload.email, password=None, otp=otp, otp_sent_time=datetime.datetime.now())
+    expired = (datetime.datetime.now(datetime.timezone.utc) +
+               datetime.timedelta(minutes=int(int(os.getenv('OTP_EXPIRATION_MINUTES', 10)))))
+    user = User(email=payload.email, password=None, otp=otp, expired=expired)
     await crud.add(db, user)
-    return Register(email=user.email, otp=user.otp, otp_sent_time=user.otp_sent_time)
+    return Register(email=user.email, otp=user.otp, expired=expired)
 
 
 @login_register_validate.post('/')
@@ -49,10 +51,7 @@ async def register_validate(payload: Register, db: AsyncSession = Depends(get_db
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
     await validate_user(db, user)
     # The otp must not be expired.
-    minutes = int(os.getenv('OTP_EXPIRATION_MINUTES', 10))
-    if not user.otp_sent_time or (
-            user.otp_sent_time < (datetime.datetime.now(datetime.timezone.utc) -
-                                  datetime.timedelta(minutes=int(minutes)))):
+    if not user.expired or (user.expired < datetime.datetime.now(datetime.timezone.utc)):
         return Response(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content='The one time password has expired. Please register again.')
@@ -86,7 +85,8 @@ async def password_forgot(payload: LoginBase, db: AsyncSession = Depends(get_db_
     await validate_user(db, user, allow_blocked=True)
     # Create the one time password as a 5-digit number.
     user.otp = get_otp_as_number()
-    user.otp_sent_time = datetime.datetime.now()
+    user.expired = (datetime.datetime.now(datetime.timezone.utc) +
+                    datetime.timedelta(minutes=int(os.getenv('OTP_EXPIRATION_MINUTES', 10))))
     # Mail the otp to the specified address.
     send_otp(payload.email, user.otp)
     # Update the user otp
@@ -111,6 +111,8 @@ async def password_set(payload: SetPassword, db: AsyncSession = Depends(get_db_s
         await invalid_login_attempt(db, user, error_message)
     # Success: Reset the user with the new password
     user.password = get_hashed_password(payload.new_password.get_secret_value())
+    user.expired = (datetime.datetime.now(datetime.timezone.utc) +
+                    relativedelta(months=os.getenv('PASSWORD_EXPIRATION_MONTHS', 10)))
     await reset_user(db, map_user(user))
 
 
