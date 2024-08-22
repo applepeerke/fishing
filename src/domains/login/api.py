@@ -11,9 +11,10 @@ from src.domains.login.functions import validate_user, reset_user, invalid_login
 from src.domains.login.models import Password, PasswordEncrypted, LoginBase
 from src.domains.login.models import Register, ChangePassword, Login, SetPassword
 from src.domains.user.functions import send_otp
-from src.domains.user.models import User
+from src.domains.user.models import User, UserStatus
 from src.utils.db import crud
 from src.utils.db.db import get_db_session
+from src.utils.functions import get_expired_otp, get_expired_password
 from src.utils.security.crypto import get_hashed_password, verify_password, get_otp_as_number
 
 login = APIRouter()
@@ -38,9 +39,8 @@ async def register_user(payload: LoginBase, db: AsyncSession = Depends(get_db_se
     # Mail the otp to the specified address.
     send_otp(payload.email, otp)
     # Insert the user (N.B. password is null yet)
-    expired = (datetime.datetime.now(datetime.timezone.utc) +
-               datetime.timedelta(minutes=int(int(os.getenv('OTP_EXPIRATION_MINUTES', 10)))))
-    user = User(email=payload.email, password=None, otp=otp, expired=expired)
+    expired = get_expired_otp()
+    user = User(email=payload.email, password=None, otp=otp, expired=expired, status=UserStatus.Initialized)
     await crud.add(db, user)
     return Register(email=user.email, otp=user.otp, expired=expired)
 
@@ -85,8 +85,7 @@ async def password_forgot(payload: LoginBase, db: AsyncSession = Depends(get_db_
     await validate_user(db, user, allow_blocked=True)
     # Create the one time password as a 5-digit number.
     user.otp = get_otp_as_number()
-    user.expired = (datetime.datetime.now(datetime.timezone.utc) +
-                    datetime.timedelta(minutes=int(os.getenv('OTP_EXPIRATION_MINUTES', 10))))
+    user.expired = get_expired_otp()
     # Mail the otp to the specified address.
     send_otp(payload.email, user.otp)
     # Update the user otp
@@ -111,8 +110,8 @@ async def password_set(payload: SetPassword, db: AsyncSession = Depends(get_db_s
         await invalid_login_attempt(db, user, error_message)
     # Success: Reset the user with the new password
     user.password = get_hashed_password(payload.new_password.get_secret_value())
-    user.expired = (datetime.datetime.now(datetime.timezone.utc) +
-                    relativedelta(months=os.getenv('PASSWORD_EXPIRATION_MONTHS', 10)))
+    user.expired = get_expired_password()
+    user.status = UserStatus.Active
     await reset_user(db, map_user(user))
 
 

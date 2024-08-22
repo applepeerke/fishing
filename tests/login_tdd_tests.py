@@ -6,46 +6,56 @@ from starlette import status
 from src.domains.login.functions import map_user
 from src.domains.user.models import User
 from src.utils.db import crud
+from src.utils.functions import get_expired_otp, get_expired_password
 from src.utils.security.crypto import get_hashed_password
 from src.utils.tests.functions import check_response
+from tests.data.constants import CALC_EXPIRED_OTP, CALC_EXPIRED_PASSWORD, GT0, SUCCESS, FAIL
 
 
 @pytest.mark.asyncio
 async def test_register_user_success(test_data_login_tdd: dict, async_client: AsyncClient, async_session: AsyncSession):
-    await post_success(async_client, ['login', 'register'], test_data_login_tdd)
+    await post_check( SUCCESS, ['login', 'register'], async_client, async_session, test_data_login_tdd)
 
 
 @pytest.mark.asyncio
 async def test_register_user_fail(test_data_login_tdd: dict, async_client: AsyncClient, async_session: AsyncSession):
-    await post_fail(async_client, ['login', 'register'], test_data_login_tdd, 401)
+    await post_check(FAIL, ['login', 'register'], async_client, async_session, test_data_login_tdd, 401)
 
 
-async def post_success(client, breadcrumbs, test_data):
-    """ Expect success. Precondition: JSON fixtures are defined by route, followed by "success". """
-    # Get the "success"" fixture
+async def post_check(expected_result, breadcrumbs, client, db, test_data, expected_status=status.HTTP_200_OK):
+    """ Precondition: JSON fixtures are defined by route, followed by 'success' or 'fail'. """
     fixture = get_leaf(test_data, breadcrumbs)
-    payload = fixture['success']['expect']
+    payload = fixture[expected_result]['expect']
     response = await post_to_endpoint(client, breadcrumbs, payload)
-    # Check
-    check_response(
-        response,
-        expected_payload=payload,
-        expected_status=status.HTTP_200_OK
-    )
-
-
-async def post_fail(client, breadcrumbs, test_data, expected_status):
-    """ Expect failure. Precondition: JSON fixtures are defined by route, followed by "fail". """
-    # Get the "fail"" fixture
-    fixture = get_leaf(test_data, breadcrumbs)
-    payload = fixture['fail']['expect']
-    response = post_to_endpoint(client, breadcrumbs, payload)
     # Check
     check_response(
         response,
         expected_payload=payload,
         expected_status=expected_status
     )
+    # Check_db
+    payload = fixture[expected_result]['expect_db']
+    user = await crud.get_one_where(db, User, User.email, payload['email'])
+    # Check attributes
+    # - Substitutions
+    if payload['expired'] == CALC_EXPIRED_OTP:
+        payload['expired'] = get_expired_otp()
+    elif payload['expired'] == CALC_EXPIRED_PASSWORD:
+        payload['expired'] = get_expired_password()
+
+    assert user.email == payload['email']
+    assert user.password == payload['password']
+    if payload['otp'] == GT0:
+        assert user.otp > 0
+    else:
+        assert user.otp is None
+    if payload['expired'] is None:
+        assert user.expired is None
+    else:
+        # ToDo: calculate expiration
+        assert user.expired is not None
+    assert user.fail_count == payload['fail_count']
+    assert user.status == payload['status']
 
 
 async def post_to_endpoint(client, breadcrumbs, fixture):

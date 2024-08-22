@@ -1,0 +1,7 @@
+# Fixture variables
+CALC_EXPIRED_OTP = '*CALC_EXPIRED_OTP'
+CALC_EXPIRED_PASSWORD = '*CALC_EXPIRED_PASSWORD'
+GT0 = '*GT0'
+
+SUCCESS = 'success'
+FAIL = 'fail'

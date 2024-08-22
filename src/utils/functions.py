@@ -1,4 +1,7 @@
+import datetime
 import os
+
+from dateutil.relativedelta import relativedelta
 
 
 def find_filename_path(file_name) -> str:
@@ -18,3 +21,13 @@ def find_filename_path(file_name) -> str:
         for filename in files:
             if filename == file_name:
                 return os.path.join(path, filename)
+
+
+def get_expired_otp():
+    return (datetime.datetime.now(datetime.timezone.utc) +
+            datetime.timedelta(minutes=int(os.getenv('OTP_EXPIRATION_MINUTES', 10))))
+
+
+def get_expired_password():
+    return (datetime.datetime.now(datetime.timezone.utc) +
+            relativedelta(months=os.getenv('PASSWORD_EXPIRATION_MONTHS', 10)))
