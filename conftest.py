@@ -60,6 +60,11 @@ def test_data_login() -> dict:
     return _get_json('login')
 
 
+@pytest.fixture(scope="function")
+def test_data_login_tdd() -> dict:
+    return _get_json('login_tdd')
+
+
 def _get_json(domain) -> dict:
     """ Retrieve JSON from fishing/tests/data/{domain}.json"""
     path = os.getenv('PYTEST_CURRENT_TEST')
