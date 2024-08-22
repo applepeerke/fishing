@@ -66,6 +66,7 @@ async def invalid_login_attempt(db, user: User, error_message=''):
         minutes = int(os.getenv('LOGIN_BLOCK_MINUTES', 10))
         user = reset_user_attributes(user)
         user.blocked_until = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes))
+        user.status = UserStatus.Blocked
         await crud.upd(db, User, user.id, user)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -99,6 +100,6 @@ def map_user(user: User) -> UserRead:
         fail_count=user.fail_count,
         blocked_until=user.blocked_until,
     )
-    # This must be done afterwards
+    # This must be done afterward
     user_read.password = user.password
     return user_read
