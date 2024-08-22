@@ -25,7 +25,9 @@
           "email": "dummy@sample.com",
           "password": null,
           "otp": "*GT0",
-          "otp": null
+          "expired": "*CALC_EXPIRED_OTP",
+          "fail_count": 0,
+          "status": "Initialized"
         }
       },
       "fail": {
@@ -34,6 +36,14 @@
         },
         "expect": {
           "email": "dummy@sample.com"
+        },
+        "expect_db": {
+          "email": "dummy@sample.com",
+          "password": null,
+          "otp": null,
+          "expired": null,
+          "fail_count": 1,
+          "status": "Inactive"
         }
       }
     },
