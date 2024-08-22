@@ -12,9 +12,13 @@ from src.utils.db.db import Base
 
 
 class UserStatus(str, Enum):
-    New = "New"
-    Progress = "Progress"
-    Verified = "Verified"
+    Inactive = "Inactive"
+    Initialized = "Initialized"
+    Registered = "Registered"
+    Active = "Active"
+    Expired = "Expired"
+    Blocked = "Blocked"
+    Blacklisted = "Blacklisted"
 
 
 # SqlAlchemy model
@@ -29,7 +33,7 @@ class User(Base):
     fail_count = Column(Integer, default=0)
     blocked_until = Column(DateTime(timezone=True), nullable=True)
     black_listed = Column(Boolean, default=False)
-    status = Column(String, nullable=False, default=UserStatus.New)
+    status = Column(String, nullable=False, default=UserStatus.Inactive)
     # Audit
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     created_by = Column(String, default=get_current_user())
@@ -55,4 +59,4 @@ class UserRead(UserBase):
     fail_count: int = 0
     blocked_until: Optional[datetime] = Field(DateTime(timezone=True))
     black_listed: bool = False
-    status: UserStatus = UserStatus.New
+    status: UserStatus = UserStatus.Inactive
