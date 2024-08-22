@@ -20,6 +20,12 @@
         },
         "expect": {
           "email": "dummy@sample.com"
+        },
+        "expect_db": {
+          "email": "dummy@sample.com",
+          "password": null,
+          "otp": "*GT0",
+          "otp": null
         }
       },
       "fail": {

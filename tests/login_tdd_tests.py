@@ -50,7 +50,7 @@ async def post_fail(client, breadcrumbs, test_data, expected_status):
 
 async def post_to_endpoint(client, breadcrumbs, fixture):
     """ Precondition: JSON fixtures are defined by endpoint name. """
-    route = '/'.join(breadcrumbs[:-1])
+    route = '/'.join(breadcrumbs)
     return await client.post(f'{route}/', json=fixture)
 
 
