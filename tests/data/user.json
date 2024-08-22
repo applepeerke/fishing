@@ -5,7 +5,7 @@
      "email": "hello@heijlsongs.com",
      "password": "test123longer",
      "authentication_token": null,
-     "status": "New"
+     "status": "Inactive"
    }
  },
  "create": {
@@ -13,13 +13,13 @@
      "email": "hello2@heijlsongs.com",
      "password": "test123456",
      "authentication_token": null,
-     "status": "New"
+     "status": "Inactive"
    },
    "expect": {
      "email": "hello2@heijlsongs.com",
      "password": null,
      "authentication_token": null,
-     "status": "New"
+     "status": "Inactive"
    }
  },
  "read": {
@@ -27,7 +27,7 @@
      "email": "hello@heijlsongs.com",
      "password": "**********",
      "authentication_token": null,
-     "status": "New"
+     "status": "Inactive"
    }
  },
  "update": {
@@ -36,14 +36,14 @@
      "email": "hello@heijlsongs.com",
      "password": "test444longer",
      "authentication_token": "my-secret-token-minium-16",
-     "status": "New"
+     "status": "Inactive"
    },
    "expect": {
      "id": "5443fc14-eef2-468d-8bd5-360bc9790090",
      "email": "hello@heijlsongs.com",
      "password": "**********",
      "authentication_token": "my-secret-token-minium-16",
-     "status": "New"
+     "status": "Inactive"
    }
  },
  "delete": {
