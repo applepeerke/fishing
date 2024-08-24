@@ -9,7 +9,7 @@ from src.domains.login.functions import map_user
 from src.domains.user.models import User
 from src.utils.db import crud
 from src.utils.security.crypto import get_hashed_password
-from src.utils.tests.functions import check_response
+from src.utils.tests.functions import assert_response
 
 
 @pytest.mark.asyncio
@@ -67,7 +67,7 @@ async def post_to_endpoint(
     route = '/'.join(breadcrumbs)
     response = await async_client.post(f'{route}/', json=fixture[payload_key])
     # Check
-    check_response(
+    assert_response(
         response,
         expected_payload=fixture.get(expect_key, {}),
         expected_status=expected_status
@@ -108,7 +108,7 @@ async def test_encrypt(async_client: AsyncClient, async_session: AsyncSession, t
     # b Decrypt the encrypted text and compare with the input plain text
     response = await async_client.post('encrypt/verify/', json=payload)
     #  - Validate Response (200, 'Password is valid.')
-    check_response(response)
+    assert_response(response)
 
 
 @pytest.mark.asyncio
@@ -139,4 +139,4 @@ async def try_fail_decrypt(
     # - Decrypt the encrypted text and compare with the input plain text
     response = await async_client.post('encrypt/verify/', json=payload)
     #  - Validate status (401)')
-    check_response(response, expected_status=expected_status)
+    assert_response(response, expected_status=expected_status)

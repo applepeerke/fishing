@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from src.domains.fishingwater.api import fishingwater
-from src.domains.login.api import login_register, password, password_validate, login_register_validate, \
-    login_password_reset, login, \
-    login_password_forgot, login_password_set
+from src.domains.login.api import login_register, password, password_validate, login_initialize, \
+    login_change_password, login_login, \
+    login_forgot_password, login_password_set, login_activate
 from src.domains.systemvalue.api import systemvalue
 from src.domains.user.api import user
 
@@ -24,12 +24,12 @@ app.include_router(user, prefix=f'{prefix}/user', tags=['User'])
 app.include_router(systemvalue, prefix=f'{prefix}/systemvalue', tags=['System value'])
 # Login
 app.include_router(login_register, prefix=f'{prefix}/login/register', tags=['Login - Registration request'])
-app.include_router(login_register_validate, prefix=f'{prefix}/login/validate', tags=['Login - Registration validate'])
-app.include_router(login, prefix=f'{prefix}/login/login', tags=['Login'])
+app.include_router(login_initialize, prefix=f'{prefix}/login/initialize', tags=['Login - Registration send otp'])
+app.include_router(login_activate, prefix=f'{prefix}/login/activate', tags=['Login - Registration activate'])
+app.include_router(login_login, prefix=f'{prefix}/login/login', tags=['Login'])
 # Password
 app.include_router(login_password_set, prefix=f'{prefix}/password/set', tags=['Password set'])
-app.include_router(login_password_reset, prefix=f'{prefix}/password/reset', tags=['Password reset'])
-app.include_router(login_password_forgot, prefix=f'{prefix}/password/forgot', tags=['Password forgot'])
+app.include_router(login_change_password, prefix=f'{prefix}/password/reset', tags=['Password reset'])
 # Password (internal)
 app.include_router(password, prefix=f'{prefix}/encrypt', tags=['Encrypt'])
 app.include_router(password_validate, prefix=f'{prefix}/encrypt/verify', tags=['Encrypt - verify'])
