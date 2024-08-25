@@ -3,6 +3,8 @@ import os
 
 from dateutil.relativedelta import relativedelta
 
+from src.utils.tests.constants import PAYLOAD
+
 
 def find_filename_path(file_name) -> str:
     """
@@ -31,3 +33,7 @@ def get_otp_expiration():
 def get_password_expiration():
     return (datetime.datetime.now(datetime.timezone.utc) +
             relativedelta(months=int(os.getenv('PASSWORD_EXPIRATION_MONTHS', 10))))
+
+
+def get_pk(fixture, pk_name):
+    return fixture.get(PAYLOAD, {}).get(pk_name)
