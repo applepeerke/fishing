@@ -8,8 +8,8 @@ from fastapi import Response
 from src.domains.login.functions import map_user
 from src.domains.user.models import User
 from src.utils.db import crud
-from src.utils.functions import get_otp_expiration
-from src.utils.security.crypto import get_hashed_password
+from src.utils.functions import get_otp_expiration, get_password_expiration
+from src.utils.security.crypto import get_hashed_password, verify_password
 from src.utils.tests.constants import *
 
 
@@ -20,12 +20,19 @@ async def insert_record(async_session: AsyncSession, entity, payload: dict):
 
 
 def assert_response(response, expected_payload=None, expected_status=status.HTTP_200_OK):
-    if not response or not isinstance(expected_payload, dict):
+    if not response:
         return
-    # Status in the expected payload has priority.
+
+    # Check response status
+    # - Status in the expected payload has priority.
+    if not expected_payload:
+        expected_payload = {}
     expected_status = expected_payload.get(STATUS_CODE, expected_status)
     assert response.status_code == expected_status
-    # Try to check returned model.
+
+    # Check response model
+    if not expected_payload:
+        return
     response_model = get_model(response)
     if response_model:
         assert_model_items(expected_payload, response_model)
@@ -50,6 +57,9 @@ def assert_model_items(expected, response):
             continue
         response_value = response[k]
         expected_value = ignore_secret(response_value, expected_value)
+        # Ignore substitution vars
+        if str(expected_value).startswith('*'):
+            continue
         # Both object value (like UUID) to string and json value (like int) to string[[
         assert to_string(response_value) == to_string(expected_value)
 
@@ -95,6 +105,7 @@ async def post_check(
     if not expected_http_status:
         expected_http_status = status.HTTP_200_OK if expected_result == SUCCESS else status.HTTP_401_UNAUTHORIZED
 
+    fixture = get_leaf(fixture, breadcrumbs, expected_result)
     payload = f'{PAYLOAD}-{seqno}' if seqno > 0 else PAYLOAD
     payload = await substitute(db, fixture.get(payload))
     response = await post_to_endpoint(
@@ -103,16 +114,17 @@ async def post_check(
         fixture=payload
     )
     # a. Check response (model or exception)
+    expect_key = f'{EXPECT}{seqno}' if seqno > 0 else EXPECT
     assert_response(
         response,
-        expected_payload=fixture.get(f'{EXPECT}{seqno}'),
+        expected_payload=fixture.get(expect_key),
         expected_status=expected_http_status
     )
     # b. Check db attributes
     # Db can be checked only if the response is OK.
     # In case of an exception, the db record may have been updated but can not be retrieved here. Why?
     if get_model(response):
-        await assert_db(db, fixture.get(f'{EXPECT_DB}{seqno}'))
+        await assert_db(db, fixture.get(expect_key))
     return response
 
 
@@ -124,23 +136,24 @@ async def assert_db(db, expected_payload):
     user = await crud.get_one_where(db, User, User.email, expected_payload['email'])
     # Assertions
     assert user.email == expected_payload['email']
-    assert user.password == expected_payload['password']
-    if expected_payload['otp'] == GT0:
-        assert user.otp > 0
-    else:
-        assert user.otp == expected_payload['otp']
-    if user.otp or expected_payload['password'] == STRING:
-        validate_expiration(user.expired)
-    if expected_payload['password'] != STRING:
-        assert user.password is None
-    assert user.fail_count == expected_payload['fail_count']
-    assert user.status == expected_payload['status']
+    if 'password' in expected_payload:
+        if expected_payload['password'] is None:
+            assert user.password is None
+            assert user.expired is None
+        else:
+            assert verify_password(expected_payload['password'], user.password)
+            if 'expiry' in expected_payload:
+                validate_expiration(user.expired, expiration_type=expected_payload['expiry'])
+    if 'fail_count' in expected_payload:
+        assert user.fail_count == expected_payload['fail_count']
+    if 'status' in expected_payload:
+        assert user.status == expected_payload['status']
 
 
-def validate_expiration(db_expiration, delta_seconds_allowed=10.0):
+def validate_expiration(db_expiration, delta_seconds_allowed=10.0, expiration_type=GET_PASSWORD_EXPIRY):
     """ Precondition: db_expiration has been set < 1 second ago. """
     assert db_expiration is not None
-    now_expiration = get_otp_expiration()
+    now_expiration = get_otp_expiration() if expiration_type == GET_OTP_EXPIRY else get_password_expiration()
     delta = now_expiration - db_expiration
     assert 0.0 < delta.total_seconds() < delta_seconds_allowed
 
@@ -156,6 +169,24 @@ def get_leaf(fixture, breadcrumbs: list, expected_result):
     for leaf in breadcrumbs:
         d = d.get(leaf, {})
     return d.get(expected_result, {})
+
+
+def set_leaf(fixture, breadcrumbs, expected_result, leaf, key, value) -> dict:
+    b = breadcrumbs.copy()
+    b.append(expected_result)
+    b.append(leaf)
+    b.append(key)
+    # Add a value at a deep nested level
+    add_to_nested_dict(fixture, b, value)
+    return fixture
+
+
+def add_to_nested_dict(d, keys, value) -> dict:
+    for key in keys[:-1]:
+        d = d.setdefault(key, {})
+    d[keys[-1]] = value
+    return d
+
 
 
 async def substitute(db, fixture) -> dict:

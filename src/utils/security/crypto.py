@@ -13,8 +13,11 @@ is_correct = validate_password(plain_text, hashed_password)
 print(f"Password Match: {is_correct}")
 """
 import random
-
+import secrets
+import string
 import bcrypt
+
+from src.domains.user.functions import is_valid_password
 
 
 def get_hashed_password(password: str) -> str:
@@ -31,5 +34,10 @@ def verify_password(plain_text: str, hashed_password: str) -> bool:
         return False
 
 
-def get_otp_as_number() -> int:
-    return random.SystemRandom().randint(10000, 99999)
+def get_random_password() -> str:
+    chars = string.ascii_letters + string.digits + '@#$%^&*'
+    for _ in range(1000):
+        password = ''.join(secrets.choice(chars) for _ in range(10))
+        if is_valid_password(password):
+            return password
+    raise ValueError('No random password could be generated.')
