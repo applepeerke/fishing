@@ -1,5 +1,10 @@
 {
   "encrypt": {
+      "success": {
+        "payload": {
+          "plain_text": "my-secret-password"
+        }
+      },
     "verify": {
       "success": {
         "payload": {
@@ -27,8 +32,8 @@
         },
         "expect_db": {
           "email": "dummy@sample.com",
-          "password": null,
-          "otp": "*GT0",
+          "password": "********",
+          "expiry": "*GET_OTP_EXPIRY",
           "fail_count": 0,
           "status": "Registered"
         }
@@ -42,54 +47,27 @@
         }
       }
     },
-
-    "initialize": {
-      "success": {
-        "payload": {
-          "email": "dummy@sample.com",
-          "otp": "*GET_FROM_DB"
-        },
-        "expect": {
-          "status_code": 200,
-          "email": "dummy@sample.com",
-          "password": null,
-          "otp": null,
-          "expired": null,
-          "fail_count": 0,
-          "status": "Initialized"
-        }
-      },
-      "fail": {
-        "payload": {
-          "email": "dummy@sample.com",
-          "otp": 99999
-        },
-        "expect": {
-          "status_code": 401
-        }
-      }
-    },
     "activate": {
       "success": {
         "payload": {
           "email": "dummy@sample.com",
-          "otp": "*GET_FROM_DB",
-          "old_password": "Password1!",
+          "password": "Password1!",
           "new_password": "Password2!",
           "new_password_repeated": "Password2!"
         },
         "expect": {
           "status_code": 200,
           "email": "dummy@sample.com",
-          "password": "********",
-          "otp": null,
+          "password": "Password2!",
+          "expired": "*GET_PASSWORD_EXPIRY",
           "fail_count": 0,
           "status": "Active"
         }
       },
       "fail": {
         "payload": {
-          "email": "dummy@sample.com"
+          "email": "dummy@sample.com",
+          "password": "Password_fail1!"
         },
         "expect": {
           "status_code": 422,
@@ -112,7 +90,7 @@
       "success": {
         "payload": {
           "email": "dummy@sample.com",
-          "old_password": "Password1!",
+          "password": "Password1!",
           "new_password": "Password2!",
           "new_password_repeated": "Password2!"
         }
