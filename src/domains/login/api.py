@@ -1,10 +1,9 @@
 import datetime
 from fastapi import APIRouter, Depends, HTTPException
-from httpx import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.domains.login.functions import validate_user, reset_user, invalid_login_attempt, map_user, \
+from src.domains.login.functions import validate_user, set_user_status, invalid_login_attempt, map_user, \
     validate_new_password
 from src.domains.login.models import Password, PasswordEncrypted, LoginBase
 from src.domains.login.models import Register, ChangePassword, Login, SetPassword
@@ -20,8 +19,8 @@ login_register = APIRouter()
 login_initialize = APIRouter()
 login_activate = APIRouter()
 login_password_set = APIRouter()
-login_change_password = APIRouter()
-login_forgot_password = APIRouter()
+login_password_reset = APIRouter()
+login_password_forgot = APIRouter()
 
 password = APIRouter()
 password_validate = APIRouter()
@@ -51,11 +50,12 @@ async def initialize(payload: Register, db: AsyncSession = Depends(get_db_sessio
     # The user must already exist and be valid.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
     await validate_user(db, user)
+    if not user.expired:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid user.')
     # The otp must not be expired.
-    if not user.expired or (user.expired < datetime.datetime.now(datetime.timezone.utc)):
-        return Response(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            content='The one time password has expired. Please register again.')
+    if user.expired < datetime.datetime.now(datetime.timezone.utc):
+        await set_user_status(db, map_user(user), target_status=UserStatus.Expired)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='The password has expired.')
 
     # Fail: the otp in the user input <> server-generated otp.
     if not payload.otp or payload.otp == 0 or payload.otp != user.otp:
@@ -63,8 +63,7 @@ async def initialize(payload: Register, db: AsyncSession = Depends(get_db_sessio
         return await invalid_login_attempt(db, user)
 
     # Success: Initialize user
-    user.status = UserStatus.Initialized
-    return await reset_user(db, map_user(user))
+    return await set_user_status(db, map_user(user), target_status=UserStatus.Initialized)
 
 
 @login_activate.post('/', response_model=UserRead)
@@ -76,7 +75,7 @@ async def activate(payload: SetPassword, db: AsyncSession = Depends(get_db_sessi
 
     # a. Verify if the otp is correct
     if not payload.otp or payload.otp != user.otp:
-        return await invalid_login_attempt(db, user, 'Incorrect otp. Please try again.')
+        return await invalid_login_attempt(db, user, 'Incorrect password. Please try again.')
     # b. Verify the new password
     else:
         error_message = validate_new_password(payload=payload)
@@ -84,9 +83,7 @@ async def activate(payload: SetPassword, db: AsyncSession = Depends(get_db_sessi
             return await invalid_login_attempt(db, user, error_message)
     # Success: Activate the user with the password
     user.password = get_hashed_password(payload.new_password.get_secret_value())
-    user.expired = get_password_expiration()
-    user.status = UserStatus.Active
-    return await reset_user(db, map_user(user))
+    return await set_user_status(db, map_user(user), target_status=UserStatus.Active)
 
 
 @login_login.post('/')
@@ -102,22 +99,17 @@ async def login(payload: Login, db: AsyncSession = Depends(get_db_session)):
         raise
 
 
-@login_forgot_password.post('/', response_model=UserRead)
+@login_password_forgot.post('/', response_model=UserRead)
 async def forgot_password(payload: LoginBase, db: AsyncSession = Depends(get_db_session)):
     """ Target status: 10 (Registered): New OTP sent. """
     # The user must already exist. User may be blocked, not blacklisted.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
     await validate_user(db, user, allow_blocked=True)
-    # Create the one time password as a 5-digit number.
-    user.otp = get_otp_as_number()
-    user.expired = get_otp_expiration()
-    # Mail the otp to the specified address.
-    send_otp(payload.email, user.otp)
-    # Update the user otp
-    return await crud.upd(db, User, user.id, map_user(user))
+    # Reset the user
+    return await set_user_status(db, map_user(user), target_status=UserStatus.Inactive)
 
 
-@login_change_password.post('/', response_model=UserRead)
+@login_password_reset.post('/', response_model=UserRead)
 async def change_password(payload: ChangePassword, db: AsyncSession = Depends(get_db_session)):
     # The user must already exist and be valid.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
@@ -138,7 +130,7 @@ async def change_password(payload: ChangePassword, db: AsyncSession = Depends(ge
 
     # Success: Set new password
     user.password = get_hashed_password(payload.new_password.get_secret_value())
-    return await reset_user(db, map_user(user))
+    return await set_user_status(db, map_user(user), target_status=UserStatus.Active)
 
 
 @password.post('/', response_model=PasswordEncrypted)

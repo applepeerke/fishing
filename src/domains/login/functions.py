@@ -5,10 +5,11 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status
 
-from src.domains.user.functions import is_valid_password
+from src.domains.user.functions import is_valid_password, send_otp
 from src.domains.user.models import User, UserRead, UserStatus
 from src.utils.db import crud
-from src.utils.security.crypto import verify_password
+from src.utils.functions import get_otp_expiration, get_password_expiration
+from src.utils.security.crypto import verify_password, get_otp_as_number
 
 
 def validate_new_password(payload: BaseModel, old_password_hashed=None):
@@ -40,18 +41,16 @@ async def validate_user(db, user: User, allow_blocked=False) -> User:
     if user.blocked_until:
         # a. Blocking time is over: reset the user
         if user.blocked_until < datetime.datetime.now(datetime.timezone.utc):
-            user = await reset_user(db, map_user(user))
+            user = await set_user_status(db, map_user(user), target_status=UserStatus.Active)
         # b. Still blocked. Allow this only when forgot_password is requested.
         elif user.blocked_until > datetime.datetime.now(datetime.timezone.utc) and not allow_blocked:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail='The user is blocked. Please try again later.')
+    else:
+        if user.expired and user.expired < datetime.datetime.now(datetime.timezone.utc):
+            user = await set_user_status(db, map_user(user), target_status=UserStatus.Expired)
     return user
-
-
-async def reset_user(db, user: UserRead, reset_otp=True) -> UserRead:
-    user = reset_user_attributes(user, reset_otp)
-    return await crud.upd(db, User, user.id, user)
 
 
 async def invalid_login_attempt(db, user: User, error_message=''):
@@ -63,11 +62,7 @@ async def invalid_login_attempt(db, user: User, error_message=''):
 
     # Max. fail attempts reached: block the user.
     if user.fail_count >= int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED', 3)):
-        minutes = int(os.getenv('LOGIN_BLOCK_MINUTES', 10))
-        user = reset_user_attributes(user)
-        user.blocked_until = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes))
-        user.status = UserStatus.Blocked
-        await crud.upd(db, User, user.id, user)
+        await set_user_status(db, user, target_status=UserStatus.Blocked)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f'{initial_detail}The user has been blocked. Please try again later.')
@@ -78,12 +73,30 @@ async def invalid_login_attempt(db, user: User, error_message=''):
         detail=f'{initial_detail}Invalid login attempt. Please try again.')
 
 
-def reset_user_attributes(user: UserRead, reset_otp=False) -> UserRead:
+async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
+    if target_status == UserStatus.Inactive:
+        user = reset_user(user)
+        # Create the one time password as a 5-digit number.
+        user.otp = get_otp_as_number()
+        user.expired = get_otp_expiration()
+        # Mail the otp to the specified address.
+        send_otp(user.email, user.otp)
+    elif target_status == UserStatus.Active:
+        user = reset_user(user)
+        user.expired = get_password_expiration()
+        user.status = UserStatus.Active
+    elif target_status == UserStatus.Blocked:
+        minutes = int(os.getenv('LOGIN_BLOCK_MINUTES', 10))
+        user.blocked_until = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes))
+    # Set status
+    if target_status:
+        user.status = target_status
+    return await crud.upd(db, User, user.id, user)
+
+
+def reset_user(user) -> UserRead:
     user.blocked_until = None
     user.fail_count = 0
-    if reset_otp:
-        user.otp = None
-        user.expired = None
     user.authentication_token = None
     return user
 

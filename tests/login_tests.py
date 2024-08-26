@@ -15,7 +15,7 @@ from src.utils.tests.functions import assert_response, post_check, get_leaf, set
 
 @pytest.mark.asyncio
 async def test_register_success(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
-    """ Status Registered (10) """
+    """ Target status Inactive (10) """
     breadcrumbs = ['login', 'register']
     fixture = get_leaf(test_data_login, breadcrumbs, SUCCESS)
     await post_check(breadcrumbs, SUCCESS, async_client, async_session, fixture)
@@ -30,7 +30,7 @@ async def test_register_fail(test_data_login: dict, async_client: AsyncClient, a
 
 @pytest.mark.asyncio
 async def test_initialize_success(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
-    """ Status Initialized (20) """
+    """ Target status Initialized (20) """
     breadcrumbs = ['login', 'initialize']
     fixture = get_leaf(test_data_login, breadcrumbs, SUCCESS)
     await precondition(async_session, fixture, UserStatus.Registered)
@@ -47,7 +47,7 @@ async def test_initialize_fail(test_data_login: dict, async_client: AsyncClient,
 
 @pytest.mark.asyncio
 async def test_activate_success(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
-    """ Status Activated (30) """
+    """ Target status Activated (30) """
     breadcrumbs = ['login', 'activate']
     fixture = get_leaf(test_data_login, breadcrumbs, SUCCESS)
     await precondition(async_session, fixture, UserStatus.Initialized)
