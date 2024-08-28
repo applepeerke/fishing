@@ -11,13 +11,12 @@ from src.general.models import get_current_user
 from src.utils.db.db import Base
 
 
-class UserStatus(str, Enum):
-    Inactive = "Inactive"
-    Registered = "Registered"
-    Active = "Active"
-    Expired = "Expired"
-    Blocked = "Blocked"
-    Blacklisted = "Blacklisted"
+class UserStatus(int, Enum):
+    Inactive = 10
+    Active = 20
+    Expired = 80
+    Blocked = 90
+    Blacklisted = 99
 
 
 # SqlAlchemy model
@@ -30,7 +29,7 @@ class User(Base):
     authentication_token = Column(String, nullable=True)
     fail_count = Column(Integer, default=0)
     blocked_until = Column(DateTime(timezone=True), nullable=True)
-    status = Column(String, nullable=False, default=UserStatus.Inactive)
+    status = Column(Integer, default=UserStatus.Inactive.value)
     # Audit
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     created_by = Column(String, default=get_current_user())
@@ -54,4 +53,4 @@ class UserRead(UserBase):
     fail_count: int = 0
     blocked_until: Optional[datetime] = Field(DateTime(timezone=True))
     authentication_token: Optional[SecretStr] = Field(min_length=16, max_length=1024, default=None)
-    status: UserStatus = UserStatus.Inactive
+    status: UserStatus = UserStatus.Inactive.value

@@ -26,7 +26,7 @@ password_validate = APIRouter()
 
 @login_register.post('/', response_model=LoginBase)
 async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session)):
-    """  Target status: 10 (Registered): User record created with email. """
+    """  Target status: 10 (Inactive): User record created with email. """
     # The user must not already exist.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
     if user:
@@ -37,7 +37,7 @@ async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session
     send_otp(payload.email, otp)
     # Insert the user (N.B. password is null yet)
     expired = get_otp_expiration()
-    user = User(email=payload.email, password=otp, expired=expired, status=UserStatus.Registered)
+    user = User(email=payload.email, password=otp, expired=expired, status=UserStatus.Inactive.value)
     await crud.add(db, user)
     return LoginBase(email=user.email)
 
@@ -55,7 +55,7 @@ async def activate(payload: SetPassword, db: AsyncSession = Depends(get_db_sessi
         return await invalid_login_attempt(db, user, error_message)
     # Success: Activate the user and set the new password
     user.password = get_hashed_password(payload.new_password.get_secret_value())
-    return await set_user_status(db, map_user(user), target_status=UserStatus.Active)
+    return await set_user_status(db, map_user(user), target_status=UserStatus.Active.value)
 
 
 @login_login.post('/')
@@ -71,18 +71,8 @@ async def login(payload: Login, db: AsyncSession = Depends(get_db_session)):
         raise
 
 
-@login_password_forgot.post('/', response_model=UserRead)
-async def forgot_password(payload: LoginBase, db: AsyncSession = Depends(get_db_session)):
-    """ Target status: 10 (Registered): New OTP sent. """
-    # The user must already exist. User may be blocked, not blacklisted.
-    user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
-    await validate_user(db, user, allow_blocked=True)
-    # Reset the user
-    return await set_user_status(db, map_user(user), target_status=UserStatus.Inactive)
-
-
-@login_password_reset.post('/', response_model=UserRead)
-async def change_password(payload: SetPassword, db: AsyncSession = Depends(get_db_session)):
+@login_password_set.post('/', response_model=UserRead)
+async def set_password(payload: SetPassword, db: AsyncSession = Depends(get_db_session)):
     # The user must already exist and be valid.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
     await validate_user(db, user)
@@ -102,7 +92,17 @@ async def change_password(payload: SetPassword, db: AsyncSession = Depends(get_d
 
     # Success: Set new password
     user.password = get_hashed_password(payload.new_password.get_secret_value())
-    return await set_user_status(db, map_user(user), target_status=UserStatus.Active)
+    return await set_user_status(db, map_user(user), target_status=UserStatus.Active.value)
+
+
+@login_password_forgot.post('/', response_model=UserRead)
+async def forgot_password(payload: LoginBase, db: AsyncSession = Depends(get_db_session)):
+    """ Target status: 10 (Inactive): New OTP sent. """
+    # The user must already exist. User may be blocked, not blacklisted.
+    user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
+    await validate_user(db, user, forgot_password=True)
+    # Reset the user
+    return await set_user_status(db, map_user(user), target_status=UserStatus.Inactive.value)
 
 
 @password.post('/', response_model=PasswordEncrypted)

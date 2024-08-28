@@ -31,25 +31,32 @@ def validate_new_password(payload: BaseModel, old_password_hashed=None):
     return detail
 
 
-async def validate_user(db, user: User, allow_blocked=False) -> User:
+async def validate_user(db, user: User, forgot_password=False) -> User:
     if not user:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user does not exist.')
     # Blacklisted user
-    if user.status == UserStatus.Blacklisted:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user blacklisted.')
+    if user.status == UserStatus.Blacklisted.value:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='The user is blacklisted.')
     # Blocked user
-    if user.blocked_until:
+    if user.status == UserStatus.Blocked.value:
+        # Set the expiration date if it has not been set already
+        if not user.blocked_until:
+            user = await set_user_status(db, map_user(user), target_status=UserStatus.Blocked.value)
         # a. Blocking time is over: reset the user
         if user.blocked_until < datetime.datetime.now(datetime.timezone.utc):
-            user = await set_user_status(db, map_user(user), target_status=UserStatus.Active)
+            user = await set_user_status(db, map_user(user), target_status=UserStatus.Active.value)
         # b. Still blocked. Allow this only when forgot_password is requested.
-        elif user.blocked_until > datetime.datetime.now(datetime.timezone.utc) and not allow_blocked:
+        elif user.blocked_until > datetime.datetime.now(datetime.timezone.utc) and not forgot_password:
             raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='The user is blocked. Please try again later.')
-    else:
+    elif user.status != UserStatus.Expired.value:
         if user.expired and user.expired < datetime.datetime.now(datetime.timezone.utc):
-            user = await set_user_status(db, map_user(user), target_status=UserStatus.Expired)
+            user = await set_user_status(db, map_user(user), target_status=UserStatus.Expired.value)
+    if user.status == UserStatus.Expired.value and not forgot_password:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='The password is expired.')
     return user
 
 
@@ -62,7 +69,7 @@ async def invalid_login_attempt(db, user: User, error_message=''):
 
     # Max. fail attempts reached: block the user.
     if user.fail_count >= int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED', 3)):
-        await set_user_status(db, user, target_status=UserStatus.Blocked)
+        await set_user_status(db, user, target_status=UserStatus.Blocked.value)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f'{initial_detail}The user has been blocked. Please try again later.')
@@ -74,7 +81,7 @@ async def invalid_login_attempt(db, user: User, error_message=''):
 
 
 async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
-    if target_status == UserStatus.Inactive:
+    if target_status == UserStatus.Inactive.value:
         user = reset_user(user)
         # Create the one time password
         temporary_password = get_random_password()
@@ -82,17 +89,21 @@ async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
         user.expired = get_otp_expiration()
         # Mail the otp to the specified address.
         send_otp(user.email, temporary_password)
-    elif target_status == UserStatus.Active:
+    elif target_status == UserStatus.Active.value:
         user = reset_user(user)
         user.expired = get_password_expiration()
-        user.status = UserStatus.Active
-    elif target_status == UserStatus.Blocked:
-        minutes = int(os.getenv('LOGIN_BLOCK_MINUTES', 10))
-        user.blocked_until = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes))
+        user.status = UserStatus.Active.value
+    elif target_status == UserStatus.Blocked.value:
+        user.blocked_until = get_blocked_until()
     # Set status
     if target_status:
         user.status = target_status
     return await crud.upd(db, User, user.id, user)
+
+
+def get_blocked_until():
+    minutes = int(os.getenv('LOGIN_BLOCK_MINUTES', 10))
+    return datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes)
 
 
 def reset_user(user) -> UserRead:

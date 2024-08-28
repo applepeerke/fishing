@@ -27,7 +27,6 @@ app.include_router(login_activate, prefix=f'{prefix}/login/activate', tags=['Log
 app.include_router(login_login, prefix=f'{prefix}/login/login', tags=['Login'])
 # Password
 app.include_router(login_password_set, prefix=f'{prefix}/password/set', tags=['Password - Set'])
-app.include_router(login_password_reset, prefix=f'{prefix}/password/reset', tags=['Password - Reset'])
 app.include_router(login_password_forgot, prefix=f'{prefix}/password/forgot', tags=['Password - Forgot'])
 # Password (internal)
 app.include_router(password, prefix=f'{prefix}/encrypt', tags=['Encrypt'])
