@@ -1,9 +1,10 @@
+import json
 from uuid import UUID
 
+from fastapi import Response
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
-from fastapi import Response
 
 from src.domains.login.functions import map_user
 from src.domains.user.models import User
@@ -73,12 +74,23 @@ def assert_message_items(expected: dict, response_message: dict):
 
 
 def get_message_from_response(response) -> dict:
-    """ return example: {'type': 'missing', 'loc':['body', 'new_password'],... } """
-    if response.headers.get("Content-Type") == "application/json":
-        d = response.json() or {}
-        text = d.get('detail', {})
-        return {} if not text or not isinstance(text, list) else text[0]
-    return {'message': response.text}
+    """
+    response example-1: {'type': 'missing', 'loc':['body', 'new_password'],... }
+    response example-2: {'detail: 'The user already exists.'}
+    """
+    if response.headers.get("Content-Type") != "application/json":
+        if response.text and isinstance(response.text, str):
+            return {'message': response.text}
+        return {}
+    message = response.json() or {}
+    text = message.get('detail', {})
+    if not text:
+        return {}
+    # Repeating responses
+    elif isinstance(text, list):
+        return text[0]
+    else:
+        return message
 
 
 def ignore_secret(response_value, expected_value):
@@ -100,8 +112,11 @@ Post check functions
 
 
 async def post_check(
-        breadcrumbs, expected_result, client, db, fixture, expected_http_status=None, seqno=0) -> Response:
-    """ Precondition: JSON fixtures are defined by route, followed by 'success' or 'fail'. """
+        breadcrumbs, expected_result, client, db, fixture, expected_http_status=None, seqno=0, from_index=0) -> Response:
+    """
+    JSON fixture is defined by route, followed by 'success' or 'fail'.
+    It contains  sub-fixtures like 'payload', 'expect' and 'expect-db'.
+    """
     if not expected_http_status:
         expected_http_status = status.HTTP_200_OK if expected_result == SUCCESS else status.HTTP_401_UNAUTHORIZED
 
@@ -110,7 +125,7 @@ async def post_check(
     payload = await substitute(db, fixture.get(payload))
     response = await post_to_endpoint(
         client=client,
-        breadcrumbs=breadcrumbs,
+        breadcrumbs=breadcrumbs[from_index:],
         fixture=payload
     )
     # a. Check response (model or exception)
@@ -188,6 +203,20 @@ def add_to_nested_dict(d, keys, value) -> dict:
     return d
 
 
+def create_nested_dict(elements, value) -> dict:
+    d = current = {}
+    for i in range(len(elements)):
+        element = elements[i]
+        if element not in d:
+            if i < len(elements) - 1:
+                d[element] = {}
+            else:
+                # Assign the value to the last key
+                d[element] = value if isinstance(value, dict) else json.loads(value)
+                break
+        d = d[element]
+    return current
+
 
 async def substitute(db, fixture) -> dict:
     """ Substitute unpredictable attribute values from those in the db. """
@@ -203,13 +232,6 @@ def _try_substitute(key, value, user):
         if key == 'otp':
             value = user.otp
     return value
-
-
-# async def add_otp_from_db(db, fixture):
-#     # - First set the test-otp from the db, which has been set to an unpredictable value.
-#     user = await get_user_from_db(db, fixture[PAYLOAD]['email'])
-#     fixture[PAYLOAD]['otp'] = user.otp
-#     return fixture
 
 
 async def get_user_from_db(db, email):

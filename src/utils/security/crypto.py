@@ -21,6 +21,8 @@ from src.domains.user.functions import is_valid_password
 
 
 def get_hashed_password(password: str) -> str:
+    if not password:
+        return password
     # Generate a salt and hash the password with the salt
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     return hashed_password.decode('utf-8')

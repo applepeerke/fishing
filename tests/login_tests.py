@@ -4,12 +4,33 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domains.login.functions import map_user
 from src.domains.user.models import User, UserStatus
 from src.utils.db import crud
 from src.utils.functions import get_pk, get_otp_expiration
-from src.utils.security.crypto import get_random_password
+from src.utils.security.crypto import get_random_password, get_hashed_password
 from src.utils.tests.constants import SUCCESS, FAIL, PAYLOAD
 from src.utils.tests.functions import post_check, get_leaf, set_password_in_db, get_model, set_leaf
+
+
+@pytest.mark.asyncio
+async def test_login_TDD(test_scenarios_login: dict, async_client: AsyncClient, async_session: AsyncSession):
+    """
+    TDD
+    All test scenarios via csv file 'tests/data/login.csv'.
+    JSON fixtures are created dynamically via csv rows, not via .json files.
+    """
+    for Id, test_scenario in test_scenarios_login.items():
+        for entity, endpoints in test_scenario.items():
+            for endpoint, results in endpoints.items():
+                for result, fixture in results.items():
+                    breadcrumbs = [Id, entity, endpoint]
+                    names = Id.split('|')  # seqno | precondition_userStatus | expected HTTP status
+                    target_user_status = -1 if names[1] == 'NR' else int(names[1])
+                    await precondition(breadcrumbs, result, async_session, test_scenarios_login, target_user_status)
+                    await post_check(breadcrumbs, result, async_client, async_session, test_scenarios_login,
+                                     int(names[2]), from_index=1)
+                    print(f'* Test "{breadcrumbs[0]}" route "{' '.join(breadcrumbs[1:])}" was successful.')
 
 
 @pytest.mark.asyncio
@@ -29,22 +50,45 @@ async def test_register_fail(test_data_login: dict, async_client: AsyncClient, a
 async def test_activate_success(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
     """ Target status Activated (20) """
     breadcrumbs = ['login', 'activate']
-    await precondition(breadcrumbs, SUCCESS, async_session, test_data_login, UserStatus.Active)
+    await precondition(breadcrumbs, SUCCESS, async_session, test_data_login, UserStatus.Active.value)
     await post_check(breadcrumbs, SUCCESS, async_client, async_session, test_data_login)
 
 
 @pytest.mark.asyncio
 async def test_activate_fail(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
     breadcrumbs = ['login', 'activate']
-    await precondition(breadcrumbs, FAIL, async_session, test_data_login, UserStatus.Active)
+    await precondition(breadcrumbs, FAIL, async_session, test_data_login, UserStatus.Active.value)
     await post_check(breadcrumbs, FAIL, async_client, async_session, test_data_login)
 
 
-async def precondition(breadcrumbs, expected_status, db, fixture, user_status):
+async def precondition(breadcrumbs, expected_status, db, fixture, user_status: int):
+    """ Update UserStatus or add or delete a user """
     fixture = get_leaf(fixture, breadcrumbs, expected_status)
-    user = User(email=get_pk(fixture, 'email'), password=get_random_password(), expired=get_otp_expiration(),
-                status=user_status)
-    await crud.add(db, user)
+    pk = get_pk(fixture, 'email')
+    if not pk:
+        return
+    user_old = await crud.get_one_where(db, User, att_name=User.email, att_value=pk)
+    # a. Delete user (if target is NR)
+    if user_old and user_status <= 0:
+        await crud.delete(db, User, user_old.id)
+        return
+    # b. Set attributes
+    # - Password: set the right or a random one.
+    password = fixture.get(PAYLOAD, {}).get('password')
+    password = get_hashed_password(password) \
+        if password and 'right' in password.lower() \
+        else get_random_password()
+
+    user = User(email=pk, password=password, expired=get_otp_expiration(),
+                fail_count=0, status=user_status)
+    if user_old:
+        # c. Update user
+        user.id = user_old.id
+        await crud.upd(db, User, user_old.id, map_user(user))
+
+    else:
+        # d. Add user
+        await crud.add(db, user)
 
 
 @pytest.mark.asyncio
@@ -59,7 +103,7 @@ async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncS
 
     # c. Change password
     # c1. Preparation: Put old password in db ("Password1!")
-    breadcrumbs = ['password', 'reset']
+    breadcrumbs = ['password', 'set']
     fixture = get_leaf(test_data_login, breadcrumbs, SUCCESS)
     await set_password_in_db(async_session, fixture[PAYLOAD], 'password')
     # c2. Change new password (to "Password2!")

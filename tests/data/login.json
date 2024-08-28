@@ -35,7 +35,7 @@
           "password": "********",
           "expiry": "*GET_OTP_EXPIRY",
           "fail_count": 0,
-          "status": "Registered"
+          "status": 10
         }
       },
       "fail": {
@@ -61,7 +61,7 @@
           "password": "Password2!",
           "expired": "*GET_PASSWORD_EXPIRY",
           "fail_count": 0,
-          "status": "Active"
+          "status": 20
         }
       },
       "fail": {
@@ -86,7 +86,7 @@
     }
   },
   "password": {
-    "reset": {
+    "set": {
       "success": {
         "payload": {
           "email": "dummy@sample.com",
