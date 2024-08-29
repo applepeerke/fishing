@@ -72,12 +72,12 @@ async def invalid_login_attempt(db, user: User, error_message=''):
         await set_user_status(db, user, target_status=UserStatus.Blocked.value)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f'{initial_detail}The user has been blocked. Please try again later.')
+            detail=f'{initial_detail} The user has been blocked. Please try again later.')
     # Update fail counter
     await crud.upd(db, User, user.id, user)
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=f'{initial_detail}Invalid login attempt. Please try again.')
+        detail=f'{initial_detail} Please try again.')
 
 
 async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
