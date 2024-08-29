@@ -17,6 +17,14 @@
         },
         "payload-2": {
           "plain_text": ""
+        },
+        "expect-1": {
+          "status_code": 401,
+          "detail": "Unauthorized"
+        },
+        "expect-2": {
+          "status_code": 422,
+          "loc": ["body", "plain_text"]
         }
       }
     }
@@ -81,6 +89,14 @@
         "payload": {
           "email": "dummy@sample.com",
           "password": "Password2!"
+        },
+        "expect": {
+          "status_code": 200,
+          "email": "dummy@sample.com",
+          "password": "Password2!",
+          "expired": "*GET_PASSWORD_EXPIRY",
+          "fail_count": 0,
+          "status": 20
         }
       }
     }
@@ -93,6 +109,14 @@
           "password": "Password1!",
           "new_password": "Password2!",
           "new_password_repeated": "Password2!"
+        },
+        "expect": {
+          "status_code": 200,
+          "email": "dummy@sample.com",
+          "password": "Password2!",
+          "expired": "*GET_PASSWORD_EXPIRY",
+          "fail_count": 0,
+          "status": 20
         }
       }
     }

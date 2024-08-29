@@ -67,7 +67,7 @@ async def login(payload: Login, db: AsyncSession = Depends(get_db_session)):
     try:
         validate_password(Password(plain_text=payload.password.get_secret_value(), encrypted_text=user.password))
     except HTTPException:
-        await invalid_login_attempt(db, user)
+        await invalid_login_attempt(db, user, 'The password is not valid.')
         raise
 
 

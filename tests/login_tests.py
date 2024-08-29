@@ -14,23 +14,28 @@ from src.utils.tests.functions import post_check, get_leaf, set_password_in_db, 
 
 
 @pytest.mark.asyncio
-async def test_login_TDD(test_scenarios_login: dict, async_client: AsyncClient, async_session: AsyncSession):
+async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClient, async_session: AsyncSession):
     """
     TDD
-    All test scenarios via csv file 'tests/data/login.csv'.
+    All test scenarios via csv file 'tests/tdd/login.csv'.
     JSON fixtures are created dynamically via csv rows, not via .json files.
     """
-    for Id, test_scenario in test_scenarios_login.items():
+    for Id, test_scenario in test_tdd_scenarios_login.items():
         for entity, endpoints in test_scenario.items():
             for endpoint, results in endpoints.items():
                 for result, fixture in results.items():
                     breadcrumbs = [Id, entity, endpoint]
-                    names = Id.split('|')  # seqno | precondition_userStatus | expected HTTP status
+                    names = Id.split('|')  # seqno | precondition_userStatus | repeat | expected HTTP status
                     target_user_status = -1 if names[1] == 'NR' else int(names[1])
-                    await precondition(breadcrumbs, result, async_session, test_scenarios_login, target_user_status)
-                    await post_check(breadcrumbs, result, async_client, async_session, test_scenarios_login,
-                                     int(names[2]), from_index=1)
-                    print(f'* Test "{breadcrumbs[0]}" route "{' '.join(breadcrumbs[1:])}" was successful.')
+                    # Optionally insert User record with desired UserStatus
+                    await precondition(breadcrumbs, result, async_session, test_tdd_scenarios_login, target_user_status)
+                    executions = int(names[2])
+                    for exec_no in range(1, executions + 1):
+                        await post_check(
+                            breadcrumbs, result, async_client, async_session, test_tdd_scenarios_login,
+                            expected_http_status=int(names[3]), check_response=exec_no == executions,
+                            from_index=1)
+                        print(f'* Test "{breadcrumbs[0]}" route "{' '.join(breadcrumbs[1:])}" was successful.')
 
 
 @pytest.mark.asyncio
@@ -156,9 +161,9 @@ async def test_encrypt(async_client: AsyncClient, async_session: AsyncSession, t
 
     # Fail
     # a. Change plain text to invalid password
-    await post_check(breadcrumbs, FAIL, async_client, async_session, test_data_login, seqno=1)
+    await post_check(breadcrumbs, FAIL, async_client, async_session, test_data_login, seq_no=1)
     # b. Change plain text to empty password
-    await post_check(breadcrumbs, FAIL, async_client, async_session, test_data_login, seqno=2, expected_http_status=422)
+    await post_check(breadcrumbs, FAIL, async_client, async_session, test_data_login, seq_no=2, expected_http_status=422)
 
 
 async def get_encrypted_text(breadcrumbs, async_client, async_session, fixture):

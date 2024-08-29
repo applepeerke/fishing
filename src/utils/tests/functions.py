@@ -1,4 +1,5 @@
 import json
+import os
 from uuid import UUID
 
 from fastapi import Response
@@ -14,6 +15,23 @@ from src.utils.security.crypto import get_hashed_password, verify_password
 from src.utils.tests.constants import *
 
 
+def get_json(domain) -> dict:
+    """ Retrieve JSON from fishing/tests/data/{domain}.json"""
+    path = get_fixture_path('data', domain, 'json')
+    with open(path, "r") as file:
+        data = json.loads(file.read())
+    return data
+
+
+def get_fixture_path(subdir, domain, ext) -> str:
+    path = os.getenv('PYTEST_CURRENT_TEST')
+    path = os.path.join(*os.path.split(path)[:-1], subdir, f"{domain}.{ext}")
+
+    if not os.path.exists(path):
+        path = os.path.join(subdir, f"{domain}.{ext}")
+    return path
+
+
 async def insert_record(async_session: AsyncSession, entity, payload: dict):
     statement = insert(entity).values(payload)
     await async_session.execute(statement=statement)
@@ -22,6 +40,8 @@ async def insert_record(async_session: AsyncSession, entity, payload: dict):
 
 def assert_response(response, expected_payload=None, expected_status=status.HTTP_200_OK):
     if not response:
+        if expected_status != status.HTTP_200_OK:
+            assert not expected_payload
         return
 
     # Check response status
@@ -31,15 +51,21 @@ def assert_response(response, expected_payload=None, expected_status=status.HTTP
     expected_status = expected_payload.get(STATUS_CODE, expected_status)
     assert response.status_code == expected_status
 
-    # Check response model
-    if not expected_payload:
-        return
     response_model = get_model(response)
     if response_model:
+        # Check response model (except when all OK and no model asked to check)
+        if (not expected_payload and response.status_code == expected_status
+                and response.status_code == status.HTTP_200_OK):
+            expected_payload = {}
+        else:
+            assert expected_payload
         assert_model_items(expected_payload, response_model)
     else:
+        # Check response message
         response_message = get_message_from_response(response)
-        assert_message_items(expected_payload, response_message)
+        if response_message:
+            assert expected_payload
+            assert_message_items(expected_payload, response_message)
 
 
 def get_model(response) -> dict:
@@ -112,7 +138,16 @@ Post check functions
 
 
 async def post_check(
-        breadcrumbs, expected_result, client, db, fixture, expected_http_status=None, seqno=0, from_index=0) -> Response:
+        breadcrumbs,
+        expected_result,
+        client,
+        db,
+        fixture,
+        expected_http_status=None,
+        check_response=True,
+        from_index=0,
+        seq_no=0
+) -> Response:
     """
     JSON fixture is defined by route, followed by 'success' or 'fail'.
     It contains  sub-fixtures like 'payload', 'expect' and 'expect-db'.
@@ -120,26 +155,29 @@ async def post_check(
     if not expected_http_status:
         expected_http_status = status.HTTP_200_OK if expected_result == SUCCESS else status.HTTP_401_UNAUTHORIZED
 
-    fixture = get_leaf(fixture, breadcrumbs, expected_result)
-    payload = f'{PAYLOAD}-{seqno}' if seqno > 0 else PAYLOAD
-    payload = await substitute(db, fixture.get(payload))
+    leaf = get_leaf(fixture, breadcrumbs, expected_result)
+    payload_name = PAYLOAD if seq_no == 0 else f'{PAYLOAD}-{seq_no}'
+    payload = await substitute(db, leaf.get(payload_name))
     response = await post_to_endpoint(
         client=client,
         breadcrumbs=breadcrumbs[from_index:],
         fixture=payload
     )
-    # a. Check response (model or exception)
-    expect_key = f'{EXPECT}{seqno}' if seqno > 0 else EXPECT
-    assert_response(
-        response,
-        expected_payload=fixture.get(expect_key),
-        expected_status=expected_http_status
-    )
-    # b. Check db attributes
-    # Db can be checked only if the response is OK.
-    # In case of an exception, the db record may have been updated but can not be retrieved here. Why?
-    if get_model(response):
-        await assert_db(db, fixture.get(expect_key))
+    # Last execution:
+    if check_response:
+        # a. Check response (model or exception)
+        expected_payload_name = EXPECT if seq_no == 0 else f'{EXPECT}-{seq_no}'
+        expected_payload = leaf.get(expected_payload_name)
+        assert_response(
+            response,
+            expected_payload=expected_payload,
+            expected_status=expected_http_status
+        )
+        # b. Check db attributes
+        # Db can be checked only if the response is OK.
+        # In case of an exception, the db record may have been updated but can not be retrieved here. Why?
+        if get_model(response):
+            await assert_db(db, expected_payload)
     return response
 
 
