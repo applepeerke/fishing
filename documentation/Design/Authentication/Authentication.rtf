@@ -11,17 +11,20 @@
 \f0\fs32 \cf0 Authentication
 \fs24 \
 
-\f1\b Registration
+\f1\b \
+Registration
 \f0\b0 \
-The user provides an email address and presses the Register button. The system mails the OTN with a link to the 
-\f2\i receive_otn enpoint 
+The user provides an email address and presses the Register button. The system generates and mails an OTP with a link to the 
+\f2\i receive_otp enpoint 
 \f0\i0 to the specified email address.\
-When the user applies the number in the OTN page within the designated time frame, the user is authenticated and registered and redirected to the home page.\
+When the user applies the number in the OTP page within the designated time frame, the user is authenticated and registered and redirected to the home page.\
 \cf2 \
 
 \f1\b \cf0 Login
 \f0\b0 \
-The user provides an email address and password and presses the Login button. The system verifies the password and when it is correct, the user is redirected to the home page.\
+The user provides an email address and password and presses the Login button. \
+The system first verifies if the user is not blanklisted or blocked. \
+Then the password is verified and when correct, the user is redirected to the home page.\
 \cf2 \
 
 \f1\b \cf0 Forgot password***
@@ -36,29 +39,17 @@ When the user changes the password within the designated time frame, the user is
 \fs28 \cf3 User States
 \fs24 \cf2 \
 \pard\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 \
+\cf0 See state.xlsx\
 \pard\tx2718\tx5184\tx7592\tx9314\tx13247\tx16131\pardirnatural\partightenfactor0
-
-\f1\b \cf0 User action	Condition	System action		New State
-\f0\b0 \
-		OK	NOK	OK	NOK\
-	No user record	-	-	n/a	-\
-	blacklisted 	-	-	1 = Inactive: Excluded	-\
-	blocked	-	-	2 = Inactive: Temporarlily excluded	-\
-	otp/pwd expired 	-	-	3 = Inactive: Expired	-\
-Registration request	No user record or 7	Send OTP	n/a	4 = In progress: OTP sent	-\
-Registration validation	4 & received otp valid	Register	Failure += 1	5 = In progress: Registered	Max fail: 2. OTP expired: 4=Send OTP\
-Set password	5	Reset user	n/a	6 = User	n/a\
-Login	6	Redirect to home	Failure += 1		Max fail: 2. Pwd expired: 4=Send OTP\cf2 \
-\cf3 Change password	\cf0 6	Change password	Failure += 1		Max fail: 2. 4=Send OTP\cf3 \
-Forgot password	\cf0 6	Send OTP\cf3 	n/a	4	-\cf2 \
+\cf2 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
 \fs28 \cf3 API\'92s
 \fs24 \cf2 \
 \
-Register user - Send OTN\cf0 \
+Register user - Send OTP\cf0 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf4 /* User tries to get registered with email address */\cf0 \
 	|\
@@ -72,18 +63,6 @@ Register user - Send OTN\cf0 \
 	|\
 	|\cf4 /* a. User already exists: Error */\cf0 \
 	|__User exists:\
-	|	|\cf4 /* Blocked user */\cf0 \
-	|	|__now() < block_until_time:\
-	|	|	|__\cf2 Wait \cf0 \
-<\'97\'97\'97\'97401 Registration is not possible yet. Please try again later.\cf3 \
-	|	|\
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 	|	|\cf4 /* Blacklisted user */\cf0 \
-	|	|__blacklisted:\
-	|	|	|__\cf2 Wait \cf0 \
-<\'97\'97\'97\'97401 Registration is not possible. Please contact the service desk.\
-	|	|\
-	|	|__else:\
 <\'97\'97\'97\'97401 User already exists. Try to log in.\
 	|\
 	|\cf4 /* b. OK: User does not exist */\cf0 \
@@ -102,8 +81,8 @@ Register user - Send OTN\cf0 \
 \
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf2 Register user - Receive OTN\cf0  (user clicks 
-\f2\i \cf2 \ul receive_otn_link
+\cf2 Register user - Receive OTP\cf0  (user clicks 
+\f2\i \cf2 \ul receive_otp_link
 \f0\i0 \cf0 \ulnone )\
 	|\cf4 /* Consistency check on provided email address */\cf0 \
 	|__Received email address <> user.email address in link query parameter: \
@@ -137,26 +116,13 @@ Register user - Send OTN\cf0 \
 \cf4 /* User tries to log in with email address and password */\cf0 \
 	|\
 	|__
-\f2\i \cf2 Email_validation
-\f0\i0 \cf0 \
-	|\
-	|\cf4 /* a. User does not exist: Error */\cf0 \
-	|>_
-\f1\b User
-\f0\b0  k: email, s: block_until_time, blacklisted, tries\
-	|\cf4 /* b. User does not exist */\cf0 \
-	|__User does not exist:\
-<\'97\'97\'97401 User does not exist. Please try again.\
-	|\
-	|\cf4 /* Blocked user exists (blocked in login process) */\cf0 \
-	|__now() < block_until_time:\
-<\'97\'97-- 401 Login is not possible yet. Please try again later.\cf3 \
-	|\
+\f2\i \cf2 Email_validation\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 	|\cf4 /* Blacklisted user (blocked in login process) */\cf0 \
-	|__blacklisted:\
-<\'97\'97-- 401 Login is not possible. Please contact the service desk.\
-	|\cf4 \
+
+\f0\i0 \cf0 	|__
+\f2\i \cf2 User_validation
+\f0\i0 \cf4 \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 	|__
 \f2\i \cf2 Password_validation\
 
@@ -172,7 +138,29 @@ Register user - Send OTN\cf0 \
 \cf0 	|\cf4 /* Input validation on provided email address */\cf0 \
 	|__email syntax invalid:  \
 <\'97\'97\'97422 email invalid.\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+\cf2 User_validation(email)\
+\cf0 	|\cf4 /* a. User does not exist: Error */\cf0 \
+	|>_
+\f1\b User
+\f0\b0  k: email, s: block_until_time, blacklisted, tries\
+	|\cf4 /* b. User does not exist */\cf0 \
+	|__User does not exist:\
+<\'97\'97\'97401 User does not exist. Please try again.\
+\cf3 	|\
+\cf0 	|\cf4 /* Blacklisted user */\cf0 \
+	|__blacklisted:\
+	|	|__\cf2 Wait \cf0 \
+<\'97\'97\'97401 Not authorized. Please contact the service desk.\
 	|\
+	|\cf4 /* Blocked user */\cf0 \
+	|__now() < block_until_time:\
+	|	|__\cf2 Wait \cf0 \
+<\'97\'97\'97401 Not authorized. Please try again later.\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 	|\
 	|__return\
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
