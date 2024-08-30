@@ -1,7 +1,9 @@
 import os
 
+
 from fastapi import HTTPException
 from starlette import status
+
 
 from src.utils.functions import find_filename_path
 from src.utils.mail.mail import send_mail
@@ -44,3 +46,4 @@ def is_valid_password(password) -> bool:
         elif c != ' ':
             d['special'] = True
     return len(d) == 4
+

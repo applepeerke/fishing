@@ -7,7 +7,7 @@ from pydantic import BaseModel, UUID4, Field, EmailStr, SecretStr
 from sqlalchemy import (Column, String, func, DateTime, Integer)
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.general.models import get_current_user
+from src.general.models import get_session_user
 from src.utils.db.db import Base
 
 
@@ -32,9 +32,9 @@ class User(Base):
     status = Column(Integer, default=UserStatus.Inactive.value)
     # Audit
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    created_by = Column(String, default=get_current_user())
+    created_by = Column(String, default=get_session_user())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), server_onupdate=func.now())
-    updated_by = Column(String, nullable=True, onupdate=get_current_user())
+    updated_by = Column(String, nullable=True, onupdate=get_session_user())
 
 
 # Pydantic models

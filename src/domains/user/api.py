@@ -36,3 +36,4 @@ async def update_user(id: UUID, user_update: UserRead, db: AsyncSession = Depend
 async def delete_user(id: UUID, db: AsyncSession = Depends(get_db_session)):
     success = await crud.delete(db, User, id)
     return get_delete_response(success, User.__tablename__)
+
