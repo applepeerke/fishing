@@ -109,7 +109,7 @@ def get_message_from_response(response) -> dict:
             return {'message': response.text}
         return {}
     message = response.json() or {}
-    text = message.get('detail', {})
+    text = message.get(DETAIL, {})
     if not text:
         return {}
     # Repeating responses
@@ -203,10 +203,10 @@ async def assert_db(db, expected_payload):
         assert user.status == expected_payload['status']
 
 
-def validate_expiration(db_expiration, delta_seconds_allowed=10.0, expiration_type=GET_PASSWORD_EXPIRY):
+def validate_expiration(db_expiration, delta_seconds_allowed=10.0, expiration_type=SUBST_GET_PASSWORD_EXPIRY):
     """ Precondition: db_expiration has been set < 1 second ago. """
     assert db_expiration is not None
-    now_expiration = get_otp_expiration() if expiration_type == GET_OTP_EXPIRY else get_password_expiration()
+    now_expiration = get_otp_expiration() if expiration_type == SUBST_GET_OTP_EXPIRY else get_password_expiration()
     delta = now_expiration - db_expiration
     assert 0.0 < delta.total_seconds() < delta_seconds_allowed
 
@@ -258,7 +258,7 @@ def create_nested_dict(elements, value) -> dict:
 
 async def substitute(db, fixture) -> dict:
     """ Substitute unpredictable attribute values from those in the db. """
-    if fixture and any(v == GET_FROM_DB for v in fixture.values()):
+    if fixture and any(v == SUBST_GET_FROM_DB for v in fixture.values()):
         user = await get_user_from_db(db, fixture.get('email'))
         if user:
             fixture = {k: _try_substitute(k, v, user) for k, v in fixture.items()}
@@ -266,7 +266,7 @@ async def substitute(db, fixture) -> dict:
 
 
 def _try_substitute(key, value, user):
-    if value == GET_FROM_DB:
+    if value == SUBST_GET_FROM_DB:
         if key == 'otp':
             value = user.otp
     return value

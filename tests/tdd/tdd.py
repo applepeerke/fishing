@@ -1,6 +1,9 @@
 import csv
 from src.utils.tests.constants import PAYLOAD, EXPECT_DB, EXPECT
 from src.utils.tests.functions import create_nested_dict
+from tests.tdd.TestCase import TestCase
+
+NO_CHG = '*NC'
 
 
 def get_tdd_test_scenarios(path) -> dict:
@@ -8,46 +11,58 @@ def get_tdd_test_scenarios(path) -> dict:
     Retrieve JSON from fishing/tests/data/{domain}.csv
     Example:
     ------------------------------------------------------------------------------------------------------------------
-    0            1    2    3      4        5        6                  7 8    9                  10  11     12
-    Title	     TC  Pre  Entity Endpoint  Expected Input	      Repeat Exp. Exp.               Exp.       Next
-                     Sts                   Result                        HTTP Response           Status
+    0            1   2         3       4                  5 6     7                  8       9   10 11      12
+    Title	     TC  Endpoint  Entity  Input	     Repeat Expected response                UserStatus     Next
+                                                            HTTP  Content            Message Pre Post
+                                                            Status
     ------------------------------------------------------------------------------------------------------------------
-    Registration 1   10	 login	register   fail	    {"email": "d@s.c"} 0  422 {"detail": ...}    *NC		     -
-    Registration 2   20	 login	register   fail	    {"email": "d@s.c"} 0  422 {"detail": ...}	 *NC		     -
-    Registration 3   NR	 login	register   success	{"email": "d@s.c"} 0  200 {"email": "d@s.c"} 10 Inactive Send otp
+    Registration 1   register  login   {"email": "d@s.c"} 0 422   *message           The ... 10 *NC		     -
+    Registration 2   register  login   {"email": "d@s.c"} 0 422   *message	         The ... 20 *NC		     -
+    Registration 3   register  login   {"email": "d@s.c"} 0 200   {"email": "d@s.c"}         NR 10 Inactive Send otp
     ------------------------------------------------------------------------------------------------------------------
     """
     rows = get_csv_rows(path)
-
     d = {}
     for row in rows:
+        TC = TestCase(
+            seqno=int(row[1]),
+            endpoint=row[2],
+            entity=row[3],
+            payload=row[4],
+            repetitions=int(row[5]),
+            expected_response_http_status=row[6],
+            expected_response_content=row[7],
+            expected_response_message=row[8],
+            user_status_pre=row[9],
+            user_status_post=row[10],
+            next_step=row[12],
+            title=row[0]
+        )
         # Payload fixture (maybe repeated)
         d1 = {}
-        executions = int(row[7]) + 1
-        breadcrumbs = _get_breadcrumbs(row, PAYLOAD, executions)
-        d0 = create_nested_dict(breadcrumbs, row[6])
+        breadcrumbs = _get_breadcrumbs(TC, PAYLOAD)
+        d0 = create_nested_dict(breadcrumbs, TC.payload)
         d1 = merge_dicts(d1, d0)
 
         # Expected response - model: User.UserStatus
-        breadcrumbs = _get_breadcrumbs(row, EXPECT_DB, executions)
-        expected_response = {'status': int(row[2]) if row[10] == '*NC' else int(row[10])}
+        breadcrumbs = _get_breadcrumbs(TC, EXPECT_DB)
+        expected_response = {'status': TC.user_status_pre if TC.user_status_post == NO_CHG else TC.user_status_post}
         d2 = create_nested_dict(breadcrumbs, expected_response)
         d1 = merge_dicts(d1, d2)
-        # Expected response - message: Exception
-        if row[9]:  # Model or Exception
-            breadcrumbs = _get_breadcrumbs(row, EXPECT, executions)
-            d2 = create_nested_dict(breadcrumbs, row[9])
+        # Expected response -Model or Exception
+        if TC.expected_response_content:
+            breadcrumbs = _get_breadcrumbs(TC, EXPECT)
+            d2 = create_nested_dict(breadcrumbs, TC.expected_response_content)
             d1 = merge_dicts(d1, d2)
         # Merge dicts
         d = merge_dicts(d, d1)
     return d
 
 
-def _get_breadcrumbs(row, leaf, executions=1) -> list:
+def _get_breadcrumbs(tc: TestCase, leaf) -> list:
     # ID = seqno | precondition UserStatus | executions | expected HTTP status
-    breadcrumbs = [f'{row[1].zfill(3)}|{row[2]}|{executions}|{row[8]}']
-    breadcrumbs.extend(row[3:6])
-    breadcrumbs.append(leaf)
+    breadcrumbs = [f'{str(tc.seqno).zfill(3)}|{tc.user_status_pre}|{tc.executions}|{tc.expected_response_http_status}']
+    breadcrumbs.extend([tc.entity, tc.endpoint, tc.expected_result, leaf])
     return breadcrumbs
 
 
