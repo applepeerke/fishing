@@ -12,6 +12,7 @@ print(f"Hashed Password: {hashed_password}")
 is_correct = validate_password(plain_text, hashed_password)
 print(f"Password Match: {is_correct}")
 """
+import os
 import random
 import secrets
 import string
