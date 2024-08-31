@@ -7,7 +7,7 @@ from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.domains.login.functions import map_user
+from src.domains.user.functions import map_user
 from src.domains.user.models import User
 from src.utils.db import crud
 from src.utils.functions import get_otp_expiration, get_password_expiration
@@ -226,9 +226,7 @@ def get_leaf(fixture, breadcrumbs: list, expected_result):
 
 def set_leaf(fixture, breadcrumbs, expected_result, leaf, key, value) -> dict:
     b = breadcrumbs.copy()
-    b.append(expected_result)
-    b.append(leaf)
-    b.append(key)
+    b.extend([expected_result, leaf, key])
     # Add a value at a deep nested level
     add_to_nested_dict(fixture, b, value)
     return fixture

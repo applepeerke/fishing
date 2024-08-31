@@ -2,24 +2,24 @@
 ;;;;;;HTTP status;Content;Message;Pre;Post ;;
 Blacklisted;1;register;login;"{""email"": ""dummy@sample.com""}";0;422;*message;The user already exists.;99;*NC;;-
 Blacklisted;2;login;login;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password01!""}";0;401;*message;The user is blacklisted.;99;*NC;;-
-Blacklisted;3;set;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;401;*message;The user is blacklisted.;99;*NC;;-
+Blacklisted;3;change;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;401;*message;The user is blacklisted.;99;*NC;;-
 Blacklisted;4;forgot;password;"{""email"": ""dummy@sample.com""}";0;401;*message;The user is blacklisted.;99;*NC;;-
 Blocked;5;register;login;"{""email"": ""dummy@sample.com""}";0;422;*message;The user already exists.;90;*NC;;-
 Blocked;6;login;login;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!""}";0;401;*message;The user is blocked. Please try again later.;90;*NC;;-
-Blocked;7;set;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;401;*message;The user is blocked. Please try again later.;90;*NC;;-
+Blocked;7;change;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;401;*message;The user is blocked. Please try again later.;90;*NC;;-
 Blocked;8;forgot;password;"{""email"": ""dummy@sample.com""}";0;200;"{""email"": ""dummy@sample.com""}";;90;10;Inactive;-
 Expired;9;register;login;"{""email"": ""dummy@sample.com""}";0;422;*message;The user already exists.;80;*NC;;Redirect to password/reset
 Expired;10;login;login;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!""}";0;401;*message;The password is expired.;80;*NC;;Redirect to password/reset
-Expired;11;set;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;401;*message;The password is expired.;80;*NC;;Redirect to password/reset
+Expired;11;change;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;401;*message;The password is expired.;80;*NC;;Redirect to password/reset
 Expired;12;forgot;password;"{""email"": ""dummy@sample.com""}";0;200;"{""email"": ""dummy@sample.com""}";;80;10;Inactive;-
 Registration;13;register;login;"{""email"": ""dummy@sample.com""}";0;422;*message;The user already exists.;10;*NC;;-
 Registration;14;register;login;"{""email"": ""dummy@sample.com""}";0;422;*message;The user already exists.;20;*NC;;-
 Registration;15;register;login;"{""email"": ""dummy@sample.com""}";0;200;"{""email"": ""dummy@sample.com""}";;NR;10;Inactive;Send otp
-Set password;16;set;password;"{""email"": ""dummy@sample.com""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""password""],""msg"": ""Field required""}";;20;*NC;;-
-Set password;17;set;password;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""new_password""],""msg"": ""Field required""}";;10;*NC;;-
-Set password;18;set;password;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";4;401;*message;Incorrect existing password. The user has been blocked. Please try again later.;10;90;Blocked ;-
-Set password;19;set;password;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";3;401;*message;Incorrect existing password. Please try again.;10;*NC;;-
-Set password;20;set;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;200;"{""email"": ""dummy@sample.com""}";;10;20;Active;Redirect to Home
+Change password;16;change;password;"{""email"": ""dummy@sample.com""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""password""],""msg"": ""Field required""}";;20;*NC;;-
+Change password;17;change;password;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""new_password""],""msg"": ""Field required""}";;10;*NC;;-
+Change password;18;change;password;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";4;401;*message;Incorrect existing password. The user has been blocked. Please try again later.;10;90;Blocked ;-
+Change password;19;change;password;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";3;401;*message;Incorrect existing password. Please try again.;10;*NC;;-
+Change password;20;change;password;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;200;"{""email"": ""dummy@sample.com""}";;10;20;Active;Redirect to Home
 Login;21;login;login;"{""email"": ""dummy@sample.com""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""password""],""msg"": ""Field required""}";;10;*NC;;-
 Login;22;login;login;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";4;401;*message;The password is not valid. The user has been blocked. Please try again later.;20;90;Blocked ;-
 Login;23;login;login;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";3;401;*message;The password is not valid. Please try again.;20;*NC;;-

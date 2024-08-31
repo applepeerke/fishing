@@ -4,7 +4,7 @@ import os
 from fastapi import HTTPException
 from starlette import status
 
-
+from src.domains.user.models import User, UserRead
 from src.utils.functions import find_filename_path
 from src.utils.mail.mail import send_mail
 
@@ -47,3 +47,18 @@ def is_valid_password(password) -> bool:
             d['special'] = True
     return len(d) == 4
 
+
+def map_user(user: User) -> UserRead:
+    """ Map User (SQLAlchemy) to UserRead (pydantic) """
+    user_read = UserRead(
+        id=user.id,
+        email=user.email,
+        authentication_token=user.authentication_token,
+        status=user.status,
+        expired=user.expired,
+        fail_count=user.fail_count,
+        blocked_until=user.blocked_until,
+    )
+    # This must be done afterward
+    user_read.password = user.password
+    return user_read

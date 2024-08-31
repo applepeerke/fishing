@@ -1,0 +1,32 @@
+{
+  "encrypt": {
+      "success": {
+        "payload": {
+          "plain_text": "my-secret-password"
+        }
+      },
+    "verify": {
+      "success": {
+        "payload": {
+          "plain_text": "my-secret-password"
+        }
+      },
+      "fail": {
+        "payload-1": {
+          "plain_text": "my-secret-password2"
+        },
+        "payload-2": {
+          "plain_text": ""
+        },
+        "expect-1": {
+          "status_code": 401,
+          "detail": "Unauthorized"
+        },
+        "expect-2": {
+          "status_code": 422,
+          "loc": ["body", "plain_text"]
+        }
+      }
+    }
+  }
+}

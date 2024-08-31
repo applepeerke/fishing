@@ -1,34 +1,4 @@
 {
-  "encrypt": {
-      "success": {
-        "payload": {
-          "plain_text": "my-secret-password"
-        }
-      },
-    "verify": {
-      "success": {
-        "payload": {
-          "plain_text": "my-secret-password"
-        }
-      },
-      "fail": {
-        "payload-1": {
-          "plain_text": "my-secret-password2"
-        },
-        "payload-2": {
-          "plain_text": ""
-        },
-        "expect-1": {
-          "status_code": 401,
-          "detail": "Unauthorized"
-        },
-        "expect-2": {
-          "status_code": 422,
-          "loc": ["body", "plain_text"]
-        }
-      }
-    }
-  },
   "login": {
     "register": {
       "success": {
@@ -55,7 +25,25 @@
         }
       }
     },
-    "activate": {
+    "login": {
+      "success": {
+        "payload": {
+          "email": "dummy@sample.com",
+          "password": "Password2!"
+        },
+        "expect": {
+          "status_code": 200,
+          "email": "dummy@sample.com",
+          "password": "Password2!",
+          "expired": "*GET_PASSWORD_EXPIRY",
+          "fail_count": 0,
+          "status": 20
+        }
+      }
+    }
+  },
+  "password": {
+    "change": {
       "success": {
         "payload": {
           "email": "dummy@sample.com",
@@ -75,48 +63,12 @@
       "fail": {
         "payload": {
           "email": "dummy@sample.com",
-          "password": "Password_fail1!"
-        },
-        "expect": {
-          "status_code": 422,
-          "type": "missing",
-          "loc": ["body", "new_password"]
-        }
-      }
-    },
-    "login": {
-      "success": {
-        "payload": {
-          "email": "dummy@sample.com",
-          "password": "Password2!"
-        },
-        "expect": {
-          "status_code": 200,
-          "email": "dummy@sample.com",
           "password": "Password2!",
-          "expired": "*GET_PASSWORD_EXPIRY",
-          "fail_count": 0,
-          "status": 20
-        }
-      }
-    }
-  },
-  "password": {
-    "set": {
-      "success": {
-        "payload": {
-          "email": "dummy@sample.com",
-          "password": "Password1!",
-          "new_password": "Password2!",
-          "new_password_repeated": "Password2!"
+          "new_password": "Password3!",
+          "new_password_repeated": "Password_False!"
         },
         "expect": {
-          "status_code": 200,
-          "email": "dummy@sample.com",
-          "password": "Password2!",
-          "expired": "*GET_PASSWORD_EXPIRY",
-          "fail_count": 0,
-          "status": 20
+          "status_code": 401
         }
       }
     }

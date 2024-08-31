@@ -63,6 +63,11 @@ def test_data_login() -> dict:
 
 
 @pytest.fixture(scope="function")
+def test_data_encrypt() -> dict:
+    return get_json('encrypt')
+
+
+@pytest.fixture(scope="function")
 def test_tdd_scenarios_login() -> dict:
     """ Retrieve CSV from fishing/tests/tdd/{domain}.csv"""
     path = get_fixture_path('tdd', 'login', 'csv')
