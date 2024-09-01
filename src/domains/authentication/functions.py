@@ -8,7 +8,7 @@ from starlette import status
 from src.domains.user.functions import is_valid_password, send_otp, map_user
 from src.domains.user.models import UserRead, UserStatus
 from src.utils.functions import get_otp_expiration, get_password_expiration
-from src.utils.security.crypto import get_random_password, get_hashed_password
+from src.utils.security.crypto import get_otp, get_hashed_password
 
 
 from src.domains.user.models import User
@@ -54,23 +54,17 @@ async def validate_user(db, user: User, forgot_password=False) -> User:
     # Blacklisted user
     if user.status == UserStatus.Blacklisted:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='The user is blacklisted.')
+    # Forgot password: Do not validate Blocked/Expired.
+    if forgot_password:
+        return user
     # Blocked user
     if user.status == UserStatus.Blocked:
-        # Set the expiration date if it has not been set already
-        if not user.blocked_until:
-            user = await set_user_status(db, map_user(user), target_status=UserStatus.Blocked)
-        # a. Blocking time is over: reset the user
-        if user.blocked_until < datetime.datetime.now(datetime.timezone.utc):
-            user = await set_user_status(db, map_user(user), target_status=UserStatus.Active)
-        # b. Still blocked. Allow this only when forgot_password is requested.
-        elif user.blocked_until > datetime.datetime.now(datetime.timezone.utc) and not forgot_password:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='The user is blocked. Please try again later.')
+        # Set/check the expiration date
+        user = await set_user_status(db, map_user(user), target_status=UserStatus.Blocked)
     elif user.status != UserStatus.Expired:
         if user.expired and user.expired < datetime.datetime.now(datetime.timezone.utc):
             user = await set_user_status(db, map_user(user), target_status=UserStatus.Expired)
-    if user.status == UserStatus.Expired and not forgot_password:
+    if user.status == UserStatus.Expired:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='The password is expired.')
@@ -100,18 +94,26 @@ async def invalid_login_attempt(db, user: User, error_message=''):
 async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
     if target_status == UserStatus.Inactive:
         user = reset_user(user)
-        # Create the one time password
-        temporary_password = get_random_password()
-        user.password = get_hashed_password(temporary_password)
-        user.expired = get_otp_expiration()
-        # Mail the otp to the specified address.
-        send_otp(user.email, temporary_password)
+        # Create the one time password (not hashed, 10 long)
+        otp = get_otp()
+        user.password = get_hashed_password(otp)
+        user.expired = get_otp_expiration()  # Short ttl
+        # Mail the OTP to the specified address.
+        send_otp(user.email, otp)
     elif target_status == UserStatus.Active:
         user = reset_user(user)
-        user.expired = get_password_expiration()
-        user.status = UserStatus.Active
+        user.expired = get_password_expiration()  # Long ttl
     elif target_status == UserStatus.Blocked:
-        user.blocked_until = get_blocked_until()
+        if not user.blocked_until:
+            user.blocked_until = get_blocked_until()
+        # a. Blocking time is over: reactivate the user
+        if user.blocked_until < datetime.datetime.now(datetime.timezone.utc):
+            target_status = UserStatus.Active
+        # b. Still blocked. Allow this only when forgot_password is requested.
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='The user is blocked. Please try again later.')
     # Set status
     if target_status:
         user.status = target_status

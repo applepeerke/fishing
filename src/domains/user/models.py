@@ -48,7 +48,7 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: UUID4
-    password: Optional[SecretStr] = Field(min_length=8, max_length=64, default=None)
+    password: Optional[SecretStr] = Field(min_length=8, max_length=256, default=None)
     expired: Optional[datetime] = Field(DateTime(timezone=True))
     fail_count: conint(ge=0, lt=100) = 0
     blocked_until: Optional[datetime] = Field(DateTime(timezone=True))

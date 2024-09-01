@@ -37,10 +37,15 @@ def verify_password(plain_text: str, hashed_password: str) -> bool:
         return False
 
 
-def get_random_password() -> str:
+def get_otp() -> str:
+    # In DEV debug mode a dummy OTP can be used like 'Welcome01!'
+    if os.getenv('DEBUG') == 'True' and os.getenv('ENV') == 'DEV' and os.getenv('DEBUG_OTP'):
+        return os.getenv('DEBUG_OTP')
+
+    # Random OTP
     chars = string.ascii_letters + string.digits + '@#$%^&*'
     for _ in range(1000):
-        password = ''.join(secrets.choice(chars) for _ in range(10))
+        password = ''.join(secrets.choice(chars) for _ in range(int(os.getenv('PASSWORD_MINIMUM_LENGTH'))))
         if is_valid_password(password):
             return password
-    raise ValueError('No random password could be generated.')
+    raise ValueError('No random OTP could be generated.')
