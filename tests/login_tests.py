@@ -9,7 +9,7 @@ from src.domains.user.functions import map_user
 from src.domains.user.models import User, UserStatus
 from src.utils.db import crud
 from src.utils.functions import get_pk, get_otp_expiration
-from src.utils.security.crypto import get_random_password, get_hashed_password
+from src.utils.security.crypto import get_otp, get_hashed_password
 from src.utils.tests.constants import SUCCESS, FAIL, PAYLOAD
 from src.utils.tests.functions import post_check, get_leaf, set_password_in_db
 
@@ -68,7 +68,7 @@ async def precondition(breadcrumbs, expected_status, db, fixture, user_status: U
     password = fixture.get(PAYLOAD, {}).get('password')
     password = get_hashed_password(password) \
         if password and 'right' in password.lower() \
-        else get_random_password()
+        else get_otp()
 
     user = User(email=pk, password=password, expired=get_otp_expiration(),
                 fail_count=0, status=user_status)

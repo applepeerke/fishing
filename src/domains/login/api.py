@@ -11,7 +11,7 @@ from src.domains.user.models import User, UserStatus, UserRead
 from src.utils.db import crud
 from src.utils.db.db import get_db_session
 from src.utils.functions import get_otp_expiration
-from src.utils.security.crypto import get_hashed_password, verify_password, get_random_password
+from src.utils.security.crypto import get_hashed_password, verify_password, get_otp
 
 login_login = APIRouter()
 login_register = APIRouter()
@@ -31,10 +31,11 @@ async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session
     if user:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user already exists.')
     # Create the one time password.
-    otp = get_random_password()
-    # Mail the otp to the specified address.
+    otp = get_otp()
+    # Mail the otp to the specified address (un-hashed, e.g. in debug mode  "Welcome01!").
     send_otp(payload.email, otp)
-    # Insert the user (N.B. password is null yet)
+    # Insert the user
+    otp = get_hashed_password(otp)  # hash
     expired = get_otp_expiration()
     user = User(email=payload.email, password=otp, expired=expired, status=UserStatus.Inactive)
     await crud.add(db, user)

@@ -14,25 +14,42 @@
 \f1\b \
 Registration
 \f0\b0 \
-The user provides an email address and presses the Register button. The system generates and mails an OTP with a link to the 
-\f2\i receive_otp enpoint 
-\f0\i0 to the specified email address.\
-When the user applies the number in the OTP page within the designated time frame, the user is authenticated and registered and redirected to the home page.\
+The user provides an email address and presses the Register button. \
+The system generates a random OTP. The OTP is mailed 
+\f2\i  
+\f0\i0 to the specified email address. Also a link to the 
+\f2\i change_password enpoint 
+\f0\i0 is added in the mail.\
+The OTP is hashed and the (short) expiration time is stored in the database.\
+	Please note:\
+	In dev, the mail can not be sent. A tester can then never activate the user.Therefore in DEBUG mode the password in .env DEBUG_OTP is used.\
+\
+
+\f1\b Activation
+\f0\b0 \
+A malicious user may use the email of a victim. So the requestor must prove to have received the mail with the OTP. \
+The user clicks the link in the email. In the query parameter is the hashed email address. \
+To prevent brute force attacks, if the query parameter is not correct, wait for n seconds.\
+The user is redirected to the change password page.\
+\
+When the user changes the password within the expiration time, the user is activated and redirected to the home page.\
+If no scopes exist, with the least priviliged scopes.\
 \cf2 \
 
 \f1\b \cf0 Login
 \f0\b0 \
-The user provides an email address and password and presses the Login button. \
-The system first verifies if the user is not blanklisted or blocked. \
-Then the password is verified and when correct, the user is redirected to the home page.\
+The user provides email address and password and presses the Login button. \
+The system verifies if the user is not blacklisted or blocked. \
+Then the password is verified. When verified, the user is redirected to the home page.\
 \cf2 \
 
-\f1\b \cf0 Forgot password***
+\f1\b \cf0 Forgot password
 \f0\b0 \
-The user provides an email address and presses Forgot password. The system generates a temporary password, and mails it with a link to the 
+The user provides an email address and presses Forgot password. The system generates an OTP, and mails it with a link to the 
 \f2\i change_password 
 \f0\i0 endpoint to the specified email address.\
-When the user changes the password within the designated time frame, the user is authenticated again and redirected to the home page.\cf2 \
+The user is inactivated.\
+When the user changes the password within the expiration time, the user is activated again and redirected to the home page.\cf2 \
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
@@ -51,7 +68,7 @@ When the user changes the password within the designated time frame, the user is
 \
 Register user - Send OTP\cf0 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf4 /* User tries to get registered with email address */\cf0 \
+\cf4 /* User requests email registration */\cf0 \
 	|\
 	|__
 \f2\i \cf2 Email_validation
@@ -59,72 +76,76 @@ Register user - Send OTP\cf0 \
 	|\
 	|>_
 \f1\b User
-\f0\b0  s: email, block_until_time, blacklisted\
+\f0\b0  s: email\
 	|\
-	|\cf4 /* a. User already exists: Error */\cf0 \
+	|\cf4 /* User already exists: Error */\cf0 \
 	|__User exists:\
 <\'97\'97\'97\'97401 User already exists. Try to log in.\
 	|\
-	|\cf4 /* b. OK: User does not exist */\cf0 \
-	|__User.email does not exist:\
-		|__otn=
-\f2\i Create OTN
+	|__otp=
+\f2\i Create OTP
 \f0\i0 \
-		|__
-\f2\i Send OTN
+	|__
+\f2\i Send OTP
 \f0\i0  with 
-\f2\i \cf2 \ul \ulc2 receive_otn_link
+\f2\i \cf2 \ul \ulc2 receive_otp_link
 \f0\i0 \cf0 \ulnone  with salted+hashed username as query parameter to User.email\
-		|+_
+	|+_
 \f1\b User 
-\f0\b0 s: email, otn=otn, otn_sent_time=Now(), tries=0, block_until_time=Null, blacklisted=False\
+\f0\b0 s: email, otp=otp, otp_sent_time=Now(), tries=0, block_until_time=Null, blacklisted=False\
 \
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf2 Register user - Receive OTP\cf0  (user clicks 
+\cf2 Activate user - Receive OTP\cf0  (user clicks 
 \f2\i \cf2 \ul receive_otp_link
 \f0\i0 \cf0 \ulnone )\
-	|\cf4 /* Consistency check on provided email address */\cf0 \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf4 /* User requests activation (handshake) */\cf0 \
+	|\cf4 /* Consistency check on provided email */\cf0 \
 	|__Received email address <> user.email address in link query parameter: \
 	|	|__\cf2 Wait \cf0 \
 <\'97\'97\'97422 email address is invalid.\
 	|\
-	|>_
-\f1\b User
-\f0\b0  k: email, s: block_until_time\
-	|\
-	|\cf4 /* Blocked user (blocked in registration process) */\cf0 \
-	|__now() < block_until_time:\
-<\'97\'97\'97403 Registration is not possible yet. Please try again later.\
-	|\cf4 \
+	|__
+\f2\i \cf2 Change password
+\f0\i0 \cf4 \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf2 Change password\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf4 /* User changes password */\cf0 \
+	|__
+\f2\i \cf2 User_validation
+\f0\i0 \cf4 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 	|__
-\f2\i \cf2 Password_validation(email, OTN)\
+\f2\i \cf2 Password_validation(email, password)\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\f0\i0 \cf2 	|
-\f2\i \
+\f0\i0 \cf3 	|
+\f2\i \cf2 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\f0\i0 \cf0 	|\cf4 /* OTN valid */\cf0 \
-	|__redirect to change password page\
-\
-\
+\f0\i0 \cf0 	|u_
+\f1\b User
+\f0\b0  s: password=hashed password, fail_count=0, block_until=null\
+	|__redirect to Home page\
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 Login user\cf0 \
-\cf4 /* User tries to log in with email address and password */\cf0 \
-	|\
-	|__
-\f2\i \cf2 Email_validation\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf4 /* User tries to log in with email and password */\cf0 \
+	|
+\f2\i \cf2 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
 \f0\i0 \cf0 	|__
 \f2\i \cf2 User_validation
 \f0\i0 \cf4 \
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 	|__
-\f2\i \cf2 Password_validation\
+\f2\i \cf2 Password_validation(email, password)\
 
 \f0\i0 \cf0 	|\
 	|\cf4 /* Password valid */\cf0 \
@@ -135,21 +156,24 @@ Register user - Send OTP\cf0 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 Email_validation(email)\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 	|\cf4 /* Input validation on provided email address */\cf0 \
+\cf0 	|\cf4 /* Input validation on provided email */\cf0 \
 	|__email syntax invalid:  \
 <\'97\'97\'97422 email invalid.\
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 \
 \
+\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 User_validation(email)\
-\cf0 	|\cf4 /* a. User does not exist: Error */\cf0 \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 	|\
 	|>_
 \f1\b User
 \f0\b0  k: email, s: block_until_time, blacklisted, tries\
-	|\cf4 /* b. User does not exist */\cf0 \
+	|\cf4 /* User does not exist */\cf0 \
 	|__User does not exist:\
-<\'97\'97\'97401 User does not exist. Please try again.\
+<\'97\'97\'97401 User does not exist.\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf3 	|\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 	|\cf4 /* Blacklisted user */\cf0 \
 	|__blacklisted:\
 	|	|__\cf2 Wait \cf0 \
@@ -159,24 +183,23 @@ Register user - Send OTP\cf0 \
 	|__now() < block_until_time:\
 	|	|__\cf2 Wait \cf0 \
 <\'97\'97\'97401 Not authorized. Please try again later.\
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 	|\
+	|\
 	|__return\
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf2 Password_validation(email, [password | OTN])\
+\cf2 Password_validation(email, password)\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 	|\cf4 /* Check password or OTN */\cf0 \
-	|__Password or OTN invalid:\
+\cf0 	|\cf4 /* Check password */\cf0 \
+	|__Password  invalid:\
 	|		|\cf4 /* Invalid password */\cf0 \
 	|		|__tries+=1\
 	|		|__block_until_time=null\
 	|		|>_
-\f1\b System
-\f0\b0  s: max_tries, block_minutes\
+\f1\b .env
+\f0\b0 : max_tries, block_minutes\
 	|		|__tries > max_tries:\
 	|		|	|__tries = 0\
-	|		|	|__block_until_time = now() + System.block_minutes\
+	|		|	|__block_until_time = now() + block_minutes\
 	|		|	|u_
 \f1\b User
 \f0\b0  s: tries, block_until_time\
@@ -188,14 +211,11 @@ Register user - Send OTP\cf0 \
 <\'97\'97\'97-- 401 Invalid password. Please try again.\
 	|\
 	|\cf4 /* Valid password */\cf0 \
-	|__tries=0\
-	|__block_until_time=null\
-	|u_
-\f1\b User
-\f0\b0  s: tries, block_until_time\
 <\'97\'97200 Success\
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 Wait\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf3 	|__Wait n seconds to reduce the impact of a potential ddos attack.}
+\cf3 	|__Wait n seconds to reduce the impact of a potential ddos attack.\
+\
+}
