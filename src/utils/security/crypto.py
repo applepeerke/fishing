@@ -1,5 +1,3 @@
-
-
 """
 # Example usage
 plain_text = "my_secure_password"
@@ -13,15 +11,15 @@ is_correct = validate_password(plain_text, hashed_password)
 print(f"Password Match: {is_correct}")
 """
 import os
-import random
 import secrets
 import string
+
 import bcrypt
 
-from src.domains.user.functions import is_valid_password
+from src.utils.functions import is_debug_mode
 
 
-def get_hashed_password(password: str) -> str:
+def get_salted_hash(password: str) -> str:
     if not password:
         return password
     # Generate a salt and hash the password with the salt
@@ -29,7 +27,7 @@ def get_hashed_password(password: str) -> str:
     return hashed_password.decode('utf-8')
 
 
-def verify_password(plain_text: str, hashed_password: str) -> bool:
+def verify_hash(plain_text: str, hashed_password: str) -> bool:
     # Compare the plain password with the hashed password
     try:
         return bcrypt.checkpw(plain_text.encode('utf-8'), hashed_password.encode('utf-8'))
@@ -38,10 +36,6 @@ def verify_password(plain_text: str, hashed_password: str) -> bool:
 
 
 def get_otp() -> str:
-    # In DEV debug mode a dummy OTP can be used like 'Welcome01!'
-    if os.getenv('DEBUG') == 'True' and os.getenv('ENV') == 'DEV' and os.getenv('DEBUG_OTP'):
-        return os.getenv('DEBUG_OTP')
-
     # Random OTP
     chars = string.ascii_letters + string.digits + '@#$%^&*'
     for _ in range(1000):
@@ -49,3 +43,19 @@ def get_otp() -> str:
         if is_valid_password(password):
             return password
     raise ValueError('No random OTP could be generated.')
+
+
+def is_valid_password(password) -> bool:
+    """ Precondition: pydantic has checked already on type, min_length and max_length """
+    # must contain upper, lower, number, special
+    d = {}
+    for c in str(password):
+        if c.islower():
+            d['LC'] = True
+        elif c.isupper():
+            d['UC'] = True
+        elif c.isnumeric():
+            d['number'] = True
+        elif c != ' ':
+            d['special'] = True
+    return len(d) == 4

@@ -11,7 +11,7 @@ from src.domains.user.functions import map_user
 from src.domains.user.models import User
 from src.utils.db import crud
 from src.utils.functions import get_otp_expiration, get_password_expiration
-from src.utils.security.crypto import get_hashed_password, verify_password
+from src.utils.security.crypto import get_salted_hash, verify_hash
 from src.utils.tests.constants import *
 
 
@@ -194,7 +194,7 @@ async def assert_db(db, expected_payload):
             assert user.password is None
             assert user.expired is None
         else:
-            assert verify_password(expected_payload['password'], user.password)
+            assert verify_hash(expected_payload['password'], user.password)
             if 'expiry' in expected_payload:
                 validate_expiration(user.expired, expiration_type=expected_payload['expiry'])
     if 'fail_count' in expected_payload:
@@ -278,5 +278,5 @@ async def set_password_in_db(db, fixture, key):
     """ Encrypt password and put it in the db. """
     user = await get_user_from_db(db, fixture['email'])
     print(f'Old password to be hashed and set in db: {fixture[key]}')
-    user.password = get_hashed_password(fixture[key])
+    user.password = get_salted_hash(fixture[key])
     await crud.upd(db, User, user.id, map_user(user))
