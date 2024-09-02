@@ -20,7 +20,7 @@ class Login(LoginBase):
     password: SecretStr = Field(min_length=10, max_length=20)
 
 
-class SetPassword(Login):
+class ChangePassword(Login):
     new_password: SecretStr = Field(min_length=10, max_length=20)
     new_password_repeated: SecretStr = Field(min_length=10, max_length=20)
 

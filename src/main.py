@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from src.domains.token.api import token
 from src.domains.fishingwater.api import fishingwater
 from src.domains.login.api import login_register, password_verify, login_login, \
-    password_forgot, password_change, password_hash
+    password_forgot, password_change, password_hash, login_activate
 from src.domains.systemvalue.api import systemvalue
 from src.domains.user.api import user
 
@@ -25,7 +25,8 @@ app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'])
 app.include_router(user, prefix='/user', tags=['User'])
 app.include_router(systemvalue, prefix='/systemvalue', tags=['System value'])
 # Login
-app.include_router(login_register, prefix='/login/register', tags=['Login - Send password'])
+app.include_router(login_register, prefix='/login/register', tags=['Send OTP'])
+app.include_router(login_activate, prefix='/login/activate', tags=['Receive OTP'])
 app.include_router(login_login, prefix='/login/login', tags=['Login'])
 # Password
 app.include_router(password_change, prefix='/password/change', tags=['Change password'])

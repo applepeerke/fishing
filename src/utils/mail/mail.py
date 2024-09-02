@@ -4,9 +4,13 @@ import smtplib
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 
+from src.utils.functions import is_debug_mode
+
 
 def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addresses: list, substitutions: dict):
-    """ Credits: https://stackoverflow.com/questions/6270782/how-to-send-an-email-with-python """
+    """
+    Credits: https://stackoverflow.com/questions/6270782/how-to-send-an-email-with-python
+    """
     if not os.path.isfile(template_path):
         raise ValueError(f'Template "{template_path}" does not exist.')
     required_input('Subject', subject)
@@ -15,7 +19,8 @@ def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addre
 
     with open(template_path, 'r') as fp:
         text = fp.read()
-    [text.replace(code, str(value)) for code, value in substitutions.items()]
+    for code, value in substitutions.items():
+        text = text.replace(code, str(value))
 
     # Create a text/plain message
     msg = MIMEText(text)
@@ -26,7 +31,8 @@ def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addre
     msg['To'] = to_mail_addresses[0]
 
     # Send the message via our own SMTP server, but don't include the envelope header.
-    s = smtplib.SMTP('localhost')
+    smtp = os.getenv('DEBUG_SMTP') if is_debug_mode() else os.getenv('SMTP')
+    s = smtplib.SMTP(smtp)
     s.sendmail(from_mail_address, to_mail_addresses, msg.as_string())
     s.quit()
 

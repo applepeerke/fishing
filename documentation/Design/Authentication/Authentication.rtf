@@ -12,44 +12,77 @@
 \fs24 \
 
 \f1\b \
-Registration
+Registration endpoint
 \f0\b0 \
+Background\
+	A malicious user may specify the email address of a victim. So the requestor must prove to be the owner of the email address. \
+	Therefore the system generates a 
+\f1\b OTP
+\f0\b0  (= random secret) and sends it to the email address. It is stored as salted hashed password in the database with a short expiration time.\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 	The activation mail contains a 
+\f1\b link
+\f0\b0  to the activation endpoint. The email and hashed email address are link query parameters. \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 	To get registrated, within the expiry time, the user has to click the activation link and set a new password.\
+\
 The user provides an email address and presses the Register button. \
-The system generates a random OTP. The OTP is mailed 
-\f2\i  
-\f0\i0 to the specified email address. Also a link to the 
-\f2\i change_password enpoint 
-\f0\i0 is added in the mail.\
-The OTP is hashed and the (short) expiration time is stored in the database.\
-	Please note:\
-	In dev, the mail can not be sent. A tester can then never activate the user.Therefore in DEBUG mode the password in .env DEBUG_OTP is used.\
+The system generates an OTP and sends an 
+\f1\b activation mail
+\f0\b0  with the OTP
+\f1\b  
+\f0\b0 to the specified email addres. \
 \
 
-\f1\b Activation
+\f1\b Activation mail (user action)
 \f0\b0 \
-A malicious user may use the email of a victim. So the requestor must prove to have received the mail with the OTP. \
-The user clicks the link in the email. In the query parameter is the hashed email address. \
-To prevent brute force attacks, if the query parameter is not correct, wait for n seconds.\
-The user is redirected to the change password page.\
+The user clicks the link in the received email which directs to the 
+\f1\b activation
+\f0\b0  endpoint. \
 \
-When the user changes the password within the expiration time, the user is activated and redirected to the home page.\
-If no scopes exist, with the least priviliged scopes.\
-\cf2 \
 
-\f1\b \cf0 Login
+\f1\b Activation endpoint
+\f0\b0 \
+If the query parameters (email) are not correct, the endpoint should deal with a 
+\f2\i brute_force_attack***
+\f0\i0 .  \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 If the query parameters (email) are verified, the user is redirected to the 
+\f1\b change password
+\f0\b0  page. *****\
+There he uses the OTP from the mail.\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+
+\f1\b Change password endpoint
+\f0\b0 \
+The system verifies that the user is not blacklisted or blocked and that the OTP/password has not expired. \
+When the user successfully changes the password the user is (re-)activated and redirected to the home page.\
+If no scopes exist, the user gets the least privileged scopes.\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf2 \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f1\b \cf0 Login endpoint
 \f0\b0 \
 The user provides email address and password and presses the Login button. \
-The system verifies if the user is not blacklisted or blocked. \
-Then the password is verified. When verified, the user is redirected to the home page.\
+The system verifies if the user is not blacklisted / blocked / expired. \
+Then the password is verified. When correct, the user is redirected to the home page.\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 \
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\f1\b \cf0 Forgot password
+\f1\b \cf0 Forgot password endpoint
 \f0\b0 \
-The user provides an email address and presses Forgot password. The system generates an OTP, and mails it with a link to the 
-\f2\i change_password 
-\f0\i0 endpoint to the specified email address.\
+The user provides an email address and presses Forgot password. The system generates an OTP, and sends an 
+\f1\b activation mail 
+\f0\b0 to the specified email address.\
 The user is inactivated.\
-When the user changes the password within the expiration time, the user is activated again and redirected to the home page.\cf2 \
+Next step: 
+\f1\b Activation mail
+\f0\b0 \cf2 \
+\
+\
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
@@ -103,7 +136,7 @@ Register user - Send OTP\cf0 \
 \cf4 /* User requests activation (handshake) */\cf0 \
 	|\cf4 /* Consistency check on provided email */\cf0 \
 	|__Received email address <> user.email address in link query parameter: \
-	|	|__\cf2 Wait \cf0 \
+	|	|__\cf2 Brute force attack mitigation***\cf0 \
 <\'97\'97\'97422 email address is invalid.\
 	|\
 	|__

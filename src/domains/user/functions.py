@@ -1,12 +1,12 @@
 import os
 
-
 from fastapi import HTTPException
 from starlette import status
 
 from src.domains.user.models import User, UserRead
-from src.utils.functions import find_filename_path
+from src.utils.functions import find_filename_path, is_debug_mode
 from src.utils.mail.mail import send_mail
+from src.utils.security.crypto import get_salted_hash
 
 
 def send_otp(email, otp):
@@ -18,34 +18,18 @@ def send_otp(email, otp):
     # Populate substitution variables like OTP and the link to receive_otp endpoint.
     substitutions = {
                 '*APP_NAME*': os.getenv('APP_NAME'),
-                '*OTP_URL*': os.getenv('OTP_URL'),
+                '*OTP_URL*': f'{os.getenv('OTP_URL')}?email={email}&token={get_salted_hash(email)}',
                 '*OTP*': otp
             }
     # Send email
     try:
         send_mail(template_path, 'Registration code', mail_from, [email], substitutions)
     except ConnectionRefusedError as e:
-        if os.getenv('DEBUG', False):
+        if is_debug_mode():
             return
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-
-
-def is_valid_password(password) -> bool:
-    """ Precondition: pydantic has checked already on type, min_length and max_length """
-    # must contain upper, lower, number, special
-    d = {}
-    for c in str(password):
-        if c.islower():
-            d['LC'] = True
-        elif c.isupper():
-            d['UC'] = True
-        elif c.isnumeric():
-            d['number'] = True
-        elif c != ' ':
-            d['special'] = True
-    return len(d) == 4
 
 
 def map_user(user: User) -> UserRead:

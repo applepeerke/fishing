@@ -6,6 +6,10 @@ from dateutil.relativedelta import relativedelta
 from src.utils.tests.constants import PAYLOAD
 
 
+def is_debug_mode() -> bool:
+    return os.getenv('DEBUG') == 'True' and os.getenv('ENV') == 'DEV'
+
+
 def find_filename_path(file_name) -> str:
     """
     Return file paths matching the specified file type in the specified base directory (recursively).

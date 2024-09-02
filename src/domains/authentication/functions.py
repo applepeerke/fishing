@@ -5,15 +5,14 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status
 
-from src.domains.user.functions import is_valid_password, send_otp, map_user
+from src.domains.user.functions import send_otp, map_user
 from src.domains.user.models import UserRead, UserStatus
 from src.utils.functions import get_otp_expiration, get_password_expiration
-from src.utils.security.crypto import get_otp, get_hashed_password
-
+from src.utils.security.crypto import get_otp, get_salted_hash, is_valid_password
 
 from src.domains.user.models import User
 from src.utils.db import crud
-from src.utils.security.crypto import verify_password
+from src.utils.security.crypto import verify_hash
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -24,7 +23,7 @@ credentials_exception = HTTPException(
 
 async def authenticate_user(db, email: str, password: str) -> User:
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=email)
-    if not user or not verify_password(password, user.password):
+    if not user or not verify_hash(password, user.password):
         raise credentials_exception
     return user
 
@@ -40,7 +39,7 @@ def validate_new_password(payload: BaseModel, old_password_hashed=None):
     if not detail and not (new_password_plain_text == new_password_repeated_plain_text):
         detail = f'New password must be the same as the repeated one.'
     # c. New password must differ from old one.
-    if not detail and old_password_hashed and verify_password(new_password_plain_text, old_password_hashed):
+    if not detail and old_password_hashed and verify_hash(new_password_plain_text, old_password_hashed):
         detail = f'New password must differ from the old one.'
     # d. New password must be valid.
     if not detail and not is_valid_password(new_password_plain_text):
@@ -96,7 +95,7 @@ async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
         user = reset_user(user)
         # Create the one time password (not hashed, 10 long)
         otp = get_otp()
-        user.password = get_hashed_password(otp)
+        user.password = get_salted_hash(otp)
         user.expired = get_otp_expiration()  # Short ttl
         # Mail the OTP to the specified address.
         send_otp(user.email, otp)
