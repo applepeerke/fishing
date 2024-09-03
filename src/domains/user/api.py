@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domains.user.models import User, UserRead, UserCreate
+from src.domains.user.models import User, UserRead, UserCreate, UserUpdate
 from src.general.models import get_delete_response
 from src.utils.db import crud
 from src.utils.db.db import get_db_session
@@ -28,7 +28,7 @@ async def read_user(id: UUID, db: AsyncSession = Depends(get_db_session)):
 
 
 @user.put('/{id}', response_model=UserRead)
-async def update_user(id: UUID, user_update: UserRead, db: AsyncSession = Depends(get_db_session)):
+async def update_user(id: UUID, user_update: UserUpdate, db: AsyncSession = Depends(get_db_session)):
     return await crud.upd(db, User, id, user_update)
 
 

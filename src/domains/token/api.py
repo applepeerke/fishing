@@ -1,30 +1,28 @@
 import os
-
-from fastapi import APIRouter
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
-from src.domains.authentication.functions import authenticate_user, credentials_exception, validate_user
-from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES
-from src.domains.token.models import Token, TokenData
-from src.domains.user.models import User
-from src.utils.db.db import get_db_session
-
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 
 import jwt
+from fastapi import APIRouter
 from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domains.authentication.functions import authenticate_user, credentials_exception
+from src.domains.login.models import Login
+from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES
+from src.domains.token.models import Token, TokenData
+from src.domains.user.models import User
 from src.utils.db import crud
+from src.utils.db.db import get_db_session
 
 token = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-async def get_token_user(
+async def get_user_from_token(
         db: Annotated[AsyncSession, Depends(get_db_session)],
         access_token: Annotated[str, Depends(oauth2_scheme)]
 ) -> User:
@@ -67,18 +65,25 @@ def create_access_token(payload: dict):
     return jwt_token
 
 
-@token.post("/")
-async def get_access_token(
-        db: Annotated[AsyncSession, Depends(get_db_session)],
-        credentials: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
-    user = await authenticate_user(db, credentials.username, credentials.password)
+@token.post('/', response_model=Token)
+async def login(payload: Login, db: Annotated[AsyncSession, Depends(get_db_session)]) -> Token:
+    user = await authenticate_user(db, payload.email, payload.password.get_secret_value())
     access_token = create_access_token(payload={"sub": user.email})
     return Token(access_token=access_token, token_type="bearer")
 
-
-@token.get("/authenticated_token_user")
-async def get_authenticated_user(
-        db: Annotated[AsyncSession, Depends(get_db_session)],
-        token_user: Annotated[User, Depends(get_token_user)]):
-    authenticated_user = await validate_user(db, token_user)
-    return authenticated_user
+#
+# @token.post("/")
+# async def get_access_token(
+#         db: Annotated[AsyncSession, Depends(get_db_session)],
+#         credentials: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
+#     user = await authenticate_user(db, credentials.username, credentials.password)
+#     access_token = create_access_token(payload={"sub": user.email})
+#     return Token(access_token=access_token, token_type="bearer")
+#
+#
+# @token.get("/authenticated_token_user")
+# async def get_authenticated_token_user(
+#         db: Annotated[AsyncSession, Depends(get_db_session)],
+#         token_user: Annotated[User, Depends(get_token_user)]):
+#     authenticated_user = await validate_user(db, token_user)
+#     return authenticated_user

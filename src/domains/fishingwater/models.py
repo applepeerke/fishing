@@ -32,7 +32,10 @@ class FishingWaterCreate(FishingWaterBase):
     pass
 
 
+class FishingWaterUpdate(FishingWaterBase):
+    pass
+
+
 class FishingWaterRead(FishingWaterBase):
     id: UUID4
-
 

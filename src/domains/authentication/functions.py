@@ -1,13 +1,19 @@
 import os
 import datetime
+from typing import Annotated
 
-from fastapi import HTTPException
+import jwt
+from fastapi import HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jwt import InvalidTokenError
 from pydantic import BaseModel
 from starlette import status
 
+from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM
+from src.domains.token.models import TokenData
 from src.domains.user.functions import send_otp, map_user
 from src.domains.user.models import UserRead, UserStatus
-from src.utils.functions import get_otp_expiration, get_password_expiration
+from src.utils.functions import get_otp_expiration, get_password_expiration, is_debug_mode
 from src.utils.security.crypto import get_otp, get_salted_hash, is_valid_password
 
 from src.domains.user.models import User
@@ -19,6 +25,28 @@ credentials_exception = HTTPException(
     detail="Could not validate credentials",
     headers={"WWW-Authenticate": "Bearer"}
 )
+
+security = HTTPBearer()
+
+
+async def has_access(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]):
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(
+            token,
+            key=os.getenv(JWT_SECRET_KEY),
+            algorithms=[os.getenv(JWT_ALGORITHM)],
+            verify=True,
+            options={"verify_signature": True,
+                     "verify_aud": False,
+                     "verify_iss": False}
+        )
+        email: str = payload.get("sub")
+        if not email:
+            raise credentials_exception
+        return TokenData(user_email=email)
+    except InvalidTokenError:
+        raise credentials_exception
 
 
 async def authenticate_user(db, email: str, password: str) -> User:

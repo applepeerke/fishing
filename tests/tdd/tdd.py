@@ -11,32 +11,33 @@ def get_tdd_test_scenarios(path) -> dict:
     Retrieve JSON from fishing/tests/data/{domain}.csv
     Example:
     ------------------------------------------------------------------------------------------------------------------
-    0            1   2         3       4                  5 6     7                  8       9   10 11      12
-    Title	     TC  Endpoint  Entity  Input	     Repeat Expected response                UserStatus     Next
-                                                            HTTP  Content            Message Pre Post
-                                                            Status
+    0            1   2         3       4      5                6    7  8                 9        10  11 12   13
+    Title	     TC  __________Route_______   Input	           Repeat Expected response           UserStatus  Next
+                     Group  Entity  Endpoint                    HTTP  Content            Message Pre Post
+                                                               Status
     ------------------------------------------------------------------------------------------------------------------
-    Registration 1   register  login   {"email": "d@s.c"} 0 422   *message           The ... 10 *NC		     -
-    Registration 2   register  login   {"email": "d@s.c"} 0 422   *message	         The ... 20 *NC		     -
-    Registration 3   register  login   {"email": "d@s.c"} 0 200   {"email": "d@s.c"}         NR 10 Inactive Send otp
+    Registration 1   user  login  register   {"email": "d@s.c"} 0 422   *message           The ... 10 *NC		     -
+    Registration 2   user  login  register   {"email": "d@s.c"} 0 422   *message	       The ... 20 *NC		     -
+    Registration 3   user  login  register   {"email": "d@s.c"} 0 200   {"email": "d@s.c"}         NR 10 Inact. Send otp
     ------------------------------------------------------------------------------------------------------------------
     """
     rows = get_csv_rows(path)
     d = {}
     for row in rows:
         TC = TestCase(
+            title=row[0],
             seqno=int(row[1]),
-            endpoint=row[2],
-            entity=row[3],
-            payload=row[4],
-            repetitions=int(row[5]),
-            expected_response_http_status=row[6],
-            expected_response_content=row[7],
-            expected_response_message=row[8],
-            user_status_pre=row[9],
-            user_status_post=row[10],
-            next_step=row[12],
-            title=row[0]
+            r1=row[2],
+            r2=row[3],
+            r3=row[4],
+            payload=row[5],
+            repetitions=int(row[6]),
+            expected_response_http_status=int(row[7]),
+            expected_response_content=row[8],
+            expected_response_message=row[9],
+            user_status_pre=row[10],
+            user_status_post=row[11],
+            next_step=row[13],
         )
         # Payload fixture (maybe repeated)
         d1 = {}
@@ -60,9 +61,10 @@ def get_tdd_test_scenarios(path) -> dict:
 
 
 def _get_breadcrumbs(tc: TestCase, leaf) -> list:
+    """ The API route (last elements may be empty) """
     # ID = seqno | precondition UserStatus | executions | expected HTTP status
     breadcrumbs = [f'{str(tc.seqno).zfill(3)}|{tc.user_status_pre}|{tc.executions}|{tc.expected_response_http_status}']
-    breadcrumbs.extend([tc.entity, tc.endpoint, tc.expected_result, leaf])
+    breadcrumbs.extend([tc.r1, tc.r2, tc.r3, tc.expected_result, leaf])
     return breadcrumbs
 
 

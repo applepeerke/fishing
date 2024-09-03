@@ -8,12 +8,16 @@ class TestCase:
         return self._seqno
 
     @property
-    def endpoint(self):
-        return self._endpoint
+    def r1(self):
+        return self._r1
 
     @property
-    def entity(self):
-        return self._entity
+    def r2(self):
+        return self._r2
+
+    @property
+    def r3(self):
+        return self._r3
 
     @property
     def payload(self):
@@ -57,8 +61,9 @@ class TestCase:
 
     def __init__(self,
                  seqno,
-                 endpoint,
-                 entity,
+                 r1,
+                 r2,
+                 r3,
                  payload,
                  repetitions=0,
                  expected_response_http_status=status.HTTP_200_OK,
@@ -70,8 +75,9 @@ class TestCase:
                  title=None):
         """
         @param seqno: Testcase number.
-        @param endpoint: Last leaf of route.
-        @param entity: Entity.
+        @param r1: Route element 1.
+        @param r2: Route element 2.
+        @param r3: Last leaf of route.
         @param payload: JSON payload.
         @param repetitions: Number of payload repetitions before expected response is checked.
         @param expected_response_http_status: HTTP status.
@@ -83,8 +89,9 @@ class TestCase:
         @param title: Title of this testcase
         """
         self._seqno: int = seqno
-        self._endpoint: str = endpoint
-        self._entity: str = entity
+        self._r1: str = r1
+        self._r2: str = r2
+        self._r3: str = r3
         self._payload: dict = payload
         self._repetitions: int = repetitions
         self._expected_response_http_status: int = expected_response_http_status
