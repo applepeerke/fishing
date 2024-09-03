@@ -277,6 +277,5 @@ async def get_user_from_db(db, email):
 async def set_password_in_db(db, fixture, key):
     """ Encrypt password and put it in the db. """
     user = await get_user_from_db(db, fixture['email'])
-    print(f'Old password to be hashed and set in db: {fixture[key]}')
     user.password = get_salted_hash(fixture[key])
     await crud.upd(db, User, user.id, map_user(user))
