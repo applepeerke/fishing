@@ -60,8 +60,6 @@ async def change_password(payload: ChangePassword, db: AsyncSession = Depends(ge
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
     user = await validate_user(db, user)
 
-
-
     error_message = None
     # a. Verify old password
     #    N.B. If user is inactive, the password is not validated.

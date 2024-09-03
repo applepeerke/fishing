@@ -138,29 +138,29 @@ Post check functions
 
 
 async def post_check(
-        breadcrumbs,
-        expected_result,
+        api_route,
+        expected_http_status,
         client,
         db,
         fixture,
-        expected_http_status=None,
+        fixture_route=None,
         check_response=True,
-        from_index=0,
+        route_from_index=0,
         seq_no=0
 ) -> Response:
     """
     JSON fixture is defined by route, followed by 'success' or 'fail'.
     It contains  sub-fixtures like 'payload', 'expect' and 'expect-db'.
     """
-    if not expected_http_status:
-        expected_http_status = status.HTTP_200_OK if expected_result == SUCCESS else status.HTTP_401_UNAUTHORIZED
-
-    leaf = get_leaf(fixture, breadcrumbs, expected_result)
+    if not fixture_route:
+        fixture_route = api_route
+    expected_result = SUCCESS if expected_http_status == status.HTTP_200_OK else FAIL
+    leaf = get_leaf(fixture, fixture_route, expected_result)
     payload_name = PAYLOAD if seq_no == 0 else f'{PAYLOAD}-{seq_no}'
     payload = await substitute(db, leaf.get(payload_name))
     response = await post_to_endpoint(
         client=client,
-        breadcrumbs=breadcrumbs[from_index:],
+        api_route=api_route[route_from_index:],
         fixture=payload
     )
     # Last execution:
@@ -211,9 +211,9 @@ def validate_expiration(db_expiration, delta_seconds_allowed=10.0, expiration_ty
     assert 0.0 < delta.total_seconds() < delta_seconds_allowed
 
 
-async def post_to_endpoint(client, breadcrumbs, fixture):
+async def post_to_endpoint(client, api_route, fixture):
     """ Precondition: JSON fixtures are defined by endpoint name. """
-    route = '/'.join(breadcrumbs)
+    route = '/'.join(api_route)
     return await client.post(f'{route}/', json=fixture)
 
 

@@ -1,4 +1,3 @@
-import enum
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
@@ -46,11 +45,14 @@ class UserCreate(UserBase):
     pass
 
 
-class UserRead(UserBase):
-    id: UUID4
+class UserUpdate(UserBase):
     password: Optional[SecretStr] = Field(min_length=8, max_length=256, default=None)
     expired: Optional[datetime] = Field(DateTime(timezone=True))
     fail_count: conint(ge=0, lt=100) = 0
     blocked_until: Optional[datetime] = Field(DateTime(timezone=True))
     authentication_token: Optional[SecretStr] = Field(min_length=16, max_length=1024, default=None)
     status: conint(ge=10, lt=100) = UserStatus.Inactive
+
+
+class UserRead(UserUpdate):
+    id: UUID4

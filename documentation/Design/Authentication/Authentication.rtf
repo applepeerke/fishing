@@ -12,6 +12,11 @@
 \fs24 \
 
 \f1\b \
+\
+
+\f0\b0\fs32 1. Summary\
+
+\f1\b\fs24 \
 Registration endpoint
 \f0\b0 \
 Background\
@@ -19,12 +24,10 @@ Background\
 	Therefore the system generates a 
 \f1\b OTP
 \f0\b0  (= random secret) and sends it to the email address. It is stored as salted hashed password in the database with a short expiration time.\
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 	The activation mail contains a 
+	The activation mail contains a 
 \f1\b link
 \f0\b0  to the activation endpoint. The email and hashed email address are link query parameters. \
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 	To get registrated, within the expiry time, the user has to click the activation link and set a new password.\
+	To get registrated, within the expiry time, the user has to click the activation link and set a new password.\
 \
 The user provides an email address and presses the Register button. \
 The system generates an OTP and sends an 
@@ -43,16 +46,18 @@ The user clicks the link in the received email which directs to the
 
 \f1\b Activation endpoint
 \f0\b0 \
-If the query parameters (email) are not correct, the endpoint should deal with a 
-\f2\i brute_force_attack***
+**** If the query parameters (email) are not correct, the endpoint should deal with a 
+\f2\i brute_force_attack
 \f0\i0 .  \
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 If the query parameters (email) are verified, the user is redirected to the 
+**** If the query parameters (email) are verified, an 
+\f1\b access_token
+\f0\b0  is created and send in the response.\
+**** The frontend should store it in a secure cookie and pass it in every request.\
+**** The user is redirected to the 
 \f1\b change password
-\f0\b0  page. *****\
-There he uses the OTP from the mail.\
-\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0 \
+\f0\b0  page.\
+There he specifies the OTP from the mail.\
+\
 
 \f1\b Change password endpoint
 \f0\b0 \
@@ -86,7 +91,7 @@ Next step:
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\fs28 \cf3 User States
+\fs32 \cf3 2. User States
 \fs24 \cf2 \
 \pard\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 See state.xlsx\
@@ -96,7 +101,10 @@ Next step:
 \cf2 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\fs28 \cf3 API\'92s
+\fs32 \cf3 3. API\'92s\
+\
+
+\fs28 3.1. Endpoints
 \fs24 \cf2 \
 \
 Register user - Send OTP\cf0 \
@@ -150,11 +158,18 @@ Register user - Send OTP\cf0 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf4 /* User changes password */\cf0 \
 	|__
-\f2\i \cf2 User_validation
-\f0\i0 \cf4 \
+\f2\i \cf2 User_validation\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\i0 \cf0 	|__UserStatus <> Inactive: \cf4 \
+\cf0 	|	|__
+\f2\i \cf2 Password_validation(email, password)\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\i0 \cf3 	|\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 	|__
-\f2\i \cf2 Password_validation(email, password)\
+\f2\i \cf2 New_password_validation(new_password, new_password_repeated)\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
 \f0\i0 \cf3 	|
@@ -184,8 +199,12 @@ Register user - Send OTP\cf0 \
 	|\cf4 /* Password valid */\cf0 \
 	|__redirect to welcome page\
 \
-\
-\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\fs28 \cf3 3.2. Functions\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\fs24 \cf0 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 Email_validation(email)\
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
@@ -224,27 +243,49 @@ Register user - Send OTP\cf0 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 	|\cf4 /* Check password */\cf0 \
 	|__Password  invalid:\
-	|		|\cf4 /* Invalid password */\cf0 \
-	|		|__tries+=1\
-	|		|__block_until_time=null\
-	|		|>_
-\f1\b .env
-\f0\b0 : max_tries, block_minutes\
-	|		|__tries > max_tries:\
-	|		|	|__tries = 0\
-	|		|	|__block_until_time = now() + block_minutes\
-	|		|	|u_
-\f1\b User
-\f0\b0  s: tries, block_until_time\
-<\'97\'97\'97\'97\'97\'97401 Too much invalid attempts. User has been temporary blocked. Please try again later.\
-	|		|\
-	|		|u_
-\f1\b User
-\f0\b0  s: tries, block_until_time\
+	|		|__
+\f2\i \cf2 Add_fail_count
+\f0\i0 \cf0 \
 <\'97\'97\'97-- 401 Invalid password. Please try again.\
 	|\
 	|\cf4 /* Valid password */\cf0 \
 <\'97\'97200 Success\
+\
+\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf2 New_password_validation(new_password, new_password_repeated)\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 	|\cf4 /* Check password */\cf0 \
+	|__new_password <> new_password_repeated or invalid new_password:\
+	|		|__
+\f2\i \cf2 Add_fail_count
+\f0\i0 \cf0 \
+<\'97\'97\'97-- 401 Invalid password. Please try again.\
+	|\
+	|\cf4 /* Valid password */\cf0 \
+<\'97\'97200 Success\
+\
+\
+\pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f2\i \cf2 Add_fail_count
+\f0\i0 \cf0 \
+	|\cf4 /* Invalid password */\cf0 \
+	|__tries+=1\
+	|__block_until_time=null\
+	|>_
+\f1\b .env
+\f0\b0 : max_tries, block_minutes\
+	|__tries > max_tries:\
+	|	|__tries = 0\
+	|	|__block_until_time = now() + block_minutes\
+	|	|u_
+\f1\b User
+\f0\b0  s: tries, block_until_time\
+<\'97\'97\'97401 Too much invalid attempts. User has been temporary blocked. Please try again later.\
+	|u_
+\f1\b User
+\f0\b0  s: tries, block_until_time\
 \
 \pard\tx269\tx566\tx867\tx1133\tx1421\tx1700\tx1982\tx2267\tx2547\tx2834\tx3123\tx3401\tx3728\tx3968\tx4283\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf2 Wait\
