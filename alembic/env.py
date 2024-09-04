@@ -26,7 +26,6 @@ if config.config_file_name is not None:
 from src.utils.db import db
 from src.domains.fishingwater.models import FishingWater
 from src.domains.user.models import User
-from src.domains.systemvalue.models import SystemValue
 target_metadata = db.Base.metadata
 
 # other values from the config, defined by the needs of env.py,

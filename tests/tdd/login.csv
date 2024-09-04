@@ -18,11 +18,11 @@ Registration;15;user;login;register;"{""email"": ""dummy@sample.com""}";0;200;"{
 Change password;16;user;password;change;"{""email"": ""dummy@sample.com""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""password""],""msg"": ""Field required""}";;20;*NC;;-
 Change password;17;user;password;change;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""new_password""],""msg"": ""Field required""}";;10;*NC;;-
 Change password;18;user;password;change;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";5;401;*message;The user is blocked. Please try again later.;10;90;Blocked ;-
-Change password;19;user;password;change;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";3;401;*message;Incorrect existing password. Please try again.;10;*NC;;-
-Change password;20;user;password;change;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;200;"{""email"": ""dummy@sample.com""}";;10;20;Active;Redirect to Home
+Change password;19;user;password;change;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";3;401;*message;Invalid login attempt. Please try again.;10;*NC;;-
+Change password;20;user;password;change;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;200;"{""access_token"": ""*STRING"", ""token_type"": ""bearer""}";;10;20;Active;Redirect to Home
 Login;21;user;login;;"{""email"": ""dummy@sample.com""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""password""],""msg"": ""Field required""}";;10;*NC;;-
 Login;22;user;login;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";5;401;*message;The user is blocked. Please try again later.;20;90;Blocked ;-
-Login;23;user;login;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";3;401;*message;The password is not valid. Please try again.;20;*NC;;-
-Login;24;user;login;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!""}";0;200;"{""email"": ""dummy@sample.com""}";;20;*NC;;Redirect to Home
+Login;23;user;login;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";3;401;*message;Invalid login attempt. Please try again.;20;*NC;;-
+Login;24;user;login;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!""}";0;200;"{""access_token"": ""*STRING"", ""token_type"": ""bearer""}";;20;*NC;;Redirect to Home
 Forgot password;25;user;password;forgot;{};0;422;"{""type"": ""missing"",""loc"": [""body"", ""email""],""msg"": ""Field required""}";;10;*NC;;-
-Forgot password;26;user;password;forgot;"{""email"": ""dummy@sample.com""}";0;200;"{""email"": ""dummy@sample.com""}";;20;10;Inactive;Redirect to login/register.
+Forgot password;26;user;password;forgot;"{""email"": ""dummy@sample.com""}";0;200;{};;20;10;Inactive;Redirect to login/register.

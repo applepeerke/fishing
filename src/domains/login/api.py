@@ -3,12 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from starlette.requests import Request
 
-from src.domains.authentication.functions import validate_user, set_user_status, invalid_login_attempt, map_user, \
-    validate_new_password
+from src.domains.token.functions import validate_user, set_user_status, invalid_login_attempt, \
+    validate_new_password, get_access_token
 from src.domains.login.models import Login, ChangePassword
 from src.domains.login.models import Password, PasswordEncrypted, LoginBase
+from src.domains.token.models import AccessToken
 from src.domains.user.functions import send_otp
-from src.domains.user.models import User, UserStatus, UserRead
+from src.domains.user.models import User, UserStatus
 from src.utils.db import crud
 from src.utils.db.db import get_db_session
 from src.utils.functions import get_otp_expiration
@@ -25,9 +26,11 @@ password_reset = APIRouter()
 password_forgot = APIRouter()
 
 
-@login_register.post('/', response_model=LoginBase)
+@login_register.post('/')
 async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session)):
-    """  Target status: 10 (Inactive): User record created with email. """
+    """ Create the user record. """
+    if not payload:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
     # The user must not already exist.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
     if user:
@@ -36,82 +39,97 @@ async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session
     otp = get_otp()
     # Send it in an activation mail
     send_otp(payload.email, otp)
-    # Set expiration (short ttl)
-    expired = get_otp_expiration()
-    # Insert the user
-    user = User(email=payload.email, password=get_salted_hash(otp), expired=expired, status=UserStatus.Inactive)
+    # Insert the user with a short expiration
+    user = User(
+        email=payload.email,
+        password=get_salted_hash(otp),
+        expired=get_otp_expiration(),
+        status=UserStatus.Inactive
+    )
     await crud.add(db, user)
-    return LoginBase(email=user.email)
+    return {}
 
 
 @login_activate.get('/')
-async def activate(request: Request):
-    """  Validate OTP from request parameters. Redirect to Change password. """
-    if not verify_hash(
-            plain_text=request.query_params['email'],
-            hashed_password=request.query_params['token']
-    ):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
+async def activate(request: Request, db: AsyncSession = Depends(get_db_session)):
+    """  Validate email link to get a handshake which expires after a short time. """
+    if not request:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
+    # Check Email and hashed email from the link.
+    username = request.query_params['email']
+    user = await crud.get_one_where(db, User, att_name=User.email, att_value=username)
+    if not verify_hash(username, request.query_params['token']):
+        await invalid_login_attempt(db, user)
+    # Activate user.
+    await set_user_status(db, user, target_status=UserStatus.Active)
 
 
-@password_change.post('/', response_model=UserRead)
-async def change_password(payload: ChangePassword, db: AsyncSession = Depends(get_db_session)):
+@login_login.post('/', response_model=AccessToken)
+async def login(credentials: Login, db: AsyncSession = Depends(get_db_session)):
+    """ Log in with email and password (not OTP). """
+    if not credentials:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
     # The user must already exist and be valid.
-    user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
+    user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
     user = await validate_user(db, user)
+    # Validate credentials
+    if not verify_hash(credentials.password.get_secret_value(), user.password):
+        await invalid_login_attempt(db, user)
+    # Activate user.
+    await set_user_status(db, user, target_status=UserStatus.Active)
+    # Return access token.
+    return get_access_token(user)
 
-    error_message = None
+
+@password_change.post('/', response_model=AccessToken)
+async def change_password(credentials: ChangePassword, db: AsyncSession = Depends(get_db_session)):
+    """ Change OTP or password. """
+    if not credentials:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
+    # The user must already exist and be valid.
+    user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
+    user = await validate_user(db, user)
     # a. Verify old password
-    #    N.B. If user is inactive, the password is not validated.
-    #    This method is called internally then from activate_user.
-    if user.status != UserStatus.Inactive and not verify_hash(
-            plain_text=payload.password.get_secret_value(),
-            hashed_password=user.password):
-        error_message = 'Incorrect existing password.'
+    if not verify_hash(credentials.password.get_secret_value(), user.password):
+        await invalid_login_attempt(db, user)
     # b. Validate new password (various kinds of restrictions)
-    if not error_message:
-        error_message = validate_new_password(payload=payload, old_password_hashed=user.password)
-
-    # Fail
+    error_message = validate_new_password(credentials=credentials, old_password_hashed=user.password)
     if error_message:
         await invalid_login_attempt(db, user, error_message)
-
-    # Success: Set new password
-    user.password = get_salted_hash(payload.new_password.get_secret_value())
-    return await set_user_status(db, map_user(user), target_status=UserStatus.Active)
-
-
-@login_login.post('/')
-async def login(payload: Login, db: AsyncSession = Depends(get_db_session)):
-    # The user must already exist and be valid.
-    user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
-    user = await validate_user(db, user)
-    # Validate password
-    try:
-        validate_password(Password(plain_text=payload.password.get_secret_value(), encrypted_text=user.password))
-    except HTTPException:
-        await invalid_login_attempt(db, user, 'The password is not valid.')
-        raise
+    # Set new password.
+    user.password = get_salted_hash(credentials.new_password.get_secret_value())
+    # Activate user.
+    await set_user_status(db, user, target_status=UserStatus.Active, new_expiry=True)
+    # Return access token.
+    return get_access_token(user)
 
 
-@password_forgot.post('/', response_model=UserRead)
-async def forgot_password(payload: LoginBase, db: AsyncSession = Depends(get_db_session)):
-    """ Target status: 10 (Inactive): New OTP sent. """
+@password_forgot.post('/')
+async def forgot_password(credentials: LoginBase, db: AsyncSession = Depends(get_db_session)):
+    """ Send a new activation mail with link and OTP. """
+    if not credentials:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
     # The user must already exist. User may be blocked, not blacklisted.
-    user = await crud.get_one_where(db, User, att_name=User.email, att_value=payload.email)
+    user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
     user = await validate_user(db, user, forgot_password=True)
     # Reset the user
-    return await set_user_status(db, map_user(user), target_status=UserStatus.Inactive)
+    await set_user_status(db, user, target_status=UserStatus.Inactive)
 
 
 @password_hash.post('/', response_model=PasswordEncrypted)
-def encrypt_password(payload: Password):
+def encrypt(payload: Password):
+    """ Hashing. Used for test purposes only. """
+    if not payload:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
     encrypted_text = get_salted_hash(payload.plain_text.get_secret_value())
     return PasswordEncrypted(encrypted_text=encrypted_text)
 
 
 @password_verify.post('/')
-def validate_password(payload: Password):
+def validate_hash(payload: Password):
+    """ Hash validation. Used for test purposes only. """
+    if not payload:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
     success = verify_hash(
         payload.plain_text.get_secret_value(),
         payload.encrypted_text

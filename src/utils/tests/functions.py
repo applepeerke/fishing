@@ -181,14 +181,15 @@ async def post_check(
     return response
 
 
-async def assert_db(db, expected_payload):
-    if not expected_payload:
+async def assert_db(db, expected_payload, pk='email'):
+    # If response is an Access token it is not a db model
+    if not expected_payload or pk not in expected_payload:
         return
 
     expected_payload = await substitute(db, expected_payload)
-    user = await crud.get_one_where(db, User, User.email, expected_payload['email'])
+    user = await crud.get_one_where(db, User, User.email, expected_payload[pk])
     # Assertions
-    assert user.email == expected_payload['email']
+    assert user.email == expected_payload[pk]
     if 'password' in expected_payload:
         if expected_payload['password'] is None:
             assert user.password is None

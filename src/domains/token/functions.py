@@ -1,32 +1,47 @@
-import os
 import datetime
+import os
 from typing import Annotated
 
 import jwt
 from fastapi import HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
 from jwt import InvalidTokenError
-from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM
-from src.domains.token.models import TokenData
+from src.domains.login.models import ChangePassword
+from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES
+from src.domains.token.models import AccessTokenData, AccessToken
 from src.domains.user.functions import send_otp, map_user
-from src.domains.user.models import UserRead, UserStatus
-from src.utils.functions import get_otp_expiration, get_password_expiration, is_debug_mode
-from src.utils.security.crypto import get_otp, get_salted_hash, is_valid_password
-
 from src.domains.user.models import User
+from src.domains.user.models import UserRead, UserStatus
 from src.utils.db import crud
+from src.utils.db.db import get_db_session
+from src.utils.functions import get_otp_expiration, get_password_expiration
+from src.utils.security.crypto import get_otp, get_salted_hash, is_valid_password
 from src.utils.security.crypto import verify_hash
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Could not validate credentials",
-    headers={"WWW-Authenticate": "Bearer"}
+    detail='Invalid login attempt',
+    headers={'WWW-Authenticate': 'Bearer'}
 )
 
 security = HTTPBearer()
+
+
+def get_access_token(user) -> AccessToken:
+    payload = {
+        "sub": user.email,
+        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+            minutes=int(os.getenv(JWT_EXPIRY_MINUTES, 15)))}
+    jwt_token = jwt.encode(
+        payload=payload,
+        key=str(os.getenv(JWT_SECRET_KEY)),
+        algorithm=os.getenv(JWT_ALGORITHM))
+    return AccessToken(access_token=jwt_token, token_type="bearer")
 
 
 async def has_access(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]):
@@ -39,27 +54,48 @@ async def has_access(credentials: Annotated[HTTPAuthorizationCredentials, Depend
             verify=True,
             options={"verify_signature": True,
                      "verify_aud": False,
-                     "verify_iss": False}
-        )
+                     "verify_iss": False})
         email: str = payload.get("sub")
         if not email:
             raise credentials_exception
-        return TokenData(user_email=email)
+        return AccessTokenData(user_email=email)
     except InvalidTokenError:
         raise credentials_exception
 
 
-async def authenticate_user(db, email: str, password: str) -> User:
-    user = await crud.get_one_where(db, User, att_name=User.email, att_value=email)
-    if not user or not verify_hash(password, user.password):
+def _get_token_data(access_token) -> AccessTokenData:
+    try:
+        payload = jwt.decode(
+            access_token, os.getenv(JWT_SECRET_KEY), algorithms=[os.getenv(JWT_ALGORITHM)], verify=True)
+        email: str = payload.get("sub")
+        if not email:
+            raise credentials_exception
+        return AccessTokenData(user_email=email)
+    except InvalidTokenError:
+        raise credentials_exception
+
+
+async def get_user_from_token(
+        db: Annotated[AsyncSession, Depends(get_db_session)],
+        access_token: Annotated[str, Depends(oauth2_scheme)]) -> User:
+    # Get token data
+    token_data = _get_token_data(access_token)
+
+    # Get the token user
+    user = await crud.get_one_where(
+        db, User,
+        att_name=User.email,
+        att_value=token_data.user_email)
+    if not user:
         raise credentials_exception
     return user
 
 
-def validate_new_password(payload: BaseModel, old_password_hashed=None):
+def validate_new_password(credentials: ChangePassword, old_password_hashed=None) -> str | None:
+    """ Change password extra validation """
     detail = None
-    new_password_plain_text = payload.new_password.get_secret_value()
-    new_password_repeated_plain_text = payload.new_password_repeated.get_secret_value()
+    new_password_plain_text = credentials.new_password.get_secret_value()
+    new_password_repeated_plain_text = credentials.new_password_repeated.get_secret_value()
     # a. New password is required.
     if not new_password_plain_text:
         detail = f'New password is required.'
@@ -87,10 +123,15 @@ async def validate_user(db, user: User, forgot_password=False) -> User:
     # Blocked user
     if user.status == UserStatus.Blocked:
         # Set/check the expiration date
-        user = await set_user_status(db, map_user(user), target_status=UserStatus.Blocked)
+        user = await set_user_status(db, user, target_status=UserStatus.Blocked)
+        # Still blocked: error
+        if user.status == UserStatus.Blocked:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='The user is blocked. Please try again later.')
     elif user.status != UserStatus.Expired:
         if user.expired and user.expired < datetime.datetime.now(datetime.timezone.utc):
-            user = await set_user_status(db, map_user(user), target_status=UserStatus.Expired)
+            user = await set_user_status(db, user, target_status=UserStatus.Expired)
     if user.status == UserStatus.Expired:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -98,9 +139,12 @@ async def validate_user(db, user: User, forgot_password=False) -> User:
     return user
 
 
-async def invalid_login_attempt(db, user: User, error_message=''):
-    initial_detail = error_message
-    user = map_user(user)
+async def invalid_login_attempt(db, user: User, error_message=None):
+    """ Always raise an exception. """
+    if not user:  # Not registered yet
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    prefix = error_message or 'Invalid login attempt.'
 
     # Increment fail counter
     user.fail_count = user.fail_count + 1
@@ -110,17 +154,17 @@ async def invalid_login_attempt(db, user: User, error_message=''):
         await set_user_status(db, user, target_status=UserStatus.Blocked)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f'{initial_detail} The user has been blocked. Please try again later.')
+            detail=f'{prefix} The user has been blocked. Please try again later.')
     # Update fail counter
-    await crud.upd(db, User, user.id, user)
+    await crud.upd(db, User, user.id, map_user(user))
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=f'{initial_detail} Please try again.')
+        detail=f'{prefix} Please try again.')
 
 
-async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
+async def set_user_status(db, user: User, target_status=None, new_expiry=False):
     if target_status == UserStatus.Inactive:
-        user = reset_user(user)
+        user = reset_user_attributes(user)
         # Create the one time password (not hashed, 10 long)
         otp = get_otp()
         user.password = get_salted_hash(otp)
@@ -128,23 +172,20 @@ async def set_user_status(db, user: UserRead, target_status=None) -> UserRead:
         # Mail the OTP to the specified address.
         send_otp(user.email, otp)
     elif target_status == UserStatus.Active:
-        user = reset_user(user)
-        user.expired = get_password_expiration()  # Long ttl
-    elif target_status == UserStatus.Blocked:
+        user = reset_user_attributes(user)
+        if new_expiry:
+            user.expired = get_password_expiration()  # Long ttl
+    elif target_status == UserStatus.Blocked:  # max fail_count reached
         if not user.blocked_until:
             user.blocked_until = get_blocked_until()
         # a. Blocking time is over: reactivate the user
         if user.blocked_until < datetime.datetime.now(datetime.timezone.utc):
+            user = reset_user_attributes(user)
             target_status = UserStatus.Active
-        # b. Still blocked. Allow this only when forgot_password is requested.
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='The user is blocked. Please try again later.')
     # Set status
     if target_status:
         user.status = target_status
-    return await crud.upd(db, User, user.id, user)
+    return await crud.upd(db, User, user.id, map_user(user))
 
 
 def get_blocked_until():
@@ -152,7 +193,7 @@ def get_blocked_until():
     return datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes)
 
 
-def reset_user(user) -> UserRead:
+def reset_user_attributes(user) -> UserRead:
     user.blocked_until = None
     user.fail_count = 0
     user.authentication_token = None
