@@ -20,8 +20,8 @@ AUTH = None if is_debug_mode() else [Depends(has_access)]
 app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", root_path=os.getenv('API_V1_PREFIX'))
 
 # Login
-app.include_router(login_register, prefix='/user/login/register', tags=['Login'])
-app.include_router(login_activate, prefix='/user/login/activate', tags=['Login'])
+app.include_router(login_register, prefix='/user/register', tags=['Login'])
+app.include_router(login_activate, prefix='/user/activate', tags=['Login'])
 app.include_router(login_login, prefix='/user/login', tags=['Login'])
 # Password
 app.include_router(password_change, prefix='/user/password/change', tags=['Login'], dependencies=AUTH)

@@ -44,14 +44,14 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClie
 @pytest.mark.asyncio
 async def test_register_success(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
     """ Target status Inactive (10) """
-    api_route = ['user', 'login', 'register']
+    api_route = ['user', 'register']
     await post_check(
         api_route, 200, async_client, async_session, test_data_login)
 
 
 @pytest.mark.asyncio
 async def test_register_fail(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
-    api_route = ['user', 'login', 'register']
+    api_route = ['user', 'register']
     await post_check(api_route, 422, async_client, async_session, test_data_login)
 
 
@@ -88,7 +88,7 @@ async def precondition(api_route, expected_status, db, fixture, user_status: Use
 @pytest.mark.asyncio
 async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncSession, test_data_login: dict):
     kwargs = {'expected_http_status': 200, 'client': async_client, 'db': async_session, 'fixture': test_data_login}
-    api_route = ['user', 'login', 'register']
+    api_route = ['user', 'register']
     # a. Register - request otp
     await post_check(api_route, **kwargs)
     # b. Change db OTP (to hashed "Password1!")
@@ -105,7 +105,7 @@ async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncS
 async def test_login_otp_fail(async_client: AsyncClient, async_session: AsyncSession, test_data_login: dict):
     kwargs = {'client': async_client, 'db': async_session, 'fixture': test_data_login}
     # Register
-    api_route = ['user', 'login', 'register']
+    api_route = ['user', 'register']
     # a.  Send OTP to user (mail is not really sent to user).
     await post_check(api_route, 200, **kwargs)
     # a.1 Change db OTP (to hashed "Password1!")
@@ -122,7 +122,7 @@ async def test_login_otp_fail(async_client: AsyncClient, async_session: AsyncSes
     user = await crud.get_one_where(async_session, User, att_name=User.email, att_value=fixture['payload']['email'])
     await crud.delete(async_session, User, user.id)
     # b.2 request OTP.
-    api_route = ['user', 'login', 'register']
+    api_route = ['user', 'register']
     await post_check(api_route, 200, **kwargs)
     # b.3 User sends max. number of wrong OTP.
     api_route = ['user', 'password', 'change']

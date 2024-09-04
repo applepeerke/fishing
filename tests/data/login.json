@@ -1,7 +1,6 @@
 {
   "user": {
-    "login": {
-      "register": {
+    "register": {
         "success": {
           "payload": {
             "email": "dummy@sample.com"
@@ -26,6 +25,7 @@
         }
       }
       },
+    "login": {
       "success": {
         "payload": {
           "email": "dummy@sample.com",
