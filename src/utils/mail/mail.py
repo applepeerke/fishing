@@ -31,7 +31,7 @@ def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addre
     msg['To'] = to_mail_addresses[0]
 
     # Send the message via our own SMTP server, but don't include the envelope header.
-    smtp = os.getenv('DEBUG_SMTP') if is_debug_mode() else os.getenv('SMTP')
+    smtp = os.getenv('SMTP') if os.getenv('SMTP_ACTIVATED') == 'True' else 'localhost'
     s = smtplib.SMTP(smtp)
     s.sendmail(from_mail_address, to_mail_addresses, msg.as_string())
     s.quit()

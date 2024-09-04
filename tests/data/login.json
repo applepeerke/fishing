@@ -33,11 +33,8 @@
         },
         "expect": {
           "status_code": 200,
-          "email": "dummy@sample.com",
-          "password": "Password2!",
-          "expired": "*GET_PASSWORD_EXPIRY",
-          "fail_count": 0,
-          "status": 20
+          "access_token": "*STRING",
+          "token_type": "bearer"
         }
       }
   },
@@ -52,11 +49,8 @@
           },
           "expect": {
             "status_code": 200,
-            "email": "dummy@sample.com",
-            "password": "Password2!",
-            "expired": "*GET_PASSWORD_EXPIRY",
-            "fail_count": 0,
-            "status": 20
+            "access_token": "*STRING",
+            "token_type": "bearer"
           }
         },
         "fail": {
