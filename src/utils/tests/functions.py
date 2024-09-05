@@ -10,7 +10,7 @@ from starlette import status
 from src.domains.user.functions import map_user
 from src.domains.user.models import User
 from src.utils.db import crud
-from src.utils.functions import get_otp_expiration, get_password_expiration
+from src.utils.functions import get_otp_expiration, get_password_expiration, find_filename_path
 from src.utils.security.crypto import get_salted_hash, verify_hash
 from src.utils.tests.constants import *
 
@@ -25,12 +25,7 @@ def get_json(domain) -> dict:
 
 def get_fixture_path(subdir, domain, ext, automatic_tests=False) -> str:
     file_name = f'automatic_tests_{domain}.{ext}' if automatic_tests else f'{domain}.{ext}'
-    path = os.getenv('PYTEST_CURRENT_TEST')
-    path = os.path.join(*os.path.split(path)[:-1], subdir, file_name)
-
-    if not os.path.exists(path):
-        path = os.path.join(subdir, f"{domain}.{ext}")
-    return path
+    return find_filename_path(file_name)
 
 
 async def insert_record(async_session: AsyncSession, entity, payload: dict):

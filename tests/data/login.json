@@ -1,10 +1,10 @@
 {
-  "user": {
+  "login": {
     "register": {
-        "success": {
-          "payload": {
-            "email": "dummy@sample.com"
-          },
+      "success": {
+        "payload": {
+          "email": "dummy@sample.com"
+        },
         "expect": {
           "email": "dummy@sample.com"
         },
@@ -16,7 +16,7 @@
           "status": 10
         }
       },
-        "fail": {
+      "fail": {
         "payload": {
           "email": ""
         },
@@ -24,9 +24,8 @@
           "status_code": 422
         }
       }
-      },
-    "login": {
-      "success": {
+    },
+    "success": {
         "payload": {
           "email": "dummy@sample.com",
           "password": "Password2!"
@@ -37,6 +36,5 @@
           "token_type": "bearer"
         }
       }
-  }
   }
 }

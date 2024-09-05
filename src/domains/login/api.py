@@ -16,7 +16,7 @@ from src.utils.functions import get_otp_expiration
 from src.utils.security.crypto import get_salted_hash, verify_hash, get_otp
 
 login_register = APIRouter()
-login_ack = APIRouter()
+login_acknowledge = APIRouter()
 login_login = APIRouter()
 
 
@@ -44,14 +44,19 @@ async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session
     return {}
 
 
-@login_ack.get('/')
+@login_acknowledge.get('/')
 async def acknowledge(request: Request, db: AsyncSession = Depends(get_db_session)):
     """  Validate email link to get a handshake which expires after a short time. """
-    if not request:
+    if (not request
+            or not request.query_params
+            or 'email' not in request.query_params
+            or 'token' not in request.query_params):
         raise HTTPException(status.HTTP_403_FORBIDDEN)
     # Check Email and hashed email from the link.
     username = request.query_params['email']
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=username)
+    if not user:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
     if not verify_hash(username, request.query_params['token']):
         await invalid_login_attempt(db, user)
     # Acknowledge user.

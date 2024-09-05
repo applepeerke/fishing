@@ -6,7 +6,7 @@ from fastapi import FastAPI, Depends
 
 from src.domains.token.functions import has_access
 from src.domains.fishingwater.api import fishingwater
-from src.domains.login.api import login_register, login_login, login_ack
+from src.domains.login.api import login_register, login_login, login_acknowledge
 from src.domains.password.api import password_verify, password_forgot, password_change, password_hash
 from src.domains.user.api import user
 from src.utils.functions import is_debug_mode
@@ -20,12 +20,12 @@ AUTH = None if is_debug_mode() else [Depends(has_access)]
 app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", root_path=os.getenv('API_V1_PREFIX'))
 
 # Login
-app.include_router(login_register, prefix='/user/register', tags=['Login'])
-app.include_router(login_ack, prefix='/user/acknowledge', tags=['Login'])
-app.include_router(login_login, prefix='/user/login', tags=['Login'])
+app.include_router(login_register, prefix='/login/register', tags=['Login'])
+app.include_router(login_acknowledge, prefix='/login/acknowledge', tags=['Login'])
+app.include_router(login_login, prefix='/login', tags=['Login'])
 # Password
-app.include_router(password_change, prefix='/user/password/change', tags=['Login'], dependencies=AUTH)
-app.include_router(password_forgot, prefix='/user/password/forgot', tags=['Login'])
+app.include_router(password_change, prefix='/password/change', tags=['Login'], dependencies=AUTH)
+app.include_router(password_forgot, prefix='/password/forgot', tags=['Login'])
 # CRUD
 app.include_router(user, prefix='/user', tags=['User'])  # Creating/deleting user is not by user
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'], dependencies=AUTH)
