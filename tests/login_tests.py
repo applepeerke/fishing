@@ -44,14 +44,14 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClie
 @pytest.mark.asyncio
 async def test_register_success(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
     """ Target status Inactive (10) """
-    api_route = ['user', 'register']
+    api_route = ['login', 'register']
     await post_check(
         api_route, test_data_login, 200, async_client, async_session)
 
 
 @pytest.mark.asyncio
 async def test_register_fail(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
-    api_route = ['user', 'register']
+    api_route = ['login', 'register']
     await post_check(api_route, test_data_login, 422, async_client, async_session)
 
 
@@ -91,13 +91,13 @@ async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncS
     password_data = get_json('password')
     kwargs = {'expected_http_status': 200, 'client': async_client, 'db': async_session}
     # a. Register - request otp
-    await post_check(['user', 'register'], login_data, **kwargs)
+    await post_check(['login', 'register'], login_data, **kwargs)
     # b. Change db OTP (to hashed "Password1!")
     await change_password(async_session, password_data)
     # c. Change password (to "Password2!")
-    await post_check( ['user', 'password', 'change'], password_data, **kwargs)
+    await post_check(['password', 'change'], password_data, **kwargs)
     # d. Login (with "Password2!")
-    await post_check( ['user', 'login'], login_data, **kwargs)
+    await post_check(['login'], login_data, **kwargs)
 
 
 @pytest.mark.asyncio
@@ -107,30 +107,30 @@ async def test_login_otp_fail(async_client: AsyncClient, async_session: AsyncSes
     password_data = get_json('password')
     # Register
     # a.  Send OTP to user (mail is not really sent to user).
-    await post_check(['user', 'register'], login_data, 200, **kwargs)
+    await post_check(['login', 'register'], login_data, 200, **kwargs)
     # a.1 Change db OTP (to hashed "Password1!")
     await change_password(async_session, password_data)
     # a.2 User specifies wrong OTP.
-    await post_check( ['user', 'password', 'change'], password_data, 401, **kwargs)
+    await post_check(['password', 'change'], password_data, 401, **kwargs)
     # a.3 User specifies right OTP.
-    await post_check( ['user', 'password', 'change'], password_data,  200, **kwargs)
+    await post_check(['password', 'change'], password_data,  200, **kwargs)
 
     # b. request otp, send wrong OTP (1 time too much).
     # b.1 delete the user
-    fixture = get_leaf(password_data, ['user', 'password', 'change'], SUCCESS)
+    fixture = get_leaf(password_data, ['password', 'change'], SUCCESS)
     user = await crud.get_one_where(async_session, User, att_name=User.email, att_value=fixture['payload']['email'])
     await crud.delete(async_session, User, user.id)
     # b.2 request OTP.
-    await post_check(['user', 'register'], login_data, 200, **kwargs)
+    await post_check(['login', 'register'], login_data, 200, **kwargs)
     # b.3 User sends max. number of wrong OTP.
     for i in range(int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED')) - 1):
-        await post_check(['user', 'password', 'change'], password_data, 401, **kwargs)
+        await post_check(['password', 'change'], password_data, 401, **kwargs)
     # b.4 Send another wrong one. Now expect user to be blocked.
-    await post_check(['user', 'password', 'change'], password_data, 401, **kwargs)
+    await post_check(['password', 'change'], password_data, 401, **kwargs)
 
 
 async def change_password(async_session, fixture_set):
     """ After registration, user is created with random OTP, reset it with the one from the fixture. """
-    api_route = ['user', 'password', 'change']
+    api_route = ['password', 'change']
     fixture = get_leaf(fixture_set, api_route, SUCCESS)
     await set_password_in_db(async_session, fixture[PAYLOAD], 'password')
