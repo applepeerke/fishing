@@ -1,4 +1,3 @@
-import json
 import os
 
 import pytest
@@ -53,13 +52,13 @@ def test_data_user() -> dict:
 
 
 @pytest.fixture(scope="function")
-def test_data_systemvalue() -> dict:
-    return get_json('systemvalue')
+def test_data_login() -> dict:
+    return get_json('login')
 
 
 @pytest.fixture(scope="function")
-def test_data_login() -> dict:
-    return get_json('login')
+def test_data_password() -> dict:
+    return get_json('password')
 
 
 @pytest.fixture(scope="function")
@@ -69,6 +68,6 @@ def test_data_encrypt() -> dict:
 
 @pytest.fixture(scope="function")
 def test_tdd_scenarios_login() -> dict:
-    """ Retrieve CSV from fishing/tests/tdd/{domain}.csv"""
-    path = get_fixture_path('tdd', 'login', 'csv')
+    """ Retrieve CSV from fishing/tests/tdd/automatic_tests_{domain}.csv"""
+    path = get_fixture_path('tdd', 'login', 'csv', automatic_tests=True)
     return get_tdd_test_scenarios(path)

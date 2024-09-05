@@ -12,7 +12,8 @@ from src.utils.db.db import Base
 
 class UserStatus:
     Inactive = 10
-    Active = 20
+    Acknowledged = 20
+    Active = 30
     Expired = 80
     Blocked = 90
     Blacklisted = 99
