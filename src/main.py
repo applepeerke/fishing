@@ -24,10 +24,10 @@ app.include_router(login_register, prefix='/login/register', tags=['Login'])
 app.include_router(login_acknowledge, prefix='/login/acknowledge', tags=['Login'])
 app.include_router(login_login, prefix='/login', tags=['Login'])
 # Password
-app.include_router(password_change, prefix='/password/change', tags=['Login'], dependencies=AUTH)
+app.include_router(password_change, prefix='/password/change', tags=['Login'])
 app.include_router(password_forgot, prefix='/password/forgot', tags=['Login'])
 # CRUD
-app.include_router(user, prefix='/user', tags=['User'])  # Creating/deleting user is not by user
+app.include_router(user, prefix='/user', tags=['User'], dependencies=AUTH)  # Creating/deleting user is not by user
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'], dependencies=AUTH)
 # Email/Password hashing (internal)
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
