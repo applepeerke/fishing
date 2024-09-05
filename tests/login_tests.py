@@ -8,10 +8,10 @@ from conftest import test_data_login
 from src.domains.user.functions import map_user
 from src.domains.user.models import User, UserStatus
 from src.utils.db import crud
-from src.utils.functions import get_pk, get_otp_expiration
+from src.utils.functions import get_pk, get_otp_expiration, is_debug_mode
 from src.utils.security.crypto import get_otp, get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
-from src.utils.tests.functions import post_check, get_leaf, set_password_in_db, get_json
+from src.utils.tests.functions import post_check, get_leaf, set_password_in_db, get_json, get_model
 
 
 @pytest.mark.asyncio
@@ -30,6 +30,7 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClie
                         api_route = [i for i in fixture_route if i]
                         names = Id.split('|')  # seqno | precondition_userStatus | repeat | expected HTTP status
                         target_user_status = None if names[1] == 'NR' else int(names[1])
+                        headers = {}
                         # Optionally insert User record with desired UserStatus
                         await precondition(fixture_route, result, async_session, test_tdd_scenarios_login,
                                            target_user_status)
@@ -37,7 +38,7 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClie
                         for exec_no in range(1, executions + 1):
                             await post_check(
                                 api_route, test_tdd_scenarios_login, int(names[3]), async_client, async_session,
-                                fixture_route, route_from_index=1, check_response=exec_no == executions)
+                                headers, fixture_route, route_from_index=1, check_response=exec_no == executions)
                             print(f'* Test "{api_route[0]}" route "{' '.join(api_route[1:])}" was successful.')
 
 
@@ -95,9 +96,11 @@ async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncS
     # b. Change db OTP (to hashed "Password1!")
     await change_password(async_session, password_data)
     # c. Change password (to "Password2!")
-    await post_check(['password', 'change'], password_data, **kwargs)
+    response = await post_check(['password', 'change'], password_data, **kwargs)
+    assert _is_valid_token(response)
     # d. Login (with "Password2!")
-    await post_check(['login'], login_data, **kwargs)
+    response = await post_check(['login'], login_data, **kwargs)
+    assert _is_valid_token(response)
 
 
 @pytest.mark.asyncio
@@ -124,9 +127,18 @@ async def test_login_otp_fail(async_client: AsyncClient, async_session: AsyncSes
     await post_check(['login', 'register'], login_data, 200, **kwargs)
     # b.3 User sends max. number of wrong OTP.
     for i in range(int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED')) - 1):
-        await post_check(['password', 'change'], password_data, 401, **kwargs)
+        response = await post_check(['password', 'change'], password_data, 401, **kwargs)
+        assert get_model(response) == {}
     # b.4 Send another wrong one. Now expect user to be blocked.
-    await post_check(['password', 'change'], password_data, 401, **kwargs)
+    response = await post_check(['password', 'change'], password_data, 401, **kwargs)
+    # b.5 No token should be returned
+    assert get_model(response) == {}
+
+
+def _is_valid_token(response):
+    if not is_debug_mode():
+        token = get_model(response)
+        assert token.get('token_type') == 'bearer'
 
 
 async def change_password(async_session, fixture_set):

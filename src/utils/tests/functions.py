@@ -1,8 +1,8 @@
 import json
-import os
 from uuid import UUID
 
 from fastapi import Response
+from httpx import AsyncClient
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -137,8 +137,9 @@ async def post_check(
         api_route,
         fixture,
         expected_http_status,
-        client,
-        db,
+        client: AsyncClient,
+        db: AsyncSession,
+        headers=None,
         fixture_route=None,
         check_response=True,
         route_from_index=0,
@@ -157,7 +158,8 @@ async def post_check(
     response = await post_to_endpoint(
         client=client,
         api_route=api_route[route_from_index:],
-        fixture=payload
+        fixture=payload,
+        headers=headers
     )
     # Last execution:
     if check_response:
@@ -208,10 +210,10 @@ def validate_expiration(db_expiration, delta_seconds_allowed=10.0, expiration_ty
     assert 0.0 < delta.total_seconds() < delta_seconds_allowed
 
 
-async def post_to_endpoint(client, api_route, fixture):
+async def post_to_endpoint(client: AsyncClient, api_route, fixture, headers=None):
     """ Precondition: JSON fixtures are defined by endpoint name. """
     route = '/'.join(api_route)
-    return await client.post(f'{route}/', json=fixture)
+    return await client.post(f'{route}/', json=fixture, headers=headers)
 
 
 def get_leaf(fixture, breadcrumbs: list, expected_result):

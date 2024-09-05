@@ -29,8 +29,8 @@ async def test_encrypt(async_client: AsyncClient, async_session: AsyncSession, t
         api_route, fixture, 422, seq_no=2, **kwargs)
 
 
-async def get_encrypted_text(api_route, fixture, client, db, ):
+async def get_encrypted_text(api_route, fixture, client, db):
     # a. Encrypt (salt and hash) the plain_text password
-    response = await post_check(api_route, fixture, 200, client, db, )
+    response = await post_check(api_route, fixture, 200, client, db)
     response_payload = get_model(response)
     return response_payload.get('encrypted_text')
