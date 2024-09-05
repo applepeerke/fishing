@@ -23,9 +23,10 @@ def get_json(domain) -> dict:
     return data
 
 
-def get_fixture_path(subdir, domain, ext) -> str:
+def get_fixture_path(subdir, domain, ext, automatic_tests=False) -> str:
+    file_name = f'automatic_tests_{domain}.{ext}' if automatic_tests else f'{domain}.{ext}'
     path = os.getenv('PYTEST_CURRENT_TEST')
-    path = os.path.join(*os.path.split(path)[:-1], subdir, f"{domain}.{ext}")
+    path = os.path.join(*os.path.split(path)[:-1], subdir, file_name)
 
     if not os.path.exists(path):
         path = os.path.join(subdir, f"{domain}.{ext}")
@@ -139,10 +140,10 @@ Post check functions
 
 async def post_check(
         api_route,
+        fixture,
         expected_http_status,
         client,
         db,
-        fixture,
         fixture_route=None,
         check_response=True,
         route_from_index=0,

@@ -6,8 +6,8 @@ from fastapi import FastAPI, Depends
 
 from src.domains.token.functions import has_access
 from src.domains.fishingwater.api import fishingwater
-from src.domains.login.api import login_register, password_verify, login_login, \
-    password_forgot, password_change, password_hash, login_activate
+from src.domains.login.api import login_register, login_login, login_ack
+from src.domains.password.api import password_verify, password_forgot, password_change, password_hash
 from src.domains.user.api import user
 from src.utils.functions import is_debug_mode
 
@@ -21,7 +21,7 @@ app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", root_path=os.getenv
 
 # Login
 app.include_router(login_register, prefix='/user/register', tags=['Login'])
-app.include_router(login_activate, prefix='/user/activate', tags=['Login'])
+app.include_router(login_ack, prefix='/user/acknowledge', tags=['Login'])
 app.include_router(login_login, prefix='/user/login', tags=['Login'])
 # Password
 app.include_router(password_change, prefix='/user/password/change', tags=['Login'], dependencies=AUTH)

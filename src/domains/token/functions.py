@@ -9,9 +9,9 @@ from jwt import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.domains.login.models import ChangePassword
+from src.domains.password.models import ChangePassword
 from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES
-from src.domains.token.models import AccessTokenData, AccessToken
+from src.domains.token.models import AccessTokenData, OAuthAccessToken
 from src.domains.user.functions import send_otp, map_user
 from src.domains.user.models import User
 from src.domains.user.models import UserRead, UserStatus
@@ -32,7 +32,8 @@ credentials_exception = HTTPException(
 security = HTTPBearer()
 
 
-def get_access_token(user) -> AccessToken:
+def get_oauth_access_token(user) -> OAuthAccessToken:
+    """ The OAuth2 scheme requires a JSON with "access_token" and "token_type". """
     payload = {
         "sub": user.email,
         "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
@@ -41,7 +42,7 @@ def get_access_token(user) -> AccessToken:
         payload=payload,
         key=str(os.getenv(JWT_SECRET_KEY)),
         algorithm=os.getenv(JWT_ALGORITHM))
-    return AccessToken(access_token=jwt_token, token_type="bearer")
+    return OAuthAccessToken(access_token=jwt_token, token_type="bearer")
 
 
 async def has_access(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]):
@@ -171,6 +172,8 @@ async def set_user_status(db, user: User, target_status=None, new_expiry=False):
         user.expired = get_otp_expiration()  # Short ttl
         # Mail the OTP to the specified address.
         send_otp(user.email, otp)
+    elif target_status == UserStatus.Acknowledged:
+        pass
     elif target_status == UserStatus.Active:
         user = reset_user_attributes(user)
         if new_expiry:

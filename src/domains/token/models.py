@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 
-class AccessToken(BaseModel):
+class OAuthAccessToken(BaseModel):
     access_token: str
     token_type: str
 
