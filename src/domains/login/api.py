@@ -2,18 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from starlette.requests import Request
+from starlette.responses import Response
 
 from src.domains.login.models import Login
 from src.domains.login.models import LoginBase
 from src.domains.token.functions import validate_user, set_user_status, invalid_login_attempt, \
     get_oauth_access_token
-from src.domains.token.models import OAuthAccessToken
 from src.domains.user.functions import send_otp
 from src.domains.user.models import User, UserStatus
 from src.utils.db import crud
 from src.utils.db.db import get_db_session
 from src.utils.functions import get_otp_expiration
-from src.utils.security.crypto import get_salted_hash, verify_hash, get_otp
+from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_password
 
 login_register = APIRouter()
 login_acknowledge = APIRouter()
@@ -30,7 +30,7 @@ async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session
     if user:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user already exists.')
     # Create a random secret password (OTP)
-    otp = get_otp()
+    otp = get_random_password()
     # Send it in an acknowledgement mail
     send_otp(payload.email, otp)
     # Insert the user with a short expiration
@@ -63,9 +63,11 @@ async def acknowledge(request: Request, db: AsyncSession = Depends(get_db_sessio
     await set_user_status(db, user, target_status=UserStatus.Acknowledged)
 
 
-@login_login.post('/', response_model=OAuthAccessToken)
-async def login(credentials: Login, db: AsyncSession = Depends(get_db_session)):
+@login_login.post('/')
+async def login(credentials: Login, response: Response, db: AsyncSession = Depends(get_db_session)):
     """ Log in with email and password (not OTP). """
+    print(credentials)
+    print(response)
     if not credentials:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
     # The user must already exist and be valid.
@@ -76,5 +78,5 @@ async def login(credentials: Login, db: AsyncSession = Depends(get_db_session)):
         await invalid_login_attempt(db, user)
     # Activate user.
     await set_user_status(db, user, target_status=UserStatus.Active)
-    # Return access token.
-    return get_oauth_access_token(user)
+    token = get_oauth_access_token(user)
+    response.headers.append('Authorization', f'{token.token_type} {token.access_token}')

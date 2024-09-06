@@ -28,8 +28,9 @@ async def read_user(id: UUID, db: AsyncSession = Depends(get_db_session)):
 
 
 @user.put('/{id}', response_model=UserRead)
-async def update_user(id: UUID, user_update: UserUpdate, db: AsyncSession = Depends(get_db_session)):
-    return await crud.upd(db, User, id, user_update)
+async def update_user(id: UUID, user_update: UserRead, db: AsyncSession = Depends(get_db_session)):
+    user_update.id = id
+    return await crud.upd(db, User, user_update)
 
 
 @user.delete('/{id}')

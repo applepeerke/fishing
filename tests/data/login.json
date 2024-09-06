@@ -33,7 +33,7 @@
         "expect": {
           "status_code": 200,
           "access_token": "*STRING",
-          "token_type": "bearer"
+          "token_type": "Bearer"
         }
       }
   }

@@ -20,11 +20,11 @@ Change password;17;password;change;;"{""email"": ""dummy@sample.com""}";0;422;"{
 Change password;18;password;change;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""new_password""],""msg"": ""Field required""}";;10;*NC;;-
 Change password;19;password;change;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";5;401;*message;The user is blocked. Please try again later.;10;90;Blocked ;-
 Change password;20;password;change;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";3;401;*message;Invalid login attempt. Please try again.;10;*NC;;-
-Change password;21;password;change;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;200;"{""access_token"": ""*STRING"", ""token_type"": ""bearer""}";;10;30;Active;Redirect to Home
+Change password;21;password;change;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""new_password"": ""Right-New_Password1!"",  ""new_password_repeated"": ""Right-New_Password1!""}";0;200;;;10;30;Active;Redirect to Home
 Login;22;login;;;"{""email"": ""dummy@sample.com""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""password""],""msg"": ""Field required""}";;10;*NC;;-
 Login;23;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";5;401;*message;The user is blocked. Please try again later.;30;90;Blocked ;-
 Login;24;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password!""}";3;401;*message;Invalid login attempt. Please try again.;30;*NC;;-
-Login;25;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!""}";0;200;"{""access_token"": ""*STRING"", ""token_type"": ""bearer""}";;30;*NC;;Redirect to Home
+Login;25;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!""}";0;200;"{""access_token"": ""*STRING"", ""token_type"": ""Bearer""}";;30;*NC;;Redirect to Home
 Forgot password;26;password;forgot;;{};0;422;"{""type"": ""missing"",""loc"": [""body"", ""email""],""msg"": ""Field required""}";;10;*NC;;-
 Forgot password;27;password;forgot;;"{""email"": ""dummy@sample.com""}";0;200;{};;20;10;Inactive;Redirect to login/register.
 Forgot password;28;password;forgot;;"{""email"": ""dummy@sample.com""}";0;200;{};;30;10;Inactive;Redirect to login/register.

@@ -35,7 +35,7 @@ def verify_hash(plain_text: str, hashed_password: str) -> bool:
         return False
 
 
-def get_otp() -> str:
+def get_random_password() -> str:
     # Random OTP
     chars = string.ascii_letters + string.digits + '@#$%^&*'
     for _ in range(1000):

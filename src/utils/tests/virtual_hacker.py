@@ -11,7 +11,7 @@ BLANK = ' '
 EMPTY = ''
 
 
-async def tamper_items(async_client: AsyncClient, url, payload):
+async def tamper_items(async_client: AsyncClient, url, payload, headers):
     global max_len_attributes
     if not max_len_attributes:
         max_len_attributes = find_max_length_attributes()
@@ -23,19 +23,19 @@ async def tamper_items(async_client: AsyncClient, url, payload):
         if isinstance(value, str):
             if k not in max_len_attributes:
                 # Test overflow. N.B. Allow text like notes to be long.
-                await _tamper_item(async_client, url, payload, k, LONG_STRING)
+                await _tamper_item(async_client, url, payload, k, LONG_STRING, headers)
             # Test content. Invalid character "<" should not be allowed in any string.
-            await _tamper_item(async_client, url, payload, k, '<')
+            await _tamper_item(async_client, url, payload, k, '<', headers)
         # b. Int or bool
         elif isinstance(value, int):
-            await _tamper_item(async_client, url, payload, k, LONG_INT)
+            await _tamper_item(async_client, url, payload, k, LONG_INT, headers)
 
 
-async def _tamper_item(async_client: AsyncClient, url, payload, key, value):
+async def _tamper_item(async_client: AsyncClient, url, payload, key, value, headers=None):
     value_save = payload[key]
     payload[key] = value  # Save
     try:
-        response = await async_client.put(url, json=payload)
+        response = await async_client.put(url, json=payload, headers=headers)
         # OK: Status 422 from pydantic @model_validator.
         assert response.status_code == 422
     except ResponseValidationError:
@@ -68,9 +68,14 @@ def _find_model_filenames():
     Return all file paths matching the specified file type in the specified base directory (recursively).
     """
     app_root = os.getenv("APP_ROOT")
+    app_root_tests = os.getenv("APP_ROOT_TESTS")
     walk_path = os.path.abspath(os.curdir)
-    # Try to find app root
-    if app_root in walk_path and walk_path.count(app_root) == 1:
+    # If called from tests (pytest), substitute basename.
+    if os.path.basename(walk_path) == app_root_tests:
+        walk_path = walk_path.rstrip(app_root_tests)
+        walk_path = f'{walk_path}{app_root}'
+    # If called from a subdir, go back to app root
+    elif app_root in walk_path and walk_path.count(app_root) == 1:
         p = walk_path.find(app_root) + len(app_root)
         walk_path = walk_path[:p]
     # Walk from app root

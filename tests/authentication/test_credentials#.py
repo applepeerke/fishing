@@ -35,7 +35,7 @@ async def get_test_credentials(pk='user@example.com', initialize=False):
     if user_old:
         # c. Update user
         user.id = user_old.id
-        user = await crud.upd(db, User, user_old.id, map_user(user))
+        user = await crud.upd(db, User, map_user(user))
 
     else:
         # d. Add user
