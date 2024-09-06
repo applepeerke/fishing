@@ -1,5 +1,21 @@
-env
+# IDE
 __pycache__
 .vscode
 .idea
+
+# Sensitive
+.env
+
+# Distribution / packaging
+bin/
+build/
+dist/
+lib/
+lib64/
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.cache
 .pytest_cache
+coverage.xml
