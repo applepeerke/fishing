@@ -17,3 +17,5 @@ EXPECT = 'expect'
 EXPECT_DB = 'expect_db'
 
 STATUS_CODE = 'status_code'
+
+AUTHORIZATION = 'Authorization'

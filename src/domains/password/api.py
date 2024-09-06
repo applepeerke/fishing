@@ -18,7 +18,7 @@ password_change = APIRouter()
 password_forgot = APIRouter()
 
 
-@password_change.post('/', response_model=OAuthAccessToken)
+@password_change.post('/')
 async def change_password(credentials: ChangePassword, db: AsyncSession = Depends(get_db_session)):
     """ Change OTP or password. """
     if not credentials:
@@ -37,8 +37,6 @@ async def change_password(credentials: ChangePassword, db: AsyncSession = Depend
     user.password = get_salted_hash(credentials.new_password.get_secret_value())
     # Activate user.
     await set_user_status(db, user, target_status=UserStatus.Active, new_expiry=True)
-    # Return access token.
-    return get_oauth_access_token(user)
 
 
 @password_forgot.post('/')

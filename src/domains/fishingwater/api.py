@@ -43,10 +43,11 @@ async def read_fishing(
 @fishingwater.put('/{id}', response_model=FishingWaterRead)
 async def update_fishing(
         id: UUID,
-        fishing_update: FishingWaterCreate,
+        fishing_update: FishingWaterRead,
         db: AsyncSession = Depends(get_db_session)
 ):
-    return await crud.upd(db, FishingWater, id, fishing_update)
+    fishing_update.id = id
+    return await crud.upd(db, FishingWater, fishing_update)
 
 
 @fishingwater.delete('/{id}')

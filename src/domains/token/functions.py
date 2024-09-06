@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from src.domains.password.models import ChangePassword
-from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES
+from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES, BEARER
 from src.domains.token.models import AccessTokenData, OAuthAccessToken
 from src.domains.user.functions import send_otp, map_user
 from src.domains.user.models import User
@@ -18,7 +18,7 @@ from src.domains.user.models import UserRead, UserStatus
 from src.utils.db import crud
 from src.utils.db.db import get_db_session
 from src.utils.functions import get_otp_expiration, get_password_expiration
-from src.utils.security.crypto import get_otp, get_salted_hash, is_valid_password
+from src.utils.security.crypto import get_random_password, get_salted_hash, is_valid_password
 from src.utils.security.crypto import verify_hash
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
@@ -42,10 +42,11 @@ def get_oauth_access_token(user) -> OAuthAccessToken:
         payload=payload,
         key=str(os.getenv(JWT_SECRET_KEY)),
         algorithm=os.getenv(JWT_ALGORITHM))
-    return OAuthAccessToken(access_token=jwt_token, token_type="bearer")
+    return OAuthAccessToken(access_token=jwt_token, token_type=BEARER)
 
 
-async def has_access(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]):
+async def has_access(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]) -> AccessTokenData:
+    """ ToDo: Tests if the token is valid, not if the user is the one in the token."""
     token = credentials.credentials
     try:
         payload = jwt.decode(
@@ -157,17 +158,22 @@ async def invalid_login_attempt(db, user: User, error_message=None):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f'{prefix} The user has been blocked. Please try again later.')
     # Update fail counter
-    await crud.upd(db, User, user.id, map_user(user))
+    await crud.upd(db, User, map_user(user))
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=f'{prefix} Please try again.')
 
 
 async def set_user_status(db, user: User, target_status=None, new_expiry=False):
+    user = get_user_status(user, target_status, new_expiry)
+    return await crud.upd(db, User, map_user(user))
+
+
+def get_user_status(user: User, target_status=None, new_expiry=False) -> User:
     if target_status == UserStatus.Inactive:
         user = reset_user_attributes(user)
         # Create the one time password (not hashed, 10 long)
-        otp = get_otp()
+        otp = get_random_password()
         user.password = get_salted_hash(otp)
         user.expired = get_otp_expiration()  # Short ttl
         # Mail the OTP to the specified address.
@@ -188,7 +194,7 @@ async def set_user_status(db, user: User, target_status=None, new_expiry=False):
     # Set status
     if target_status:
         user.status = target_status
-    return await crud.upd(db, User, user.id, map_user(user))
+    return user
 
 
 def get_blocked_until():

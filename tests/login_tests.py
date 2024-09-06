@@ -5,13 +5,11 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from conftest import test_data_login
-from src.domains.user.functions import map_user
-from src.domains.user.models import User, UserStatus
+from src.domains.user.models import User
 from src.utils.db import crud
-from src.utils.functions import get_pk, get_otp_expiration, is_debug_mode
-from src.utils.security.crypto import get_otp, get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import post_check, get_leaf, set_password_in_db, get_json, get_model
+from tests.authentication.functions import initialize_user_from_fixture, has_authorization_header
 
 
 @pytest.mark.asyncio
@@ -32,8 +30,8 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClie
                         target_user_status = None if names[1] == 'NR' else int(names[1])
                         headers = {}
                         # Optionally insert User record with desired UserStatus
-                        await precondition(fixture_route, result, async_session, test_tdd_scenarios_login,
-                                           target_user_status)
+                        await initialize_user_from_fixture(
+                            fixture_route, result, async_session, test_tdd_scenarios_login, target_user_status)
                         executions = int(names[2])
                         for exec_no in range(1, executions + 1):
                             await post_check(
@@ -56,36 +54,6 @@ async def test_register_fail(test_data_login: dict, async_client: AsyncClient, a
     await post_check(api_route, test_data_login, 422, async_client, async_session)
 
 
-async def precondition(api_route, expected_status, db, fixture, user_status: UserStatus | None):
-    """ Update UserStatus or add or delete a user """
-    fixture = get_leaf(fixture, api_route, expected_status)
-    pk = get_pk(fixture, 'email')
-    if not pk:
-        return
-    user_old = await crud.get_one_where(db, User, att_name=User.email, att_value=pk)
-    # a. Delete user (if target is NR)
-    if user_old and not user_status:
-        await crud.delete(db, User, user_old.id)
-        return
-    # b. Set attributes
-    # - Password: set the right or a random one.
-    password = fixture.get(PAYLOAD, {}).get('password')
-    password = get_salted_hash(password) \
-        if password and 'right' in password.lower() \
-        else get_otp()
-
-    user = User(email=pk, password=password, expired=get_otp_expiration(),
-                fail_count=0, status=user_status)
-    if user_old:
-        # c. Update user
-        user.id = user_old.id
-        await crud.upd(db, User, user_old.id, map_user(user))
-
-    else:
-        # d. Add user
-        await crud.add(db, user)
-
-
 @pytest.mark.asyncio
 async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncSession, test_data_login: dict):
     login_data = test_data_login
@@ -99,7 +67,7 @@ async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncS
     await post_check(['password', 'change'], password_data, **kwargs)
     # d. Login (with "Password2!")
     response = await post_check(['login'], login_data, **kwargs)
-    assert _is_valid_token(response)
+    assert has_authorization_header(response) is True
 
 
 @pytest.mark.asyncio
@@ -131,13 +99,7 @@ async def test_login_otp_fail(async_client: AsyncClient, async_session: AsyncSes
     # b.4 Send another wrong one. Now expect user to be blocked.
     response = await post_check(['password', 'change'], password_data, 401, **kwargs)
     # b.5 No token should be returned
-    assert get_model(response) == {}
-
-
-def _is_valid_token(response):
-    if not is_debug_mode():
-        token = get_model(response)
-        assert token.get('token_type') == 'bearer'
+    assert has_authorization_header(response) is False
 
 
 async def change_password(async_session, fixture_set):

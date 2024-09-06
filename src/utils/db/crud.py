@@ -61,9 +61,9 @@ async def get_one_where(db, obj_def, att_name, att_value):
 
 
 # U
-async def upd(db, obj_def, id, obj_upd: BaseModel):
+async def upd(db, obj_def, obj_upd: BaseModel):
     # Get the record (SQLAlchemy model)
-    obj = await _get(db, obj_def, id)
+    obj = await _get(db, obj_def, obj_upd.id)
     # Get the pydantic updated attributes
     atts = obj_upd.model_dump(exclude_unset=True)
     # Copy the updated attributes to SQLAlchemy model
