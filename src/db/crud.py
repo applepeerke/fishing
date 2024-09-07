@@ -71,6 +71,9 @@ async def upd(db, obj_def, obj_upd: BaseModel):
         if isinstance(value, SecretStr):
             value = value.get_secret_value()
         setattr(obj, att_name, value)
+    # Increment update_count
+    update_count = 1 if not obj.update_count else obj.update_count + 1
+    setattr(obj, 'update_count', update_count)
     await db.commit()
     await db.refresh(obj)  # Get the new values
     return obj

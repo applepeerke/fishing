@@ -1,15 +1,13 @@
 import os
 
 from dotenv import load_dotenv
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncAttrs
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+
+from src.domains.base.models import Base
 
 # Needed here for alembic
 load_dotenv()
-
-
-class Base(AsyncAttrs, DeclarativeBase):
-    pass
 
 
 def get_async_engine():
@@ -23,7 +21,7 @@ async def get_db_session() -> AsyncSession:
         yield session
 
 
-async def init_models(test=False):
+async def init_models():
     async with get_async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

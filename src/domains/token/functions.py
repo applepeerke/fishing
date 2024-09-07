@@ -15,8 +15,8 @@ from src.domains.token.models import AccessTokenData, OAuthAccessToken
 from src.domains.user.functions import send_otp, map_user
 from src.domains.user.models import User
 from src.domains.user.models import UserRead, UserStatus
-from src.utils.db import crud
-from src.utils.db.db import get_db_session
+from src.db import crud
+from src.db.db import get_db_session
 from src.utils.functions import get_otp_expiration, get_password_expiration
 from src.utils.security.crypto import get_random_password, get_salted_hash, is_valid_password
 from src.utils.security.crypto import verify_hash

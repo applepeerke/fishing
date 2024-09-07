@@ -6,10 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from conftest import test_data_login
 from src.domains.user.models import User
-from src.utils.db import crud
+from src.db import crud
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import post_check, get_leaf, set_password_in_db, get_json, get_model
-from tests.authentication.functions import initialize_user_from_fixture, has_authorization_header
+from tests.functions import initialize_user_from_fixture, has_authorization_header
 
 
 @pytest.mark.asyncio

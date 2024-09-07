@@ -10,8 +10,8 @@ from src.domains.token.functions import validate_user, set_user_status, invalid_
     get_oauth_access_token
 from src.domains.user.functions import send_otp
 from src.domains.user.models import User, UserStatus
-from src.utils.db import crud
-from src.utils.db.db import get_db_session
+from src.db import crud
+from src.db.db import get_db_session
 from src.utils.functions import get_otp_expiration
 from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_password
 

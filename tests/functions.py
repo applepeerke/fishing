@@ -1,14 +1,11 @@
-from http import HTTPStatus
-
 from httpx import AsyncClient
 from starlette.responses import Response
 
-from src.domains.login.models import Login
 from src.domains.token.constants import BEARER
 from src.domains.token.functions import get_user_status
 from src.domains.user.functions import map_user
 from src.domains.user.models import User, UserStatus
-from src.utils.db import crud
+from src.db import crud
 from src.utils.functions import get_pk
 from src.utils.security.crypto import get_random_password, get_salted_hash
 from src.utils.tests.constants import PAYLOAD, AUTHORIZATION
