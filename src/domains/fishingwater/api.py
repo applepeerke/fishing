@@ -3,10 +3,10 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domains.base.models import get_delete_response
 from src.domains.fishingwater.models import FishingWater, FishingWaterRead, FishingWaterCreate
-from src.general.models import get_delete_response
-from src.utils.db import crud
-from src.utils.db.db import get_db_session
+from src.db import crud
+from src.db.db import get_db_session
 
 fishingwater = APIRouter()
 

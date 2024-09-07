@@ -14,7 +14,7 @@ Unit- and also automatic testing is done via pytest. A _virtual hacker_ is used 
 
 ## Prerequisites
  - Python 3.12
- - Postgres with empty databases `fishing_db_dev` and `fishing_db_dev_test`
+ - Postgres with empty databases `fishing_db` and `fishing_db_test`
 
 
 ## Getting started

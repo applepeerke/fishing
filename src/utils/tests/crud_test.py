@@ -2,11 +2,10 @@ from fastapi.exceptions import ResponseValidationError
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domains.token.constants import BEARER
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import insert_record, assert_response, get_json
 from src.utils.tests.virtual_hacker import tamper_items
-from tests.authentication.functions import login_user, has_authorization_header, get_authorization_header
+from tests.functions import login_user, get_authorization_header
 
 
 class CrudTest:

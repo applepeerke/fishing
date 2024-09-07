@@ -9,7 +9,7 @@ from starlette import status
 
 from src.domains.user.functions import map_user
 from src.domains.user.models import User
-from src.utils.db import crud
+from src.db import crud
 from src.utils.functions import get_otp_expiration, get_password_expiration, find_filename_path
 from src.utils.security.crypto import get_salted_hash, verify_hash
 from src.utils.tests.constants import *
@@ -17,13 +17,13 @@ from src.utils.tests.constants import *
 
 def get_json(domain) -> dict:
     """ Retrieve JSON from fishing/tests/data/{domain}.json"""
-    path = get_fixture_path('data', domain, 'json')
+    path = get_fixture_path(domain, 'json')
     with open(path, "r") as file:
         data = json.loads(file.read())
     return data
 
 
-def get_fixture_path(subdir, domain, ext, automatic_tests=False) -> str:
+def get_fixture_path(domain, ext, automatic_tests=False) -> str:
     file_name = f'automatic_tests_{domain}.{ext}' if automatic_tests else f'{domain}.{ext}'
     return find_filename_path(file_name)
 
