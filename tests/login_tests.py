@@ -13,7 +13,7 @@ from tests.functions import initialize_user_from_fixture, has_authorization_head
 
 
 @pytest.mark.asyncio
-async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClient, async_session: AsyncSession):
+async def test_login_TDD(test_tdd_scenarios_login: dict, client: AsyncClient, db: AsyncSession):
     """
     TDD
     All test scenarios via csv file 'tests/tdd/automatic_tests_login.csv'.
@@ -31,38 +31,38 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, async_client: AsyncClie
                         headers = {}
                         # Optionally insert User record with desired UserStatus
                         await initialize_user_from_fixture(
-                            fixture_route, result, async_session, test_tdd_scenarios_login, target_user_status)
+                            fixture_route, result, db, test_tdd_scenarios_login, target_user_status)
                         executions = int(names[2])
                         for exec_no in range(1, executions + 1):
                             await post_check(
-                                api_route, test_tdd_scenarios_login, int(names[3]), async_client, async_session,
+                                api_route, test_tdd_scenarios_login, int(names[3]), client, db,
                                 headers, fixture_route, route_from_index=1, check_response=exec_no == executions)
                             print(f'* Test "{api_route[0]}" route "{' '.join(api_route[1:])}" was successful.')
 
 
 @pytest.mark.asyncio
-async def test_register_success(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
+async def test_register_success(test_data_login: dict, client: AsyncClient, db: AsyncSession):
     """ Target status Inactive (10) """
     api_route = ['login', 'register']
     await post_check(
-        api_route, test_data_login, 200, async_client, async_session)
+        api_route, test_data_login, 200, client, db)
 
 
 @pytest.mark.asyncio
-async def test_register_fail(test_data_login: dict, async_client: AsyncClient, async_session: AsyncSession):
+async def test_register_fail(test_data_login: dict, client: AsyncClient, db: AsyncSession):
     api_route = ['login', 'register']
-    await post_check(api_route, test_data_login, 422, async_client, async_session)
+    await post_check(api_route, test_data_login, 422, client, db)
 
 
 @pytest.mark.asyncio
-async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncSession, test_data_login: dict):
+async def test_login_happy_flow(client: AsyncClient, db: AsyncSession, test_data_login: dict):
     login_data = test_data_login
     password_data = get_json('password')
-    kwargs = {'expected_http_status': 200, 'client': async_client, 'db': async_session}
+    kwargs = {'expected_http_status': 200, 'client': client, 'db': db}
     # a. Register - request otp
     await post_check(['login', 'register'], login_data, **kwargs)
     # b. Change db OTP (to hashed "Password1!")
-    await change_password(async_session, password_data)
+    await change_password(db, password_data)
     # c. Change password (to "Password2!")
     await post_check(['password', 'change'], password_data, **kwargs)
     # d. Login (with "Password2!")
@@ -71,15 +71,15 @@ async def test_login_happy_flow(async_client: AsyncClient, async_session: AsyncS
 
 
 @pytest.mark.asyncio
-async def test_login_otp_fail(async_client: AsyncClient, async_session: AsyncSession, test_data_login: dict):
-    kwargs = {'client': async_client, 'db': async_session}
+async def test_login_otp_fail(client: AsyncClient, db: AsyncSession, test_data_login: dict):
+    kwargs = {'client': client, 'db': db}
     login_data = test_data_login
     password_data = get_json('password')
     # Register
     # a.  Send OTP to user (mail is not really sent to user).
     await post_check(['login', 'register'], login_data, 200, **kwargs)
     # a.1 Change db OTP (to hashed "Password1!")
-    await change_password(async_session, password_data)
+    await change_password(db, password_data)
     # a.2 User specifies wrong OTP.
     await post_check(['password', 'change'], password_data, 401, **kwargs)
     # a.3 User specifies right OTP.
@@ -88,8 +88,8 @@ async def test_login_otp_fail(async_client: AsyncClient, async_session: AsyncSes
     # b. request otp, send wrong OTP (1 time too much).
     # b.1 delete the user
     fixture = get_leaf(password_data, ['password', 'change'], SUCCESS)
-    user = await crud.get_one_where(async_session, User, att_name=User.email, att_value=fixture['payload']['email'])
-    await crud.delete(async_session, User, user.id)
+    user = await crud.get_one_where(db, User, att_name=User.email, att_value=fixture['payload']['email'])
+    await crud.delete(db, User, user.id)
     # b.2 request OTP.
     await post_check(['login', 'register'], login_data, 200, **kwargs)
     # b.3 User sends max. number of wrong OTP.

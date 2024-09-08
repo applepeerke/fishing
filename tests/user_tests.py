@@ -9,25 +9,25 @@ domain_url = 'user'
 
 
 @pytest.mark.asyncio
-async def test_create(async_client: AsyncClient, async_session: AsyncSession, test_data_user: dict):
-    crud_test = CrudTest(async_client, async_session, test_data_user, domain_url)
+async def test_create(client: AsyncClient, db: AsyncSession, test_data_user: dict):
+    crud_test = CrudTest(client, db, test_data_user, domain_url)
     await crud_test.create()
 
 
 @pytest.mark.asyncio
-async def test_read(async_client: AsyncClient, async_session: AsyncSession, test_data_user: dict):
-    crud_test = CrudTest(async_client, async_session, test_data_user, domain_url, User)
+async def test_read(client: AsyncClient, db: AsyncSession, test_data_user: dict):
+    crud_test = CrudTest(client, db, test_data_user, domain_url, User)
     await crud_test.read()
 
 
 @pytest.mark.asyncio
-async def test_update(async_client: AsyncClient, async_session: AsyncSession, test_data_user: dict):
-    crud_test = CrudTest(async_client, async_session, test_data_user, domain_url, User)
+async def test_update(client: AsyncClient, db: AsyncSession, test_data_user: dict):
+    crud_test = CrudTest(client, db, test_data_user, domain_url, User)
     await crud_test.update()
 
 
 @pytest.mark.asyncio
-async def test_delete(async_client: AsyncClient, async_session: AsyncSession, test_data_user: dict):
-    crud_test = CrudTest(async_client, async_session, test_data_user, domain_url, User)
+async def test_delete(client: AsyncClient, db: AsyncSession, test_data_user: dict):
+    crud_test = CrudTest(client, db, test_data_user, domain_url, User)
     await crud_test.delete()
 

@@ -19,7 +19,7 @@ async_engine = get_async_engine()
 
 
 @pytest_asyncio.fixture
-async def async_client():
+async def client():
     async with AsyncClient(
             base_url=f"http://{os.getenv('API_V1_PREFIX')}",
             transport=ASGITransport(app=app)
@@ -28,7 +28,7 @@ async def async_client():
 
 
 @pytest_asyncio.fixture(scope="function")
-async def async_session() -> AsyncSession:
+async def db() -> AsyncSession:
     session = sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False)
 
     async with session() as s:
@@ -43,18 +43,23 @@ async def async_session() -> AsyncSession:
 
 
 @pytest.fixture(scope="function")
-def test_data_fishingwater() -> dict:
-    return get_json('fishingwater')
-
-
-@pytest.fixture(scope="function")
 def test_data_user() -> dict:
     return get_json('user')
 
 
 @pytest.fixture(scope="function")
+def test_data_role() -> dict:
+    return get_json('role')
+
+
+@pytest.fixture(scope="function")
 def test_data_login() -> dict:
     return get_json('login')
+
+
+@pytest.fixture(scope="function")
+def test_data_fishingwater() -> dict:
+    return get_json('fishingwater')
 
 
 @pytest.fixture(scope="function")
