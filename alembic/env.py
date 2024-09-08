@@ -25,6 +25,7 @@ if config.config_file_name is not None:
 
 from src.domains.base.models import Base
 from src.domains.user.models import User
+from src.domains.role.models import Role
 from src.domains.fishingwater.models import FishingWater
 target_metadata = Base.metadata
 

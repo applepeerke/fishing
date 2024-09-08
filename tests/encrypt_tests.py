@@ -7,8 +7,8 @@ from src.utils.tests.functions import post_check, get_model, set_leaf
 
 
 @pytest.mark.asyncio
-async def test_encrypt(async_client: AsyncClient, async_session: AsyncSession, test_data_encrypt: dict):
-    kwargs = {'client': async_client, 'db': async_session}
+async def test_encrypt(client: AsyncClient, db: AsyncSession, test_data_encrypt: dict):
+    kwargs = {'client': client, 'db': db}
     fixture = test_data_encrypt
     # Success
     # a. Calculate encryption and add it to payload

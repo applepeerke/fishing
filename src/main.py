@@ -4,6 +4,7 @@ import uvicorn as uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 
+from src.domains.role.api import role
 from src.domains.token.functions import has_access
 from src.domains.fishingwater.api import fishingwater
 from src.domains.login.api import login_register, login_login, login_acknowledge
@@ -28,6 +29,7 @@ app.include_router(password_change, prefix='/password/change', tags=['Login'])
 app.include_router(password_forgot, prefix='/password/forgot', tags=['Login'])
 # CRUD
 app.include_router(user, prefix='/user', tags=['User'], dependencies=AUTH)  # Creating/deleting user is not by user
+app.include_router(role, prefix='/role', tags=['Role'], dependencies=AUTH)  # Creating/deleting user is not by user
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'], dependencies=AUTH)
 # Email/Password hashing (internal)
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])

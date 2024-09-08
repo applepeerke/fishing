@@ -1,0 +1,38 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "af0702e1-acaa-4034-a11b-407483130639",
+     "name": "admin"
+   }
+ },
+ "create": {
+   "payload": {
+     "id": "67f1d513-4928-46d2-9b3d-4a093d972470",
+     "name": "fisherman"
+   },
+   "expect": {
+     "name": "fisherman"
+   }
+ },
+ "read": {
+   "expect": {
+     "name": "admin"
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "af0702e1-acaa-4034-a11b-407483130639",
+     "name": "deputy"
+   },
+   "expect": {
+     "id": "af0702e1-acaa-4034-a11b-407483130639",
+     "name": "deputy"
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The roles record has been deleted."
+   }
+ }
+}
