@@ -6,9 +6,8 @@ from starlette.responses import Response
 
 from src.domains.login.models import Login
 from src.domains.login.models import LoginBase
-from src.domains.token.functions import validate_user, set_user_status, invalid_login_attempt, \
-    get_oauth_access_token
-from src.domains.user.functions import send_otp
+from src.domains.token.functions import get_oauth_access_token
+from src.domains.user.functions import validate_user, evaluate_user_status, invalid_login_attempt, send_otp
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.db.db import get_db_session
@@ -60,14 +59,12 @@ async def acknowledge(request: Request, db: AsyncSession = Depends(get_db_sessio
     if not verify_hash(username, request.query_params['token']):
         await invalid_login_attempt(db, user)
     # Acknowledge user.
-    await set_user_status(db, user, target_status=UserStatus.Acknowledged)
+    await evaluate_user_status(db, user, target_status=UserStatus.Acknowledged)
 
 
 @login_login.post('/')
 async def login(credentials: Login, response: Response, db: AsyncSession = Depends(get_db_session)):
     """ Log in with email and password (not OTP). """
-    print(credentials)
-    print(response)
     if not credentials:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
     # The user must already exist and be valid.
@@ -77,6 +74,6 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
     if not verify_hash(credentials.password.get_secret_value(), user.password):
         await invalid_login_attempt(db, user)
     # Activate user.
-    await set_user_status(db, user, target_status=UserStatus.Active)
+    await evaluate_user_status(db, user, target_status=UserStatus.Active)
     token = get_oauth_access_token(user)
     response.headers.append('Authorization', f'{token.token_type} {token.access_token}')

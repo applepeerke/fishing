@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from src.domains.password.functions import validate_new_password
 from src.domains.password.models import ChangePassword
 from src.domains.password.models import Password, PasswordEncrypted, ChangePasswordBase
-from src.domains.token.functions import validate_user, set_user_status, invalid_login_attempt, \
-    validate_new_password
+from src.domains.user.functions import validate_user, evaluate_user_status, invalid_login_attempt
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.db.db import get_db_session
@@ -35,7 +35,7 @@ async def change_password(credentials: ChangePassword, db: AsyncSession = Depend
     # Set new password.
     user.password = get_salted_hash(credentials.new_password.get_secret_value())
     # Activate user.
-    await set_user_status(db, user, target_status=UserStatus.Active, new_expiry=True)
+    await evaluate_user_status(db, user, target_status=UserStatus.Active, renew_expiration=True)
 
 
 @password_forgot.post('/')
@@ -47,7 +47,7 @@ async def forgot_password(credentials: ChangePasswordBase, db: AsyncSession = De
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
     user = await validate_user(db, user, forgot_password=True)
     # Inactivate the user
-    await set_user_status(db, user, target_status=UserStatus.Inactive)
+    await evaluate_user_status(db, user, target_status=UserStatus.Inactive, forgot_password=True)
 
 
 @password_hash.post('/', response_model=PasswordEncrypted)
