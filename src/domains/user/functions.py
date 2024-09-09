@@ -1,12 +1,14 @@
+import datetime
 import os
 
 from fastapi import HTTPException
 from starlette import status
 
-from src.domains.user.models import User, UserRead
-from src.utils.functions import find_filename_path, is_debug_mode
+from src.db import crud
+from src.domains.user.models import User, UserRead, UserStatus
+from src.utils.functions import find_filename_path, is_debug_mode, get_otp_expiration, get_password_expiration
 from src.utils.mail.mail import send_mail
-from src.utils.security.crypto import get_salted_hash
+from src.utils.security.crypto import get_salted_hash, get_random_password
 
 
 def send_otp(email, otp):
@@ -30,6 +32,120 @@ def send_otp(email, otp):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+async def validate_user(db, user: User, forgot_password=False) -> User:
+    # a. Validation
+    if not user:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user does not exist.')
+    #   - Blacklisted user
+    if user.status == UserStatus.Blacklisted:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='The user is blacklisted.')
+
+    # b. Forgot password: Do not set to Blocked/Expired.
+    if forgot_password:
+        return user
+
+    # c. Evaluate blocked/expired
+    #   - Blocked user.
+    if user.status == UserStatus.Blocked:
+        user = await evaluate_user_status(db, user, target_status=UserStatus.Blocked)
+    #   - Expired password.
+    if user.status != UserStatus.Blocked:
+        user = await evaluate_user_status(db, user)
+
+    return user
+
+
+async def invalid_login_attempt(db, user: User, error_message=None):
+    prefix = error_message or 'Invalid login attempt.'
+    await evaluate_user_status(db, user, error_message=prefix)
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f'{prefix} Please try again.')
+
+
+async def evaluate_user_status(
+        db, user: User, target_status=None, renew_expiration=False, error_message=None, forgot_password=False) -> User:
+
+    if not user:  # Not registered yet
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    if not forgot_password:
+        # a. Optionally override target status.
+        #    Blocked
+        #   - Invalid login attempt
+        if error_message:
+            user.fail_count = user.fail_count + 1
+            # Max. fail attempts reached: block the user.
+            if user.fail_count >= int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED', 3)):
+                target_status = UserStatus.Blocked
+                error_message = f'{error_message} The user has been blocked. Please try again later.'
+
+        #   - Blocking time is over: reactivate the user
+        if user.blocked_until and user.blocked_until < datetime.datetime.now(datetime.timezone.utc):
+            target_status = UserStatus.Active
+
+        #   Expired
+        #   - Expiration time reached
+        if user.expired and user.expired < datetime.datetime.now(datetime.timezone.utc):
+            if user.status == UserStatus.Acknowledged:
+                error_message = 'The temporary password has expired. Please register again.'
+            else:
+                target_status = UserStatus.Expired
+                error_message = 'The password is expired.'
+
+    # b. Handle new status
+    user = set_user_status(user, target_status, renew_expiration)
+    user = await crud.upd(db, User, map_user(user))
+
+    # Still blocked: error
+    if not error_message and target_status == UserStatus.Blocked and user.status == UserStatus.Blocked:
+        error_message = 'The user is blocked. Please try again later.'
+
+    # c. Handle error
+    if error_message:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=error_message)
+    return user
+
+
+def set_user_status(user: User, target_status=None, renew_expiration=False) -> User:
+    if not target_status or (user.status == target_status and not renew_expiration):
+        return user  # Nothing to do
+
+    if target_status == UserStatus.Inactive:
+        user = _reset_user_attributes(user)
+        # Create the one time password (not hashed, 10 long)
+        otp = get_random_password()
+        user.password = get_salted_hash(otp)
+        user.expired = get_otp_expiration()  # Short ttl
+        # Mail the OTP to the specified address.
+        send_otp(user.email, otp)
+    elif target_status == UserStatus.Acknowledged:
+        pass
+    elif target_status == UserStatus.Active:
+        user = _reset_user_attributes(user)
+        if renew_expiration:
+            user.expired = get_password_expiration()  # Long ttl
+    elif target_status == UserStatus.Blocked:  # max fail_count reached
+        if not user.blocked_until:
+            user.blocked_until = _get_blocked_until()
+
+    # Set status
+    user.status = target_status
+    return user
+
+
+def _get_blocked_until():
+    minutes = int(os.getenv('LOGIN_BLOCK_MINUTES', 10))
+    return datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes)
+
+
+def _reset_user_attributes(user) -> UserRead:
+    user.blocked_until = None
+    user.fail_count = 0
+    user.authentication_token = None
+    return user
 
 
 def map_user(user: User) -> UserRead:

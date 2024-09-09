@@ -32,7 +32,6 @@ class User(Base):
     status = Column(Integer, default=UserStatus.Inactive)
     # Relations
     roles: Mapped[List['Role']] = relationship(back_populates='user', cascade='all, delete')
-    roles = relationship('Role', cascade='all, delete', backref="users")
 
 
 # Pydantic models

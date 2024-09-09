@@ -1,9 +1,10 @@
+import datetime
+
 from httpx import AsyncClient
 from starlette.responses import Response
 
 from src.domains.token.constants import BEARER
-from src.domains.token.functions import get_user_status
-from src.domains.user.functions import map_user
+from src.domains.user.functions import set_user_status, map_user
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.utils.functions import get_pk
@@ -53,11 +54,13 @@ async def _initialize_user(db, pk, target_status: int | None, plain_text_passwor
         return
     # b. Set attributes
     # - Status related attributes
-    user = get_user_status(User(email=pk, fail_count=0), target_status)
+    user = set_user_status(User(email=pk, fail_count=0), target_status)
     # - Password
     if not plain_text_password and target_status > 10:
         plain_text_password = get_random_password()
     user.password = get_salted_hash(plain_text_password)
+    if target_status == UserStatus.Expired:
+        user.expired = datetime.datetime.now(datetime.timezone.utc)
     # c. Updert user
     if user_old:
         user.id = user_old.id

@@ -3,6 +3,7 @@ import os
 import uvicorn as uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
+from starlette.requests import Request
 
 from src.domains.role.api import role
 from src.domains.token.functions import has_access
@@ -10,6 +11,7 @@ from src.domains.fishingwater.api import fishingwater
 from src.domains.login.api import login_register, login_login, login_acknowledge
 from src.domains.password.api import password_verify, password_forgot, password_change, password_hash
 from src.domains.user.api import user
+from src.session.session import set_session
 from src.utils.functions import is_debug_mode
 
 load_dotenv()
@@ -35,6 +37,12 @@ app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'],
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
 app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (internal)'])
 
+
+# Add middleware to the app
+@app.middleware('session')
+async def dispatch(request: Request, call_next):
+    await set_session(request)
+    return await call_next(request)
 
 if __name__ == '__main__':
     uvicorn.run("main:app", port=8085, host="0.0.0.0", reload=False)
