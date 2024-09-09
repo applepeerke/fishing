@@ -73,6 +73,8 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
     user = await validate_user(db, user)
     # Validate credentials.
+    if not credentials.password.get_secret_value() == credentials.password_repeat.get_secret_value():
+        await invalid_login_attempt(db, user, 'Repeated password must be the same.')
     if not verify_hash(credentials.password.get_secret_value(), user.password):
         await invalid_login_attempt(db, user)
     # Activate user.
