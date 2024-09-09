@@ -38,7 +38,7 @@ async def register(payload: LoginBase, db: AsyncSession = Depends(get_db_session
     user = User(
         email=payload.email,
         password=get_salted_hash(otp),
-        expired=get_otp_expiration(),
+        expiration=get_otp_expiration(),
         status=UserStatus.Inactive
     )
     await crud.add(db, user)

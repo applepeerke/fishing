@@ -60,7 +60,7 @@ async def _initialize_user(db, pk, target_status: int | None, plain_text_passwor
         plain_text_password = get_random_password()
     user.password = get_salted_hash(plain_text_password)
     if target_status == UserStatus.Expired:
-        user.expired = datetime.datetime.now(datetime.timezone.utc)
+        user.expiration = datetime.datetime.now(datetime.timezone.utc)
     # c. Updert user
     if user_old:
         user.id = user_old.id

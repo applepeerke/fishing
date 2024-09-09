@@ -88,7 +88,7 @@ async def evaluate_user_status(
 
         #   Expired
         #   - Expiration time reached
-        if user.expired and user.expired < datetime.datetime.now(datetime.timezone.utc):
+        if user.expiration and user.expiration < datetime.datetime.now(datetime.timezone.utc):
             if user.status == UserStatus.Acknowledged:
                 error_message = 'The temporary password has expired. Please register again.'
             else:
@@ -118,7 +118,7 @@ def set_user_status(user: User, target_status=None, renew_expiration=False) -> U
         # Create the one time password (not hashed, 10 long)
         otp = get_random_password()
         user.password = get_salted_hash(otp)
-        user.expired = get_otp_expiration()  # Short ttl
+        user.expiration = get_otp_expiration()  # Short ttl
         # Mail the OTP to the specified address.
         send_otp(user.email, otp)
     elif target_status == UserStatus.Acknowledged:
@@ -126,7 +126,7 @@ def set_user_status(user: User, target_status=None, renew_expiration=False) -> U
     elif target_status == UserStatus.Active:
         user = _reset_user_attributes(user)
         if renew_expiration:
-            user.expired = get_password_expiration()  # Long ttl
+            user.expiration = get_password_expiration()  # Long ttl
     elif target_status == UserStatus.Blocked:  # max fail_count reached
         if not user.blocked_until:
             user.blocked_until = _get_blocked_until()
@@ -144,7 +144,6 @@ def _get_blocked_until():
 def _reset_user_attributes(user) -> UserRead:
     user.blocked_until = None
     user.fail_count = 0
-    user.authentication_token = None
     return user
 
 
@@ -153,9 +152,8 @@ def map_user(user: User) -> UserRead:
     user_read = UserRead(
         id=user.id,
         email=user.email,
-        authentication_token=user.authentication_token,
         status=user.status,
-        expired=user.expired,
+        expiration=user.expiration,
         fail_count=user.fail_count,
         blocked_until=user.blocked_until,
     )
