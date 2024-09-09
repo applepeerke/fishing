@@ -3,13 +3,13 @@ import contextvars
 from sqlalchemy import Column, DateTime, String, func, Integer
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy.orm import DeclarativeBase, declared_attr
+from sqlalchemy.orm import DeclarativeBase
 
 from src.constants import UNKNOWN
-from src.domains.token.models import AccessTokenData
+from src.domains.token.models import SessionTokenData
 
-# Create a context variable for the current user
-current_user_var = contextvars.ContextVar('current_user')
+# Create a context variable for the authorization_token
+session_token_var = contextvars.ContextVar('session_token')
 
 
 class AuditMixin(object):
@@ -17,6 +17,8 @@ class AuditMixin(object):
     created_by = Column(String)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
     updated_by = Column(String, nullable=True)
+    update_count = Column(Integer)
+
     # @declared_attr
     # def created_at(self):
     #     return Column(DateTime(timezone=True), default=func.now())
@@ -32,10 +34,10 @@ class AuditMixin(object):
     # @declared_attr
     # def updated_by(self):
     #     return Column(String, nullable=True)
-
-    @declared_attr
-    def update_count(self):
-        return Column(Integer)
+    #
+    # @declared_attr
+    # def update_count(self):
+    #     return Column(Integer)
 
 
 class Base(AsyncAttrs, AuditMixin, DeclarativeBase):
@@ -45,13 +47,13 @@ class Base(AsyncAttrs, AuditMixin, DeclarativeBase):
 def set_created_by(mapper, connection, target):
     """ Event listener """
     # Get the current user from the context variable
-    user: AccessTokenData = current_user_var.get(None)
-    target.created_by = user.email if user else UNKNOWN
+    session_token: SessionTokenData = session_token_var.get(None)
+    target.created_by = session_token.email if session_token else UNKNOWN
 
 
 def set_updated_by(mapper, connection, target):
     """ Event listener """
-    user: AccessTokenData = current_user_var.get(None)
+    user: SessionTokenData = session_token_var.get(None)
     target.updated_by = user.email if user else UNKNOWN
 
 

@@ -6,5 +6,5 @@ class OAuthAccessToken(BaseModel):
     token_type: str
 
 
-class AccessTokenData(BaseModel):
+class SessionTokenData(BaseModel):
     email: EmailStr | None = None

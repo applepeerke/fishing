@@ -6,12 +6,11 @@ from fastapi import FastAPI, Depends
 from starlette.requests import Request
 
 from src.domains.role.api import role
-from src.domains.token.functions import has_access
 from src.domains.fishingwater.api import fishingwater
 from src.domains.login.api import login_register, login_login, login_acknowledge
 from src.domains.password.api import password_verify, password_forgot, password_change, password_hash
 from src.domains.user.api import user
-from src.session.session import set_session
+from src.session.session import set_session, has_access
 from src.utils.functions import is_debug_mode
 
 load_dotenv()
