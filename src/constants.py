@@ -1,1 +1,2 @@
 UNKNOWN = '*unknown'
+AUTHORIZATION = 'Authorization'

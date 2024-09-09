@@ -1,18 +1,26 @@
 from starlette.requests import Request
 
-from src.domains.base.models import current_user_var
-from src.domains.token.functions import get_token_data
-from src.domains.token.models import AccessTokenData
+from src.constants import AUTHORIZATION
+from src.domains.base.models import session_token_var
+from src.domains.token.functions import get_session_token_data
+from src.domains.token.models import SessionTokenData
 
 
 async def set_session(request: Request):
-    # Get user information from the dependency
-    auth_header = request.headers.get('Authorization')
-    if auth_header:
+    # Set session token
+    set_session_token(request.headers.get(AUTHORIZATION))
+
+
+def set_session_token(authorization_header):
+    if authorization_header:
         # Extract the token part after "Bearer "
-        token = auth_header.split(" ")[1]
-        token_data: AccessTokenData = get_token_data(token)
+        session_token = authorization_header.split(" ")[1]
+        token_data: SessionTokenData = get_session_token_data(session_token)
         # Set the user in the context variable
-        current_user_var.set(token_data)
+        session_token_var.set(token_data)
     else:
-        current_user_var.set(AccessTokenData())
+        session_token_var.set(None)
+
+
+async def has_access() -> SessionTokenData | None:
+    return session_token_var.get(None)

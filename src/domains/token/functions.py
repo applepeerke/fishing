@@ -4,7 +4,7 @@ from typing import Annotated
 
 import jwt
 from fastapi import HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -12,7 +12,7 @@ from starlette import status
 from src.db import crud
 from src.db.db import get_db_session
 from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES, BEARER
-from src.domains.token.models import AccessTokenData, OAuthAccessToken
+from src.domains.token.models import SessionTokenData, OAuthAccessToken
 from src.domains.user.models import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
@@ -23,10 +23,8 @@ credentials_exception = HTTPException(
     headers={'WWW-Authenticate': 'Bearer'}
 )
 
-security = HTTPBearer()
 
-
-def get_oauth_access_token(user) -> OAuthAccessToken:
+def create_oauth_token(user) -> OAuthAccessToken:
     """ The OAuth2 scheme requires a JSON with "access_token" and "token_type". """
     payload = {
         "sub": user.email,
@@ -39,12 +37,7 @@ def get_oauth_access_token(user) -> OAuthAccessToken:
     return OAuthAccessToken(access_token=jwt_token, token_type=BEARER)
 
 
-async def has_access(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]) -> AccessTokenData:
-    """ OAuth2 bearer token """
-    return get_token_data(credentials.credentials)
-
-
-def get_token_data(authorization_token) -> AccessTokenData:
+def get_session_token_data(authorization_token) -> SessionTokenData:
     try:
         payload = jwt.decode(
             authorization_token,
@@ -57,16 +50,16 @@ def get_token_data(authorization_token) -> AccessTokenData:
         email: str = payload.get("sub")
         if not email:
             raise credentials_exception
-        return AccessTokenData(email=email)
+        return SessionTokenData(email=email)
     except InvalidTokenError:
         raise credentials_exception
 
 
-async def get_user_from_token(
+async def get_user_from_session_token(
         db: Annotated[AsyncSession, Depends(get_db_session)],
         access_token: Annotated[str, Depends(oauth2_scheme)]) -> User:
     # Get token data
-    token_data = get_token_data(access_token)
+    token_data = get_session_token_data(access_token)
 
     # Get the token user
     user = await crud.get_one_where(

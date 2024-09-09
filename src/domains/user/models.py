@@ -25,8 +25,7 @@ class User(Base):
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
     email = Column(String, nullable=False, index=True, unique=True)
     password = Column(String, nullable=True)
-    expired = Column(DateTime(timezone=True), nullable=True)
-    authentication_token = Column(String, nullable=True)
+    expiration = Column(DateTime(timezone=True), nullable=True)
     fail_count = Column(Integer, default=0)
     blocked_until = Column(DateTime(timezone=True), nullable=True)
     status = Column(Integer, default=UserStatus.Inactive)
@@ -45,10 +44,9 @@ class UserCreate(UserBase):
 
 class UserUpdate(UserBase):
     password: Optional[SecretStr] = Field(min_length=8, max_length=256, default=None)
-    expired: Optional[datetime] = Field(DateTime(timezone=True))
+    expiration: Optional[datetime] = Field(DateTime(timezone=True))
     fail_count: conint(ge=0, lt=100) = 0
     blocked_until: Optional[datetime] = Field(DateTime(timezone=True))
-    authentication_token: Optional[SecretStr] = Field(min_length=16, max_length=1024, default=None)
     status: conint(ge=10, lt=100) = UserStatus.Inactive
 
 

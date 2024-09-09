@@ -180,7 +180,7 @@ async def post_check(
 
 
 async def assert_db(db, expected_payload, pk='email'):
-    # If response is an Access token it is not a db model
+    # If response is an Authentication token it is not a db model
     if not expected_payload or pk not in expected_payload:
         return
 
@@ -191,11 +191,11 @@ async def assert_db(db, expected_payload, pk='email'):
     if 'password' in expected_payload:
         if expected_payload['password'] is None:
             assert user.password is None
-            assert user.expired is None
+            assert user.expiration is None
         else:
             assert verify_hash(expected_payload['password'], user.password)
-            if 'expiry' in expected_payload:
-                validate_expiration(user.expired, expiration_type=expected_payload['expiry'])
+            if 'expiration' in expected_payload:
+                validate_expiration(user.expiration, expiration_type=expected_payload['expiration'])
     if 'fail_count' in expected_payload:
         assert user.fail_count == expected_payload['fail_count']
     if 'status' in expected_payload:
