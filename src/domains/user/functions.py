@@ -34,7 +34,7 @@ def send_otp(email, otp):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
-async def validate_user(db, user: User, forgot_password=False) -> User:
+async def validate_user(db, user: User, forgot_password=False, minimum_status: int = 0) -> User:
     # a. Validation
     if not user:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='The user does not exist.')
@@ -42,7 +42,7 @@ async def validate_user(db, user: User, forgot_password=False) -> User:
     if user.status == UserStatus.Blacklisted:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='The user is blacklisted.')
 
-    # b. Forgot password: Do not set to Blocked/Expired.
+    # b. Forgot password clicked: Do not set to Blocked/Expired.
     if forgot_password:
         return user
 
@@ -52,24 +52,17 @@ async def validate_user(db, user: User, forgot_password=False) -> User:
         user = await evaluate_user_status(db, user, target_status=UserStatus.Blocked)
     #   - Expired password.
     if user.status != UserStatus.Blocked:
-        user = await evaluate_user_status(db, user)
+        user = await evaluate_user_status(db, user, minimum_status=minimum_status)
 
     return user
 
 
-async def invalid_login_attempt(db, user: User, error_message=None):
-    prefix = error_message or 'Invalid login attempt.'
-    await evaluate_user_status(db, user, error_message=prefix)
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=f'{prefix} Please try again.')
-
-
 async def evaluate_user_status(
-        db, user: User, target_status=None, renew_expiration=False, error_message=None, forgot_password=False) -> User:
+        db, user: User, error_message=None, target_status=None, renew_expiration=False, forgot_password=False,
+        minimum_status=0) -> User:
 
-    if not user:  # Not registered yet
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+    if not user or user.status < minimum_status:  # Not registered yet
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='The user has not the right status.')
 
     if not forgot_password:
         # a. Optionally override target status.
@@ -95,8 +88,7 @@ async def evaluate_user_status(
                 target_status = UserStatus.Expired
                 error_message = 'The password is expired.'
 
-    # b. Handle new status
-    user = set_user_status(user, target_status, renew_expiration)
+    user = set_user_status(user, target_status, renew_expiration=renew_expiration)
     user = await crud.upd(db, User, map_user(user))
 
     # Still blocked: error

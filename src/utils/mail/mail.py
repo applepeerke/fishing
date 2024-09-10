@@ -4,8 +4,6 @@ import smtplib
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 
-from src.utils.functions import is_debug_mode
-
 
 def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addresses: list, substitutions: dict):
     """
@@ -33,7 +31,8 @@ def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addre
     # Send the message via our own SMTP server, but don't include the envelope header.
     smtp = os.getenv('SMTP') if os.getenv('SMTP_ACTIVATED') == 'True' else 'localhost'
     s = smtplib.SMTP(smtp)
-    s.sendmail(from_mail_address, to_mail_addresses, msg.as_string())
+    if os.getenv('TEST_MAIL_ADDRESS', 'dummy@sample.com') not in to_mail_addresses:
+        s.sendmail(from_mail_address, to_mail_addresses, msg.as_string())
     s.quit()
 
 

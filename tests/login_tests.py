@@ -5,10 +5,14 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from conftest import test_data_login
+from src.constants import PASSWORD, EMAIL, TOKEN, LOGIN
+from src.domains.user.functions import map_user
 from src.domains.user.models import User
 from src.db import crud
+from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
-from src.utils.tests.functions import post_check, get_leaf, set_password_in_db, get_json, get_model
+from src.utils.tests.functions import post_check, get_leaf, get_json, get_model, get_user_from_db, get_check
+from tests.data.test_set import TestSet
 from tests.functions import initialize_user_from_fixture, has_authorization_header
 
 
@@ -43,67 +47,95 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, client: AsyncClient, db
 @pytest.mark.asyncio
 async def test_register_success(test_data_login: dict, client: AsyncClient, db: AsyncSession):
     """ Target status Inactive (10) """
-    api_route = ['login', 'register']
+    api_route = [LOGIN, 'register']
     await post_check(
         api_route, test_data_login, 200, client, db)
 
 
 @pytest.mark.asyncio
 async def test_register_fail(test_data_login: dict, client: AsyncClient, db: AsyncSession):
-    api_route = ['login', 'register']
+    api_route = [LOGIN, 'register']
     await post_check(api_route, test_data_login, 422, client, db)
 
 
 @pytest.mark.asyncio
 async def test_login_happy_flow(client: AsyncClient, db: AsyncSession, test_data_login: dict):
-    login_data = test_data_login
-    password_data = get_json('password')
+    ts = get_test_set()
     kwargs = {'expected_http_status': 200, 'client': client, 'db': db}
-    # a. Register - request otp
-    await post_check(['login', 'register'], login_data, **kwargs)
-    # b. Change db OTP (to hashed "Password1!")
-    await change_password(db, password_data)
-    # c. Change password (to "Password2!")
-    await post_check(['password', 'change'], password_data, **kwargs)
-    # d. Login (with "Password2!")
-    response = await post_check(['login'], login_data, **kwargs)
+
+    # a. Register - Send random OTP to user (mail is not really sent to user). Status 10.
+    await post_check([LOGIN, 'register'], ts.login_data, **kwargs)
+    # b. Acknowledge - Simulate user clicking the email link. Status 10 -> 20.
+    await get_check([LOGIN, 'acknowledge'], client, ts.params)
+    # c. Override db OTP - forced hardcoded - to hashed "Password1!"
+    await change_password(db, ts.credentials)
+    # d. Change password (from "Password1!" to "Password2!"). Status 10 -> 30.
+    await post_check([PASSWORD, 'change'], ts.password_data, **kwargs)
+    # e. Login (with "Password2!")
+    response = await post_check([LOGIN], ts.login_data, **kwargs)
     assert has_authorization_header(response) is True
 
 
 @pytest.mark.asyncio
-async def test_login_otp_fail(client: AsyncClient, db: AsyncSession, test_data_login: dict):
+async def test_login_otp_success_after_fail(client: AsyncClient, db: AsyncSession, test_data_login: dict):
+    ts = get_test_set()
     kwargs = {'client': client, 'db': db}
-    login_data = test_data_login
-    password_data = get_json('password')
-    # Register
-    # a.  Send OTP to user (mail is not really sent to user).
-    await post_check(['login', 'register'], login_data, 200, **kwargs)
-    # a.1 Change db OTP (to hashed "Password1!")
-    await change_password(db, password_data)
-    # a.2 User specifies wrong OTP.
-    await post_check(['password', 'change'], password_data, 401, **kwargs)
-    # a.3 User specifies right OTP.
-    await post_check(['password', 'change'], password_data,  200, **kwargs)
 
-    # b. request otp, send wrong OTP (1 time too much).
-    # b.1 delete the user
-    fixture = get_leaf(password_data, ['password', 'change'], SUCCESS)
-    user = await crud.get_one_where(db, User, att_name=User.email, att_value=fixture['payload']['email'])
-    await crud.delete(db, User, user.id)
-    # b.2 request OTP.
-    await post_check(['login', 'register'], login_data, 200, **kwargs)
-    # b.3 User sends max. number of wrong OTP.
-    for i in range(int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED')) - 1):
-        response = await post_check(['password', 'change'], password_data, 401, **kwargs)
-        assert get_model(response) == {}
-    # b.4 Send another wrong one. Now expect user to be blocked.
-    response = await post_check(['password', 'change'], password_data, 401, **kwargs)
-    # b.5 No token should be returned
+    # 1. User requests OTP. Status 10.
+    await post_check([LOGIN, 'register'], ts.login_data, 200, **kwargs)
+    # 1.1 Override db random OTP - forced hardcoded - to hashed "Password1!"
+    await change_password(db, ts.credentials)
+    # 2. User acknowledges - Simulate clicking the email link. Status 10 -> 20.
+    await get_check([LOGIN, 'acknowledge'], client, ts.params)
+    # 3. User changes password - specifies wrong OTP.
+    response = await post_check([PASSWORD, 'change'], ts.password_data, 401, **kwargs)
+    # 4. User changes password - specifies right OTP. Status 20 -> 30.
+    response = await post_check([PASSWORD, 'change'], ts.password_data, 200, **kwargs)
+    #   No token should be returned
     assert has_authorization_header(response) is False
 
 
-async def change_password(async_session, fixture_set):
-    """ After registration, user is created with random OTP, reset it with the one from the fixture. """
-    api_route = ['password', 'change']
-    fixture = get_leaf(fixture_set, api_route, SUCCESS)
-    await set_password_in_db(async_session, fixture[PAYLOAD], 'password')
+@pytest.mark.asyncio
+async def test_login_otp_fail(client: AsyncClient, db: AsyncSession, test_data_login: dict):
+    """ Request otp, send wrong OTP (1 time too much). """
+    ts = get_test_set()
+    kwargs = {'client': client, 'db': db}
+
+    # 1. User requests OTP. Status 10.
+    await post_check([LOGIN, 'register'], ts.login_data, 200, **kwargs)
+    # 2. User acknowledges - Simulate clicking the email link. Status 10 -> 20.
+    await get_check([LOGIN, 'acknowledge'], client, ts.params)
+    # 3. User specifies max. number of wrong OTP.
+    for i in range(int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED')) - 1):
+        response = await post_check([PASSWORD, 'change'], ts.password_data, 401, **kwargs)
+        assert get_model(response) == {}
+    # 4. User specifies another wrong one. Now expect user to be blocked. Status still 10.
+    response = await post_check([PASSWORD, 'change'], ts.password_data, 401, **kwargs)
+    #   No token should be returned
+    assert has_authorization_header(response) is False
+
+
+def get_test_set() -> TestSet:
+    password_data = get_json(PASSWORD)
+    credentials = get_test_credentials(password_data)
+    test_set = TestSet()
+    test_set.login_data = get_json(LOGIN)
+    test_set.password_data = password_data
+    test_set.credentials = credentials
+    test_set.params = {EMAIL: credentials[EMAIL], TOKEN: credentials[TOKEN]}
+    return test_set
+
+
+async def change_password(db, credentials: dict):
+    """ Encrypt password and put it in the db. """
+    user = await get_user_from_db(db, credentials[EMAIL])
+    user.password = get_salted_hash(credentials[PASSWORD])
+    await crud.upd(db, User, map_user(user))
+
+
+def get_test_credentials(fixture_set):
+    """ Token = token sent in acknowledge  email link query parameter. """
+    fixture = get_leaf(fixture_set, [PASSWORD, 'change'], SUCCESS, PAYLOAD)
+    return {EMAIL: fixture[EMAIL],
+            PASSWORD: fixture[PASSWORD],
+            TOKEN: get_salted_hash(fixture[EMAIL])}
