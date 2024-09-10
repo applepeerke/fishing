@@ -4,11 +4,11 @@ from starlette import status
 from starlette.requests import Request
 from starlette.responses import Response
 
-from src.constants import AUTHORIZATION
+from src.constants import AUTHORIZATION, EMAIL, TOKEN
 from src.domains.login.models import Login
 from src.domains.login.models import LoginBase
 from src.domains.token.functions import create_oauth_token
-from src.domains.user.functions import validate_user, evaluate_user_status, invalid_login_attempt, send_otp
+from src.domains.user.functions import validate_user, evaluate_user_status, send_otp
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.db.db import get_db_session
@@ -50,16 +50,16 @@ async def acknowledge(request: Request, db: AsyncSession = Depends(get_db_sessio
     """  Validate email link to get a handshake which expires after a short time. """
     if (not request
             or not request.query_params
-            or 'email' not in request.query_params
-            or 'token' not in request.query_params):
+            or EMAIL not in request.query_params
+            or TOKEN not in request.query_params):
         raise HTTPException(status.HTTP_403_FORBIDDEN)
     # Check Email and hashed email from the link.
-    username = request.query_params['email']
+    username = request.query_params[EMAIL]
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=username)
     if not user:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
-    if not verify_hash(username, request.query_params['token']):
-        await invalid_login_attempt(db, user)
+    if not verify_hash(username, request.query_params[TOKEN]):
+        await evaluate_user_status(db, user, 'Invalid login attempt.')
     # Acknowledge user.
     await evaluate_user_status(db, user, target_status=UserStatus.Acknowledged)
 
@@ -69,14 +69,14 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
     """ Log in with email and password (not OTP). """
     if not credentials:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
-    # The user must already exist and be valid.
+    # The user must be acknowledged and be valid.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
-    user = await validate_user(db, user)
+    user = await validate_user(db, user, minimum_status=UserStatus.Acknowledged)
     # Validate credentials.
     if not credentials.password.get_secret_value() == credentials.password_repeat.get_secret_value():
-        await invalid_login_attempt(db, user, 'Repeated password must be the same.')
+        await evaluate_user_status(db, user, 'Repeated password must be the same.')
     if not verify_hash(credentials.password.get_secret_value(), user.password):
-        await invalid_login_attempt(db, user)
+        await evaluate_user_status(db, user, 'Invalid login attempt.')
     # Activate user.
     # - Create oauth2 token
     oauth2_token = create_oauth_token(user)

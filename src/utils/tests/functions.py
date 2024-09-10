@@ -8,11 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from src.constants import PASSWORD
-from src.domains.user.functions import map_user
-from src.domains.user.models import User
 from src.db import crud
+from src.domains.user.models import User
 from src.utils.functions import get_otp_expiration, get_password_expiration, find_filename_path
-from src.utils.security.crypto import get_salted_hash, verify_hash
+from src.utils.security.crypto import verify_hash
 from src.utils.tests.constants import *
 
 
@@ -130,7 +129,16 @@ def to_string(value):
 
 
 """
-Post check functions
+GET check
+"""
+
+
+async def get_check(api_route, client: AsyncClient, params=None, expected_http_status=200) -> Response:
+    response = await get_to_endpoint(client=client, api_route=api_route, params=params)
+    assert response.status_code == expected_http_status
+
+"""
+POST check functions
 """
 
 
@@ -209,6 +217,12 @@ def validate_expiration(db_expiration, delta_seconds_allowed=10.0, expiration_ty
     now_expiration = get_otp_expiration() if expiration_type == SUBST_GET_OTP_EXPIRY else get_password_expiration()
     delta = now_expiration - db_expiration
     assert 0.0 < delta.total_seconds() < delta_seconds_allowed
+
+
+async def get_to_endpoint(client: AsyncClient, api_route, params=None, headers=None):
+    """ Precondition: JSON fixtures are defined by endpoint name. """
+    route = '/'.join(api_route)
+    return await client.get(f'{route}/', params=params, headers=headers)
 
 
 async def post_to_endpoint(client: AsyncClient, api_route, fixture, headers=None):

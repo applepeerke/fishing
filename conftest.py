@@ -7,7 +7,7 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from src.constants import PASSWORD
+from src.constants import PASSWORD, LOGIN
 from src.db.db import get_async_engine
 from src.domains.base.models import Base
 from src.main import app
@@ -55,7 +55,7 @@ def test_data_role() -> dict:
 
 @pytest.fixture(scope="function")
 def test_data_login() -> dict:
-    return get_json('login')
+    return get_json(LOGIN)
 
 
 @pytest.fixture(scope="function")
@@ -76,5 +76,5 @@ def test_data_encrypt() -> dict:
 @pytest.fixture(scope="function")
 def test_tdd_scenarios_login() -> dict:
     """ Retrieve CSV from fishing/tests/tdd/automatic_tests_{domain}.csv"""
-    path = get_fixture_path('login', 'csv', automatic_tests=True)
+    path = get_fixture_path(LOGIN, 'csv', automatic_tests=True)
     return get_tdd_test_scenarios(path)

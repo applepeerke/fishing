@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from src.db import crud
+from src.db.db import get_db_session
 from src.domains.password.functions import validate_new_password
 from src.domains.password.models import ChangePassword
 from src.domains.password.models import Password, PasswordEncrypted, ChangePasswordBase
-from src.domains.user.functions import validate_user, evaluate_user_status, invalid_login_attempt
+from src.domains.user.functions import validate_user, evaluate_user_status
 from src.domains.user.models import User, UserStatus
-from src.db import crud
-from src.db.db import get_db_session
 from src.utils.security.crypto import get_salted_hash, verify_hash
 
 password_hash = APIRouter()
@@ -24,14 +24,14 @@ async def change_password(credentials: ChangePassword, db: AsyncSession = Depend
         raise HTTPException(status.HTTP_403_FORBIDDEN)
     # The user must already exist and be valid.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
-    user = await validate_user(db, user)
+    user = await validate_user(db, user, minimum_status=UserStatus.Acknowledged)
     # a. Verify old password
     if not verify_hash(credentials.password.get_secret_value(), user.password):
-        await invalid_login_attempt(db, user)
+        await evaluate_user_status(db, user, 'Invalid login attempt.')
     # b. Validate new password (various kinds of restrictions)
     error_message = validate_new_password(credentials=credentials, old_password_hashed=user.password)
     if error_message:
-        await invalid_login_attempt(db, user, error_message)
+        await evaluate_user_status(db, user, error_message)
     # Set new password.
     user.password = get_salted_hash(credentials.new_password.get_secret_value())
     # Activate user.

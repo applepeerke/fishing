@@ -2,7 +2,7 @@ from fastapi.exceptions import ResponseValidationError
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.constants import EMAIL, PASSWORD
+from src.constants import EMAIL, PASSWORD, LOGIN
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import insert_record, assert_response, get_json
 from src.utils.tests.virtual_hacker import tamper_items
@@ -76,8 +76,8 @@ class CrudTest:
     async def _preconditions(self, initial_data=None, fixtures=None):
         """ Set preconditions for tests. Injects directly in the db, ignoring api. """
         if self._login:
-            test_data_login = get_json('login')
-            payload = test_data_login['login'][SUCCESS][PAYLOAD]
+            test_data_login = get_json(LOGIN)
+            payload = test_data_login[LOGIN][SUCCESS][PAYLOAD]
             response = await login_user(payload[EMAIL], payload[PASSWORD], self._async_session, self._async_client)
             self._headers = get_authorization_header(response)
 
