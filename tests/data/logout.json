@@ -1,0 +1,12 @@
+{
+  "logout": {
+    "success": {
+        "payload": {
+          "email": "dummy@sample.com"
+        },
+        "expect": {
+          "status_code": 200
+        }
+      }
+  }
+}

@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from starlette.requests import Request
 
+from src.domains.logout.api import login_logout
 from src.domains.role.api import role
 from src.domains.fishingwater.api import fishingwater
 from src.domains.login.api import login_register, login_login, login_acknowledge
@@ -25,6 +26,8 @@ app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", root_path=os.getenv
 app.include_router(login_register, prefix='/login/register', tags=['Login'])
 app.include_router(login_acknowledge, prefix='/login/acknowledge', tags=['Login'])
 app.include_router(login_login, prefix='/login', tags=['Login'])
+# Logout
+app.include_router(login_logout, prefix='/logout', tags=['Logout'])
 # Password
 app.include_router(password_change, prefix='/password/change', tags=['Login'])
 app.include_router(password_forgot, prefix='/password/forgot', tags=['Login'])

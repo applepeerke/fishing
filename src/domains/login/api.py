@@ -12,14 +12,13 @@ from src.domains.user.functions import validate_user, set_user_status, send_otp
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.db.db import get_db_session
-from src.session.session import set_session_token, delete_session
+from src.session.session import set_session_token
 from src.utils.functions import get_otp_expiration
 from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_password
 
 login_register = APIRouter()
 login_acknowledge = APIRouter()
 login_login = APIRouter()
-login_logout = APIRouter()
 
 
 @login_register.post('/')
@@ -87,21 +86,3 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
     set_session_token(response.headers.get(AUTHORIZATION))
     # Update status and audit user.
     await set_user_status(db, user, target_status=UserStatus.LoggedIn)
-
-
-@login_logout.post('/')
-async def logout(
-        request: Request, response: Response, login_base: LoginBase, db: AsyncSession = Depends(get_db_session)):
-    """ Logout with email """
-    if not login_base:
-        raise HTTPException(status.HTTP_403_FORBIDDEN)
-
-    # The user must exist and be logged in.
-    user = await crud.get_one_where(db, User, att_name=User.email, att_value=login_base.email)
-    if request.headers.get(AUTHORIZATION):
-        # Delete session.
-        delete_session(request)
-        # Update status.
-        await set_user_status(db, user, target_status=UserStatus.Active)
-    response.headers.update(request.headers)
-    return response

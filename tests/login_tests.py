@@ -3,9 +3,10 @@ import os
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.requests import Request
 
 from conftest import test_data_login
-from src.constants import PASSWORD, EMAIL, TOKEN, LOGIN
+from src.constants import PASSWORD, EMAIL, TOKEN, LOGIN, LOGOUT
 from src.domains.user.functions import map_user
 from src.domains.user.models import User
 from src.db import crud
@@ -61,19 +62,23 @@ async def test_register_fail(test_data_login: dict, client: AsyncClient, db: Asy
 @pytest.mark.asyncio
 async def test_login_happy_flow(client: AsyncClient, db: AsyncSession, test_data_login: dict):
     ts = get_test_set()
-    kwargs = {'expected_http_status': 200, 'client': client, 'db': db}
+    kwargs = {'expected_http_status': 200, 'client': client, 'db': db, 'headers': None}
 
     # a. Register - Send random OTP to user (mail is not really sent to user). Status 10.
     await post_check([LOGIN, 'register'], ts.login_data, **kwargs)
     # b. Acknowledge - Simulate user clicking the email link. Status 10 -> 20.
     await get_check([LOGIN, 'acknowledge'], client, ts.params)
-    # c. Override db OTP - forced hardcoded - to hashed "Password1!"
+    # c. Override db OTP - forced hardcoded - towards hashed "Password1!"
     await change_password(db, ts.credentials)
     # d. Change password (from "Password1!" to "Password2!"). Status 10 -> 30.
     await post_check([PASSWORD, 'change'], ts.password_data, **kwargs)
     # e. Login (with "Password2!")
     response = await post_check([LOGIN], ts.login_data, **kwargs)
     assert has_authorization_header(response) is True
+    # f. Logout
+    kwargs['headers'] = [(k, v) for k, v in response.headers.items()]
+    response = await post_check([LOGOUT], ts.logout_data, **kwargs)
+    assert has_authorization_header(response) is False
 
 
 @pytest.mark.asyncio
@@ -83,12 +88,12 @@ async def test_login_otp_success_after_fail(client: AsyncClient, db: AsyncSessio
 
     # 1. User requests OTP. Status 10.
     await post_check([LOGIN, 'register'], ts.login_data, 200, **kwargs)
-    # 1.1 Override db random OTP - forced hardcoded - to hashed "Password1!"
+    # 1.1 Override db random OTP - forced hardcoded - towards hashed "Password1!"
     await change_password(db, ts.credentials)
     # 2. User acknowledges - Simulate clicking the email link. Status 10 -> 20.
     await get_check([LOGIN, 'acknowledge'], client, ts.params)
     # 3. User changes password - specifies wrong OTP.
-    response = await post_check([PASSWORD, 'change'], ts.password_data, 401, **kwargs)
+    await post_check([PASSWORD, 'change'], ts.password_data, 401, **kwargs)
     # 4. User changes password - specifies right OTP. Status 20 -> 30.
     response = await post_check([PASSWORD, 'change'], ts.password_data, 200, **kwargs)
     #   No token should be returned
@@ -120,6 +125,7 @@ def get_test_set() -> TestSet:
     credentials = get_test_credentials(password_data)
     test_set = TestSet()
     test_set.login_data = get_json(LOGIN)
+    test_set.logout_data = get_json(LOGOUT)
     test_set.password_data = password_data
     test_set.credentials = credentials
     test_set.params = {EMAIL: credentials[EMAIL], TOKEN: credentials[TOKEN]}
