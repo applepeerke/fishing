@@ -6,12 +6,20 @@ from src.domains.token.functions import get_session_token_data
 from src.domains.token.models import SessionTokenData
 
 
-async def set_session(request: Request):
+def set_session(request: Request):
     # Set session token
     set_session_token(request.headers.get(AUTHORIZATION))
 
 
-def set_session_token(authorization_header):
+def delete_session(request: Request):
+    # Remove Authorization header
+    headers = dict(request.scope['headers'])
+    request.scope['headers'] = [(k, v) for k, v in headers.items() if k != AUTHORIZATION]
+    # Remove session token
+    set_session_token(None)
+
+
+def set_session_token(authorization_header=None):
     if authorization_header:
         # Extract the token part after "Bearer "
         session_token = authorization_header.split(" ")[1]

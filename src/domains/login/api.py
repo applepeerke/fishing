@@ -8,17 +8,18 @@ from src.constants import AUTHORIZATION, EMAIL, TOKEN
 from src.domains.login.models import Login
 from src.domains.login.models import LoginBase
 from src.domains.token.functions import create_oauth_token
-from src.domains.user.functions import validate_user, evaluate_user_status, send_otp
+from src.domains.user.functions import validate_user, set_user_status, send_otp
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.db.db import get_db_session
-from src.session.session import set_session_token
+from src.session.session import set_session_token, delete_session
 from src.utils.functions import get_otp_expiration
 from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_password
 
 login_register = APIRouter()
 login_acknowledge = APIRouter()
 login_login = APIRouter()
+login_logout = APIRouter()
 
 
 @login_register.post('/')
@@ -59,9 +60,9 @@ async def acknowledge(request: Request, db: AsyncSession = Depends(get_db_sessio
     if not user:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
     if not verify_hash(username, request.query_params[TOKEN]):
-        await evaluate_user_status(db, user, 'Invalid login attempt.')
+        await set_user_status(db, user, 'Invalid login attempt.')
     # Acknowledge user.
-    await evaluate_user_status(db, user, target_status=UserStatus.Acknowledged)
+    await set_user_status(db, user, target_status=UserStatus.Acknowledged)
 
 
 @login_login.post('/')
@@ -69,14 +70,14 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
     """ Log in with email and password (not OTP). """
     if not credentials:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
-    # The user must be acknowledged and be valid.
+    # The user must be active and be valid.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=credentials.email)
-    user = await validate_user(db, user, minimum_status=UserStatus.Acknowledged)
+    user = await validate_user(db, user, minimum_status=UserStatus.Active)
     # Validate credentials.
     if not credentials.password.get_secret_value() == credentials.password_repeat.get_secret_value():
-        await evaluate_user_status(db, user, 'Repeated password must be the same.')
+        await set_user_status(db, user, 'Repeated password must be the same.')
     if not verify_hash(credentials.password.get_secret_value(), user.password):
-        await evaluate_user_status(db, user, 'Invalid login attempt.')
+        await set_user_status(db, user, 'Invalid login attempt.')
     # Activate user.
     # - Create oauth2 token
     oauth2_token = create_oauth_token(user)
@@ -85,5 +86,22 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
     # - Set session token
     set_session_token(response.headers.get(AUTHORIZATION))
     # Update status and audit user.
-    await evaluate_user_status(db, user, target_status=UserStatus.Active)
+    await set_user_status(db, user, target_status=UserStatus.LoggedIn)
 
+
+@login_logout.post('/')
+async def logout(
+        request: Request, response: Response, login_base: LoginBase, db: AsyncSession = Depends(get_db_session)):
+    """ Logout with email """
+    if not login_base:
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
+
+    # The user must exist and be logged in.
+    user = await crud.get_one_where(db, User, att_name=User.email, att_value=login_base.email)
+    if request.headers.get(AUTHORIZATION):
+        # Delete session.
+        delete_session(request)
+        # Update status.
+        await set_user_status(db, user, target_status=UserStatus.Active)
+    response.headers.update(request.headers)
+    return response
