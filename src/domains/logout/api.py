@@ -24,10 +24,13 @@ async def logout(
 
     # The user must exist and be logged in.
     user = await crud.get_one_where(db, User, att_name=User.email, att_value=login_base.email)
-    if request.headers.get(AUTHORIZATION):
-        # Delete session.
-        delete_session(request)
-        # Update status.
-        await set_user_status(db, user, target_status=UserStatus.Active)
+    if not user or user.status != UserStatus.LoggedIn:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail='The user has not the right status.')
+
+    # a. Delete session authorization.
+    delete_session(request)
+    # b. Update db status.
+    await set_user_status(db, user, target_status=UserStatus.Active)
+    # c. Remove response authorization.
     if AUTHORIZATION in response.headers:
         del response.headers[AUTHORIZATION]

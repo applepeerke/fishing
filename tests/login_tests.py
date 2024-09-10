@@ -3,13 +3,12 @@ import os
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.requests import Request
 
 from conftest import test_data_login
 from src.constants import PASSWORD, EMAIL, TOKEN, LOGIN, LOGOUT
+from src.db import crud
 from src.domains.user.functions import map_user
 from src.domains.user.models import User
-from src.db import crud
 from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import post_check, get_leaf, get_json, get_model, get_user_from_db, get_check
@@ -41,7 +40,8 @@ async def test_login_TDD(test_tdd_scenarios_login: dict, client: AsyncClient, db
                         for exec_no in range(1, executions + 1):
                             await post_check(
                                 api_route, test_tdd_scenarios_login, int(names[3]), client, db,
-                                headers, fixture_route, route_from_index=1, check_response=exec_no == executions)
+                                headers, fixture_route, route_from_index=1, check_response=exec_no == executions
+                            )
                             print(f'* Test "{api_route[0]}" route "{' '.join(api_route[1:])}" was successful.')
 
 

@@ -1,4 +1,5 @@
 import json
+from json import JSONDecodeError
 from uuid import UUID
 
 from fastapi import Response
@@ -133,7 +134,7 @@ GET check
 """
 
 
-async def get_check(api_route, client: AsyncClient, params=None, expected_http_status=200) -> Response:
+async def get_check(api_route, client: AsyncClient, params=None, expected_http_status=200):
     response = await get_to_endpoint(client=client, api_route=api_route, params=params)
     assert response.status_code == expected_http_status
 
@@ -152,7 +153,7 @@ async def post_check(
         fixture_route=None,
         check_response=True,
         route_from_index=0,
-        seq_no=0
+        seq_no=0,
 ) -> Response:
     """
     JSON fixture is defined by route, followed by 'success' or 'fail'.
@@ -161,9 +162,10 @@ async def post_check(
     if not fixture_route:
         fixture_route = api_route
     expected_result = SUCCESS if expected_http_status == status.HTTP_200_OK else FAIL
-    leaf = get_leaf(fixture, fixture_route, expected_result)
+    # Get payload (input) from tdd or from json leaf
+    json_leaf = get_leaf(fixture, fixture_route, expected_result)
     payload_name = PAYLOAD if seq_no == 0 else f'{PAYLOAD}-{seq_no}'
-    payload = await substitute(db, leaf.get(payload_name))
+    payload = await substitute(db, json_leaf.get(payload_name))
     response = await post_to_endpoint(
         client=client,
         api_route=api_route[route_from_index:],
@@ -174,7 +176,7 @@ async def post_check(
     if check_response:
         # a. Check response (model or exception)
         expected_payload_name = EXPECT if seq_no == 0 else f'{EXPECT}-{seq_no}'
-        expected_payload = leaf.get(expected_payload_name)
+        expected_payload = json_leaf.get(expected_payload_name)
         assert_response(
             response,
             expected_payload=expected_payload,
@@ -263,16 +265,20 @@ def add_to_nested_dict(d, keys, value) -> dict:
 
 def create_nested_dict(elements, value) -> dict:
     d = current = {}
-    for i in range(len(elements)):
-        element = elements[i]
-        if element not in d:
-            if i < len(elements) - 1:
-                d[element] = {}
-            else:
-                # Assign the value to the last key
-                d[element] = value if isinstance(value, dict) else json.loads(value)
-                break
-        d = d[element]
+    try:
+        for i in range(len(elements)):
+            element = elements[i]
+            if element not in d:
+                if i < len(elements) - 1:
+                    d[element] = {}
+                else:
+                    # Assign the value to the last key
+                    d[element] = value if isinstance(value, dict) else json.loads(value) if value else {}
+                    break
+            d = d[element]
+    except JSONDecodeError as e:
+        print(f'Error in "create_nested_dict": {e}')
+        raise
     return current
 
 
