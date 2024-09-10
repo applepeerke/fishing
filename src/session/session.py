@@ -7,6 +7,7 @@ from src.domains.token.models import SessionTokenData
 
 
 def set_session(request: Request):
+    """ Middleware"""
     # Set session token
     set_session_token(request.headers.get(AUTHORIZATION))
 
@@ -14,7 +15,7 @@ def set_session(request: Request):
 def delete_session(request: Request):
     # Remove Authorization header
     headers = dict(request.scope['headers'])
-    request.scope['headers'] = [(k, v) for k, v in headers.items() if k != AUTHORIZATION]
+    request.scope['headers'] = [(k, v) for k, v in headers.items() if k != b'authorization']
     # Remove session token
     set_session_token(None)
 

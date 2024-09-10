@@ -1,7 +1,8 @@
 UNKNOWN = '*unknown'
-AUTHORIZATION = 'Authorization'
+AUTHORIZATION = 'authorization'
 EMAIL = 'email'
 PASSWORD = 'password'
 TOKEN = 'token'
 LOGIN = 'login'
+LOGOUT = 'logout'
 

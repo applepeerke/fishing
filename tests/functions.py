@@ -3,14 +3,14 @@ import datetime
 from httpx import AsyncClient
 from starlette.responses import Response
 
-from src.constants import PASSWORD, EMAIL
+from src.constants import PASSWORD, EMAIL, AUTHORIZATION
 from src.domains.token.constants import BEARER
 from src.domains.user.functions import set_user_status_related_attributes, map_user
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.utils.functions import get_pk
 from src.utils.security.crypto import get_random_password, get_salted_hash
-from src.utils.tests.constants import PAYLOAD, AUTHORIZATION
+from src.utils.tests.constants import PAYLOAD
 from src.utils.tests.functions import get_leaf
 
 
@@ -26,12 +26,12 @@ async def login_user(username, plain_text_password, db, client: AsyncClient) -> 
 
 
 def has_authorization_header(response):
-    return any(header == AUTHORIZATION.lower() for header in response.headers)
+    return any(header == AUTHORIZATION for header in response.headers)
 
 
 def get_authorization_header(response) -> dict:
     for header, authorization in response.headers.items():
-        if header == AUTHORIZATION.lower() and authorization.startswith(BEARER):
+        if header == AUTHORIZATION and authorization.startswith(BEARER):
             return {AUTHORIZATION: authorization}
 
 
