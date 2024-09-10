@@ -14,6 +14,7 @@ class UserStatus:
     Inactive = 10
     Acknowledged = 20
     Active = 30
+    LoggedIn = 40
     Expired = 80
     Blocked = 90
     Blacklisted = 99

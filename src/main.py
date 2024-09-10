@@ -40,7 +40,7 @@ app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (inter
 # Add middleware to the app
 @app.middleware('session')
 async def dispatch(request: Request, call_next):
-    await set_session(request)
+    set_session(request)
     return await call_next(request)
 
 if __name__ == '__main__':

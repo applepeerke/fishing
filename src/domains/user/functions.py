@@ -49,27 +49,29 @@ async def validate_user(db, user: User, forgot_password=False, minimum_status: i
     # c. Evaluate blocked/expired
     #   - Blocked user.
     if user.status == UserStatus.Blocked:
-        user = await evaluate_user_status(db, user, target_status=UserStatus.Blocked)
+        user = await set_user_status(db, user, target_status=UserStatus.Blocked)
     #   - Expired password.
     if user.status != UserStatus.Blocked:
-        user = await evaluate_user_status(db, user, minimum_status=minimum_status)
+        user = await set_user_status(db, user, minimum_status=minimum_status)
 
     return user
 
 
-async def evaluate_user_status(
+async def set_user_status(
         db, user: User, error_message=None, target_status=None, renew_expiration=False, forgot_password=False,
         minimum_status=0) -> User:
 
     if not user or user.status < minimum_status:  # Not registered yet
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='The user has not the right status.')
 
+    update_fail_count = False
     if not forgot_password:
         # a. Optionally override target status.
         #    Blocked
         #   - Invalid login attempt
         if error_message:
             user.fail_count = user.fail_count + 1
+            update_fail_count = True
             # Max. fail attempts reached: block the user.
             if user.fail_count >= int(os.getenv('LOGIN_FAILING_ATTEMPTS_ALLOWED', 3)):
                 target_status = UserStatus.Blocked
@@ -88,20 +90,27 @@ async def evaluate_user_status(
                 target_status = UserStatus.Expired
                 error_message = 'The password is expired.'
 
-    user = set_user_status(user, target_status, renew_expiration=renew_expiration)
-    user = await crud.upd(db, User, map_user(user))
-
-    # Still blocked: error
-    if not error_message and target_status == UserStatus.Blocked and user.status == UserStatus.Blocked:
-        error_message = 'The user is blocked. Please try again later.'
-
     # c. Handle error
     if error_message:
+        if update_fail_count:
+            await update_user_status(db, user, target_status, renew_expiration)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=error_message)
-    return user
+
+    # Still blocked: error
+    if target_status == user.status == UserStatus.Blocked:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail='The user is blocked. Please try again later.')
+
+    # Update
+    return await update_user_status(db, user, target_status, renew_expiration)
 
 
-def set_user_status(user: User, target_status=None, renew_expiration=False) -> User:
+async def update_user_status(db, user, target_status, renew_expiration):
+    user = set_user_status_related_attributes(user, target_status, renew_expiration=renew_expiration)
+    return await crud.upd(db, User, map_user(user))
+
+
+def set_user_status_related_attributes(user: User, target_status=None, renew_expiration=False) -> User:
     if not target_status or (user.status == target_status and not renew_expiration):
         return user  # Nothing to do
 
@@ -115,7 +124,7 @@ def set_user_status(user: User, target_status=None, renew_expiration=False) -> U
         send_otp(user.email, otp)
     elif target_status == UserStatus.Acknowledged:
         pass
-    elif target_status == UserStatus.Active:
+    elif target_status in (UserStatus.Active, UserStatus.LoggedIn):
         user = _reset_user_attributes(user)
         if renew_expiration:
             user.expiration = get_password_expiration()  # Long ttl
@@ -123,7 +132,6 @@ def set_user_status(user: User, target_status=None, renew_expiration=False) -> U
         if not user.blocked_until:
             user.blocked_until = _get_blocked_until()
 
-    # Set status
     user.status = target_status
     return user
 

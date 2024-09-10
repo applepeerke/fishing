@@ -5,7 +5,7 @@ from starlette.responses import Response
 
 from src.constants import PASSWORD, EMAIL
 from src.domains.token.constants import BEARER
-from src.domains.user.functions import set_user_status, map_user
+from src.domains.user.functions import set_user_status_related_attributes, map_user
 from src.domains.user.models import User, UserStatus
 from src.db import crud
 from src.utils.functions import get_pk
@@ -55,7 +55,7 @@ async def _initialize_user(db, pk, target_status: int | None, plain_text_passwor
         return
     # b. Set attributes
     # - Status related attributes
-    user = set_user_status(User(email=pk, fail_count=0), target_status)
+    user = set_user_status_related_attributes(User(email=pk, fail_count=0), target_status)
     # - Password
     if not plain_text_password and target_status > 10:
         plain_text_password = get_random_password()
