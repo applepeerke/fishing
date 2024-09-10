@@ -7,6 +7,7 @@ from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from src.constants import PASSWORD
 from src.domains.user.functions import map_user
 from src.domains.user.models import User
 from src.db import crud
@@ -188,12 +189,12 @@ async def assert_db(db, expected_payload, pk='email'):
     user = await crud.get_one_where(db, User, User.email, expected_payload[pk])
     # Assertions
     assert user.email == expected_payload[pk]
-    if 'password' in expected_payload:
-        if expected_payload['password'] is None:
+    if PASSWORD in expected_payload:
+        if expected_payload[PASSWORD] is None:
             assert user.password is None
             assert user.expiration is None
         else:
-            assert verify_hash(expected_payload['password'], user.password)
+            assert verify_hash(expected_payload[PASSWORD], user.password)
             if 'expiration' in expected_payload:
                 validate_expiration(user.expiration, expiration_type=expected_payload['expiration'])
     if 'fail_count' in expected_payload:
@@ -216,11 +217,19 @@ async def post_to_endpoint(client: AsyncClient, api_route, fixture, headers=None
     return await client.post(f'{route}/', json=fixture, headers=headers)
 
 
-def get_leaf(fixture, breadcrumbs: list, expected_result):
+def get_leaf(fixture, breadcrumbs: list, expected_result, payload=None) -> dict:
+    """
+    Get a fixture (like a payload) from a fixture set.
+    @fixture: E.g. "password / change / success / payload"
+    @breadcrumbs:  E.g. "password / change"
+    @expected_result: "success" or "fail"
+    @payload: E.g.  "payload" or "expect"
+    """
     d = fixture
     for leaf in breadcrumbs:
         d = d.get(leaf, {})
-    return d.get(expected_result, {})
+    leaf = d.get(expected_result, {})
+    return leaf.get(payload, {}) if payload else leaf
 
 
 def set_leaf(fixture, breadcrumbs, expected_result, leaf, key, value) -> dict:
@@ -272,9 +281,3 @@ def _try_substitute(key, value, user):
 async def get_user_from_db(db, email):
     return await crud.get_one_where(db, User, User.email, email)
 
-
-async def set_password_in_db(db, fixture, key):
-    """ Encrypt password and put it in the db. """
-    user = await get_user_from_db(db, fixture['email'])
-    user.password = get_salted_hash(fixture[key])
-    await crud.upd(db, User, map_user(user))

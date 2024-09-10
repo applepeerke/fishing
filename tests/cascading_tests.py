@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +12,7 @@ from src.domains.user.models import User
 @pytest.mark.asyncio
 async def test_cascading(client: AsyncClient, db: AsyncSession):
     # a. Create user
-    user = await crud.add(db, User(email='dummy@sample.com'))
+    user = await crud.add(db, User(email=os.getenv('TEST_MAIL_ADDRESS')))
     assert user is not None
     # b. Create role-1
     role_1 = await crud.add(db, Role(name='role_1', user_id=user.id))

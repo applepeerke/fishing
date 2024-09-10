@@ -7,6 +7,7 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
+from src.constants import PASSWORD
 from src.db.db import get_async_engine
 from src.domains.base.models import Base
 from src.main import app
@@ -64,7 +65,7 @@ def test_data_fishingwater() -> dict:
 
 @pytest.fixture(scope="function")
 def test_data_password() -> dict:
-    return get_json('password')
+    return get_json(PASSWORD)
 
 
 @pytest.fixture(scope="function")

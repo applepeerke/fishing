@@ -3,6 +3,7 @@ import datetime
 from httpx import AsyncClient
 from starlette.responses import Response
 
+from src.constants import PASSWORD, EMAIL
 from src.domains.token.constants import BEARER
 from src.domains.user.functions import set_user_status, map_user
 from src.domains.user.models import User, UserStatus
@@ -20,7 +21,7 @@ async def login_user(username, plain_text_password, db, client: AsyncClient) -> 
     if not user:
         raise ValueError('User could not be upderted in the database.')
     # Login to get the authorization header
-    response = await client.post(f'login/', json={'email': user.email, 'password': plain_text_password})
+    response = await client.post(f'login/', json={EMAIL: user.email, PASSWORD: plain_text_password})
     return response
 
 
