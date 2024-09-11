@@ -3,11 +3,10 @@ from typing import Optional, List
 from uuid import UUID
 
 from pydantic import BaseModel, UUID4, Field, EmailStr, SecretStr, conint
-from sqlalchemy import (Column, String, func, DateTime, Integer)
+from sqlalchemy import (Column, String, func, DateTime, Integer, ForeignKey, Table)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.domains.base.models import Base
-from src.domains.role.models import Role
 
 
 class UserStatus:
@@ -21,8 +20,16 @@ class UserStatus:
 
 
 # SqlAlchemy model
+user_role = Table('user_role', Base.metadata,
+                  Column('user_id',
+                         ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
+                  Column('role_id',
+                         ForeignKey('role.id', ondelete='CASCADE'), primary_key=True))
+
+
+# noinspection PyUnresolvedReferences
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
     email = Column(String, nullable=False, index=True, unique=True)
     password = Column(String, nullable=True)
@@ -31,7 +38,7 @@ class User(Base):
     blocked_until = Column(DateTime(timezone=True), nullable=True)
     status = Column(Integer, default=UserStatus.Inactive)
     # Relations
-    roles: Mapped[List['Role']] = relationship(back_populates='user', cascade='all, delete')
+    roles: Mapped[List['Role']] = relationship(secondary=user_role, back_populates='users')
 
 
 # Pydantic models

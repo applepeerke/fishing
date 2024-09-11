@@ -37,33 +37,27 @@ async def get_all(db, obj_def, relation=None, skip: int = 0, limit: int = 9999):
 
 
 async def get_one(db, obj_def, id, relation=None):
+    """ Get one by id """
     if relation:
-        # E.g. obj.children
-        result = await db.execute(
-            select(obj_def)
-            .filter(obj_def.id == id)
-            .options(selectinload(relation))
-        )
+        # E.g. obj.children like User.scopes
+        result = await db.execute(select(obj_def).filter(obj_def.id == id).options(selectinload(relation)))
     else:
-        result = await db.execute(
-            select(obj_def)
-            .filter(obj_def.id == id)
-        )
+        result = await db.execute(select(obj_def).filter(obj_def.id == id))
     return result.scalars().first()
 
 
-async def get_one_where(db, obj_def, att_name, att_value):
-    result = await db.execute(
-        select(obj_def)
-        .filter(att_name == att_value)
-    )
+async def get_one_where(db, obj_def, att_name, att_value, relation=None):
+    if relation:
+        result = await db.execute(select(obj_def).where(att_name == att_value).options(selectinload(relation)))
+    else:
+        result = await db.execute(select(obj_def).where(att_name == att_value))
     return result.scalars().first()
 
 
 # U
 async def upd(db, obj_def, obj_upd: BaseModel):
     # Get the record (SQLAlchemy model)
-    obj = await _get(db, obj_def, obj_upd.id)
+    obj = await get_one(db, obj_def, obj_upd.id)
     # Get the pydantic updated attributes
     atts = obj_upd.model_dump(exclude_unset=True)
     # Copy the updated attributes to SQLAlchemy model
@@ -81,23 +75,8 @@ async def upd(db, obj_def, obj_upd: BaseModel):
 
 # D
 async def delete(db, obj_def, id) -> bool:
-    obj = await _get(db, obj_def, id)
+    obj = await get_one(db, obj_def, id)
     await db.delete(obj)
     await db.commit()
     return True
 
-"""
-Routines
-"""
-
-
-async def _get(db, obj_def, id: int):
-    """ Get db record as SQLAlchemy object """
-    result = await db.execute(
-        select(obj_def)
-        .filter(obj_def.id == id)
-    )
-    obj = result.scalars().first()
-    if not obj:
-        raise HTTPException(status_code=404, detail="Object not found")
-    return obj
