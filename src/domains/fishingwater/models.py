@@ -10,7 +10,7 @@ from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
 # SqlAlchemy model
 class FishingWater(Base):
-    __tablename__ = 'fishingwaters'
+    __tablename__ = 'fishingwater'
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
     location = Column(String, nullable=False, index=True)
     type = Column(String, nullable=False, index=True)

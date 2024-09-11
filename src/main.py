@@ -5,11 +5,13 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from starlette.requests import Request
 
+from src.domains.acl.api import acl
 from src.domains.logout.api import login_logout
 from src.domains.role.api import role
 from src.domains.fishingwater.api import fishingwater
 from src.domains.login.api import login_register, login_login, login_acknowledge
 from src.domains.password.api import password_verify, password_forgot, password_change, password_hash
+from src.domains.scope.api import scope
 from src.domains.user.api import user
 from src.session.session import set_session, has_access
 from src.utils.functions import is_debug_mode
@@ -32,8 +34,10 @@ app.include_router(login_logout, prefix='/logout', tags=['Logout'])
 app.include_router(password_change, prefix='/password/change', tags=['Login'])
 app.include_router(password_forgot, prefix='/password/forgot', tags=['Login'])
 # CRUD
-app.include_router(user, prefix='/user', tags=['User'], dependencies=AUTH)  # Creating/deleting user is not by user
-app.include_router(role, prefix='/role', tags=['Role'], dependencies=AUTH)  # Creating/deleting user is not by user
+app.include_router(user, prefix='/user', tags=['User'], dependencies=AUTH)
+app.include_router(role, prefix='/role', tags=['Role'], dependencies=AUTH)
+app.include_router(acl, prefix='/acl', tags=['ACL'], dependencies=AUTH)
+app.include_router(scope, prefix='/scope', tags=['Scope'], dependencies=AUTH)
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'], dependencies=AUTH)
 # Email/Password hashing (internal)
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])

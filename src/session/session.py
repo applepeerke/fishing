@@ -1,9 +1,15 @@
+from typing import Annotated
+
+from fastapi import Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.requests import Request
 
 from src.constants import AUTHORIZATION
 from src.domains.base.models import session_token_var
 from src.domains.token.functions import get_session_token_data
 from src.domains.token.models import SessionTokenData
+
+security = HTTPBearer()
 
 
 def set_session(request: Request):
@@ -31,5 +37,7 @@ def set_session_token(authorization_header=None):
         session_token_var.set(None)
 
 
-async def has_access() -> SessionTokenData | None:
+async def has_access(
+        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]) -> SessionTokenData | None:
+    """ Dependency is for OpenAPI docs only (for now) """
     return session_token_var.get(None)
