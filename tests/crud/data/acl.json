@@ -1,0 +1,38 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "b490cb42-ddee-41b7-965e-81cb6b19780e",
+     "name": "admin_group"
+   }
+ },
+ "create": {
+   "payload": {
+     "id": "2c61122b-a3dd-4cb7-a16c-66e296a9a444",
+     "name": "fisherman_group"
+   },
+   "expect": {
+     "name": "fisherman_group"
+   }
+ },
+ "read": {
+   "expect": {
+     "name": "admin_group"
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "b490cb42-ddee-41b7-965e-81cb6b19780e",
+     "name": "fishing_group"
+   },
+   "expect": {
+     "id": "b490cb42-ddee-41b7-965e-81cb6b19780e",
+     "name": "fishing_group"
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The acl record has been deleted."
+   }
+ }
+}

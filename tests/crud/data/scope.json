@@ -1,0 +1,44 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "a2b1f62a-84d7-411b-ad1b-c1eac785c414",
+     "entity": "*",
+     "access": "*"
+   }
+ },
+ "create": {
+   "payload": {
+     "id": "d5660682-e285-4f79-ba2a-3997bb675c5d",
+     "entity": "fishingwater",
+     "access": "read"
+   },
+   "expect": {
+     "entity": "fishingwater",
+     "access": "read"
+   }
+ },
+ "read": {
+   "expect": {
+     "entity": "*",
+     "access": "*"
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "a2b1f62a-84d7-411b-ad1b-c1eac785c414",
+     "entity": "fishingwater",
+     "access": "None"
+   },
+   "expect": {
+     "id": "a2b1f62a-84d7-411b-ad1b-c1eac785c414",
+     "entity": "fishingwater",
+     "access": "None"
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The scope record has been deleted."
+   }
+ }
+}

@@ -1,8 +1,8 @@
 from pydantic import BaseModel, EmailStr
 
 
-class OAuthAccessToken(BaseModel):
-    access_token: str
+class SessionToken(BaseModel):
+    token: str
     token_type: str
 
 

@@ -7,7 +7,7 @@ from sqlalchemy import (Column, String, func, Table, ForeignKey)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.domains.base.models import Base
-from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
+from src.utils.security.input_validation import REGEX_ALPHANUM_ASTERISK
 
 
 class Access(str, Enum):
@@ -37,7 +37,7 @@ class Scope(Base):
 
 # Pydantic models
 class ScopeBase(BaseModel):
-    entity: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_PLUS)
+    entity: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_ASTERISK)
     access: Access = Access.none
 
 

@@ -10,23 +10,37 @@ def is_debug_mode() -> bool:
     return os.getenv('DEBUG') == 'True' and os.getenv('ENV') == 'DEV'
 
 
-def find_filename_path(file_name) -> str:
+def find_filename_path(file_name, test=True) -> str:
     """
     Return file paths matching the specified file type in the specified base directory (recursively).
     """
-    if not file_name:
+    # Validation
+    app_name = os.getenv("APP_NAME")
+    test_base_name = os.getenv("APP_ROOT_TESTS")
+    current_path = os.path.abspath(os.curdir)
+    if not file_name or app_name not in current_path:
         return ''
-    app_root = os.getenv("APP_ROOT")
-    walk_path = os.path.abspath(os.curdir)
-    # Try to find app root
-    if app_root in walk_path and walk_path.count(app_root) == 1:
-        p = walk_path.find(app_root) + len(app_root)
-        walk_path = walk_path[:p]
-    # Walk from app root
-    for path, dirs, files in os.walk(walk_path):
+
+    p = current_path.find(app_name) + len(app_name)
+    app_dir = current_path[:p]
+
+    # Try to find in test root "../fishing/tests" or else in app root "../fishing"
+    test_dir = os.path.join(app_dir, os.getenv("APP_ROOT_TESTS"))
+    if not test or not os.path.isdir(test_dir):
+        test = False
+    path = test_dir if test else app_dir
+    if not os.path.dirname(path):
+        return ''
+
+    # Walk from path
+    return walk(path, file_name)
+
+
+def walk(path, find_file_name) -> str:
+    for p, dirs, files in os.walk(path):
         for filename in files:
-            if filename == file_name:
-                return os.path.join(path, filename)
+            if filename == find_file_name:
+                return os.path.join(p, filename)
 
 
 def get_otp_expiration():

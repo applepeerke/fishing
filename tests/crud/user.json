@@ -43,7 +43,7 @@
  "delete": {
    "expect": {
      "status_code": 200,
-     "message": "The users record has been deleted."
+     "message": "The user record has been deleted."
    }
  }
 }

@@ -2,21 +2,21 @@
  "initial_data": {
    "payload": {
      "id": "af0702e1-acaa-4034-a11b-407483130639",
-     "name": "admin"
+     "name": "admin-2"
    }
  },
  "create": {
    "payload": {
      "id": "67f1d513-4928-46d2-9b3d-4a093d972470",
-     "name": "fisherman"
+     "name": "fisherman-2"
    },
    "expect": {
-     "name": "fisherman"
+     "name": "fisherman-2"
    }
  },
  "read": {
    "expect": {
-     "name": "admin"
+     "name": "admin-2"
    }
  },
  "update": {
@@ -32,7 +32,7 @@
  "delete": {
    "expect": {
      "status_code": 200,
-     "message": "The roles record has been deleted."
+     "message": "The role record has been deleted."
    }
  }
 }

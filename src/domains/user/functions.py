@@ -5,7 +5,6 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.constants import EMAIL, ID
 from src.db import crud
 from src.domains.role.models import Role
 from src.domains.user.models import User, UserRead, UserStatus
@@ -110,7 +109,7 @@ async def set_user_status(
 
 async def update_user_status(db, user, target_status, renew_expiration):
     user = set_user_status_related_attributes(user, target_status, renew_expiration=renew_expiration)
-    return await crud.upd(db, User, map_user(user))
+    return await crud.upd(db, User, user)
 
 
 def set_user_status_related_attributes(user: User, target_status=None, renew_expiration=False) -> User:
@@ -150,19 +149,20 @@ def _reset_user_attributes(user) -> UserRead:
     return user
 
 
-def map_user(user: User) -> UserRead:
-    """ Map User (SQLAlchemy) to UserRead (pydantic) """
-    user_read = UserRead(
-        id=user.id,
-        email=user.email,
-        status=user.status,
-        expiration=user.expiration,
-        fail_count=user.fail_count,
-        blocked_until=user.blocked_until,
-    )
-    # This must be done afterward
-    user_read.password = user.password
-    return user_read
+# def map_user(user: User) -> UserRead:
+#     """ Map User (SQLAlchemy) to UserRead (pydantic) """
+#     user_read = UserRead(
+#         id=user.id,
+#         email=user.email,
+#         status=user.status,
+#         expiration=user.expiration,
+#         fail_count=user.fail_count,
+#         blocked_until=user.blocked_until
+#     )
+#     # This must be done afterward
+#     user_read.password = user.password
+#     user_read.roles = user.roles
+#     return user_read
 
 
 async def add_role_to_user(db: AsyncSession, user_id, role_id):

@@ -28,7 +28,7 @@ Login;25;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Passwo
 Login;26;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password1!"", ""password_repeat"": ""Right-Password1!""}";5;401;*message;The user is blocked. Please try again later.;30;90;Blocked ;-
 Login;27;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Wrong-Password1!"", ""password_repeat"": ""Right-Password1!""}";3;401;*message;Repeated password must be the same.;30;30;Active;-
 Login;28;login;;;"{""email"": ""dummy@sample.com""}";0;422;"{""type"": ""missing"",""loc"": [""body"", ""password""],""msg"": ""Field required""}";;30;30;Active;-
-Login;29;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""password_repeat"": ""Right-Password1!""}";0;200;"{""access_token"": ""*STRING"", ""token_type"": ""Bearer""}";;30;40;;Redirect to Home
+Login;29;login;;;"{""email"": ""dummy@sample.com"", ""password"": ""Right-Password1!"", ""password_repeat"": ""Right-Password1!""}";0;200;"{""token"": ""*STRING"", ""token_type"": ""Bearer""}";;30;40;;Redirect to Home
 Forgot password;30;password;forgot;;{};0;422;"{""type"": ""missing"",""loc"": [""body"", ""email""],""msg"": ""Field required""}";;10;10;Inactive;-
 Forgot password;31;password;forgot;;"{""email"": ""dummy@sample.com""}";0;200;{};;10;10;Inactive;Send otp
 Forgot password;32;password;forgot;;"{""email"": ""dummy@sample.com""}";0;200;{};;20;10;Inactive;Redirect to login/register.

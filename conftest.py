@@ -42,20 +42,14 @@ async def db() -> AsyncSession:
 
     await async_engine.dispose()
 
-
-@pytest.fixture(scope="function")
-def test_data_user() -> dict:
-    return get_json('user')
-
-
-@pytest.fixture(scope="function")
-def test_data_role() -> dict:
-    return get_json('role')
+""" 
+CRUD 
+"""
 
 
 @pytest.fixture(scope="function")
-def test_data_login() -> dict:
-    return get_json(LOGIN)
+def test_data_acl() -> dict:
+    return get_json('acl')
 
 
 @pytest.fixture(scope="function")
@@ -64,13 +58,43 @@ def test_data_fishingwater() -> dict:
 
 
 @pytest.fixture(scope="function")
-def test_data_password() -> dict:
-    return get_json(PASSWORD)
+def test_data_role() -> dict:
+    return get_json('role')
+
+
+@pytest.fixture(scope="function")
+def test_data_scope() -> dict:
+    return get_json('scope')
+
+
+@pytest.fixture(scope="function")
+def test_data_user() -> dict:
+    return get_json('user')
+
+
+""" 
+Auth 
+"""
 
 
 @pytest.fixture(scope="function")
 def test_data_encrypt() -> dict:
     return get_json('encrypt')
+
+
+@pytest.fixture(scope="function")
+def test_data_login() -> dict:
+    return get_json(LOGIN)
+
+
+@pytest.fixture(scope="function")
+def test_data_password() -> dict:
+    return get_json(PASSWORD)
+
+
+"""
+TDD
+"""
 
 
 @pytest.fixture(scope="function")

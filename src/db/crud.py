@@ -3,6 +3,9 @@ from pydantic import BaseModel, SecretStr
 from sqlalchemy.orm import selectinload
 from sqlalchemy.future import select
 
+from src.constants import ID
+from src.domains.base.models import Base
+
 """
 CRUD on SQLAlchemy
 """
@@ -55,19 +58,19 @@ async def get_one_where(db, obj_def, att_name, att_value, relation=None):
 
 
 # U
-async def upd(db, obj_def, obj_upd: BaseModel):
-    # Get the record (SQLAlchemy model)
+async def upd(db, obj_def, obj_upd):
+    """ SQlAlchemy direct update (test purpose) """
+    # Get the record
     obj = await get_one(db, obj_def, obj_upd.id)
-    # Get the pydantic updated attributes
-    atts = obj_upd.model_dump(exclude_unset=True)
     # Copy the updated attributes to SQLAlchemy model
-    for att_name, value in atts.items():
-        if isinstance(value, SecretStr):
-            value = value.get_secret_value()
-        setattr(obj, att_name, value)
+    for key in obj_def.__table__.columns.keys():
+        value = getattr(obj_upd, key, None)
+        if value is not None and key != ID:
+            if isinstance(value, SecretStr):
+                value = value.get_secret_value()
+            setattr(obj, key, value)
     # Increment update_count
-    update_count = 1 if not obj.update_count else obj.update_count + 1
-    setattr(obj, 'update_count', update_count)
+    obj.update_count = 1 if not obj.update_count else obj.update_count + 1
     await db.commit()
     await db.refresh(obj)  # Get the new values
     return obj

@@ -1,6 +1,4 @@
 import csv
-from json import JSONDecodeError
-
 from src.utils.tests.constants import PAYLOAD, EXPECT_DB, EXPECT
 from src.utils.tests.functions import create_nested_dict
 from tests.tdd.TestCase import TestCase
