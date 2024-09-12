@@ -1,21 +1,13 @@
 import datetime
 import os
-from typing import Annotated
 
 import jwt
-from fastapi import HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import HTTPException
 from jwt import InvalidTokenError
-from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.db import crud
-from src.db.db import get_db_session
 from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES, BEARER
-from src.domains.token.models import SessionTokenData, OAuthAccessToken
-from src.domains.user.models import User
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
+from src.domains.token.models import SessionTokenData, SessionToken
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -24,8 +16,7 @@ credentials_exception = HTTPException(
 )
 
 
-def create_oauth_token(user) -> OAuthAccessToken:
-    """ The OAuth2 scheme requires a JSON with "access_token" and "token_type". """
+def create_session_token(user) -> SessionToken:
     payload = {
         "sub": user.email,
         "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
@@ -34,7 +25,7 @@ def create_oauth_token(user) -> OAuthAccessToken:
         payload=payload,
         key=str(os.getenv(JWT_SECRET_KEY)),
         algorithm=os.getenv(JWT_ALGORITHM))
-    return OAuthAccessToken(access_token=jwt_token, token_type=BEARER)
+    return SessionToken(token=jwt_token, token_type=BEARER)
 
 
 def get_session_token_data(authorization_token) -> SessionTokenData:
@@ -54,18 +45,3 @@ def get_session_token_data(authorization_token) -> SessionTokenData:
     except InvalidTokenError:
         raise credentials_exception
 
-
-async def get_user_from_session_token(
-        db: Annotated[AsyncSession, Depends(get_db_session)],
-        access_token: Annotated[str, Depends(oauth2_scheme)]) -> User:
-    # Get token data
-    token_data = get_session_token_data(access_token)
-
-    # Get the token user
-    user = await crud.get_one_where(
-        db, User,
-        att_name=User.email,
-        att_value=token_data.user_email)
-    if not user:
-        raise credentials_exception
-    return user

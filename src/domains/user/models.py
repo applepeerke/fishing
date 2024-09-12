@@ -52,9 +52,9 @@ class UserCreate(UserBase):
 
 class UserUpdate(UserBase):
     password: Optional[SecretStr] = Field(min_length=8, max_length=256, default=None)
-    expiration: Optional[datetime] = Field(DateTime(timezone=True))
+    expiration: Optional[datetime] = Field(default=None)
     fail_count: conint(ge=0, lt=100) = 0
-    blocked_until: Optional[datetime] = Field(DateTime(timezone=True))
+    blocked_until: Optional[datetime] = Field(default=None)
     status: conint(ge=10, lt=100) = UserStatus.Inactive
 
 

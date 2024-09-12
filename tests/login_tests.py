@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from conftest import test_data_login
 from src.constants import PASSWORD, EMAIL, TOKEN, LOGIN, LOGOUT
 from src.db import crud
-from src.domains.user.functions import map_user
 from src.domains.user.models import User
 from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
@@ -136,7 +135,7 @@ async def change_password(db, credentials: dict):
     """ Encrypt password and put it in the db. """
     user = await get_user_from_db(db, credentials[EMAIL])
     user.password = get_salted_hash(credentials[PASSWORD])
-    await crud.upd(db, User, map_user(user))
+    await crud.upd(db, User, user)
 
 
 def get_test_credentials(fixture_set):

@@ -1,28 +1,14 @@
 import datetime
 
-from httpx import AsyncClient
-from starlette.responses import Response
-
-from src.constants import PASSWORD, EMAIL, AUTHORIZATION
-from src.domains.token.constants import BEARER
-from src.domains.user.functions import set_user_status_related_attributes, map_user
-from src.domains.user.models import User, UserStatus
+from src.constants import AUTHORIZATION
 from src.db import crud
+from src.domains.token.constants import BEARER
+from src.domains.user.functions import set_user_status_related_attributes
+from src.domains.user.models import User, UserStatus
 from src.utils.functions import get_pk
 from src.utils.security.crypto import get_random_password, get_salted_hash
 from src.utils.tests.constants import PAYLOAD
 from src.utils.tests.functions import get_leaf
-
-
-async def login_user(username, plain_text_password, db, client: AsyncClient) -> Response:
-    """ Create/update user and add Authorization header to the response. """
-    # Updert user with the right UserStatus
-    user = await _initialize_user(db, username, UserStatus.Active, plain_text_password)
-    if not user:
-        raise ValueError('User could not be upderted in the database.')
-    # Login to get the authorization header
-    response = await client.post(f'login/', json={EMAIL: user.email, PASSWORD: plain_text_password})
-    return response
 
 
 def has_authorization_header(response):
@@ -65,6 +51,6 @@ async def _initialize_user(db, pk, target_status: int | None, plain_text_passwor
     # c. Updert user
     if user_old:
         user.id = user_old.id
-        return await crud.upd(db, User, map_user(user))
+        return await crud.upd(db, User, user)
     else:
         return await crud.add(db, user)

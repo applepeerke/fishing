@@ -4,15 +4,14 @@ from starlette import status
 from starlette.requests import Request
 from starlette.responses import Response
 
-from src.constants import AUTHORIZATION, EMAIL, TOKEN
-from src.domains.login.models import Login
-from src.domains.login.models import LoginBase
-from src.domains.token.functions import create_oauth_token
-from src.domains.user.functions import validate_user, set_user_status, send_otp
-from src.domains.user.models import User, UserStatus
+from src.constants import EMAIL, TOKEN
 from src.db import crud
 from src.db.db import get_db_session
-from src.session.session import set_session_token
+from src.domains.login.models import Login
+from src.domains.login.models import LoginBase
+from src.domains.user.functions import validate_user, set_user_status, send_otp
+from src.domains.user.models import User, UserStatus
+from src.session.session import create_response_session_token
 from src.utils.functions import get_otp_expiration
 from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_password
 
@@ -77,12 +76,7 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
         await set_user_status(db, user, 'Repeated password must be the same.')
     if not verify_hash(credentials.password.get_secret_value(), user.password):
         await set_user_status(db, user, 'Invalid login attempt.')
-    # Activate user.
-    # - Create oauth2 token
-    oauth2_token = create_oauth_token(user)
-    # - Add authorization header
-    response.headers.append(AUTHORIZATION, f'{oauth2_token.token_type} {oauth2_token.access_token}')
-    # - Set session token
-    set_session_token(response.headers.get(AUTHORIZATION))
-    # Update status and audit user.
+    # Log in the user.
     await set_user_status(db, user, target_status=UserStatus.LoggedIn)
+    # Create session token and update the response
+    create_response_session_token(user, response)
