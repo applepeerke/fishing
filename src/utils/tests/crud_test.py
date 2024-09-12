@@ -6,9 +6,8 @@ from starlette.responses import Response
 from src.constants import EMAIL, PASSWORD, LOGIN, AUTHORIZATION
 from src.domains.test.populate_db import create_fake_db_with_authenticated_user
 from src.utils.tests.constants import SUCCESS, PAYLOAD
-from src.utils.tests.functions import insert_record, assert_response, get_json
+from src.utils.tests.functions import insert_record, assert_response, get_json, get_authorization_header
 from src.utils.tests.virtual_hacker import tamper_items
-from tests.functions import get_authorization_header
 
 
 class CrudTest:
@@ -84,7 +83,6 @@ class CrudTest:
             session_token = await create_fake_db_with_authenticated_user(self._db, payload[EMAIL], payload[PASSWORD])
             response = Response()
             response.headers.append(AUTHORIZATION, f'{session_token.token_type} {session_token.token}')
-            # response = await login_user(payload[EMAIL], payload[PASSWORD], self._db, self._client)
             self._headers = get_authorization_header(response)
 
         if fixtures:
