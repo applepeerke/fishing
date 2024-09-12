@@ -12,7 +12,7 @@ from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import post_check, get_leaf, get_json, get_model, get_user_from_db, get_check, \
     initialize_user_from_fixture, has_authorization_header
-from tests.data.test_set import TestSet
+from tests.models.test_set import TestSet
 
 
 @pytest.mark.asyncio

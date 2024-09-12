@@ -3,7 +3,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import Response
 
-from src.constants import EMAIL, PASSWORD, LOGIN, AUTHORIZATION
+from src.constants import EMAIL, PASSWORD, LOGIN, AUTHORIZATION, ID
 from src.domains.test.populate_db import create_fake_db_with_authenticated_user
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import insert_record, assert_response, get_json, get_authorization_header
@@ -50,7 +50,8 @@ class CrudTest:
         initial_payload = self._test_data["initial_data"]["payload"]
         expect = self._test_data["update"]["expect"]
         payload = self._test_data["update"]["payload"]
-        url = f"{self._domain_url}/{initial_payload['id']}"
+        Id = payload.get(ID, initial_payload[ID])
+        url = f"{self._domain_url}/{Id}"
         # Update
         response = await self._client.put(url, json=payload, headers=self._headers)
         assert_response(response, expect, 200)
