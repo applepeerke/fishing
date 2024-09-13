@@ -6,5 +6,6 @@ class SessionToken(BaseModel):
     token_type: str
 
 
-class SessionTokenData(BaseModel):
+class SessionData(BaseModel):
     email: EmailStr | None = None
+    scopes: dict | None = None

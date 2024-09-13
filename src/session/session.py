@@ -7,13 +7,13 @@ from starlette.requests import Request
 from src.constants import AUTHORIZATION
 from src.domains.base.models import session_token_var
 from src.domains.token.functions import get_session_token_data, create_session_token
-from src.domains.token.models import SessionTokenData, SessionToken
+from src.domains.token.models import SessionData, SessionToken
 
 security = HTTPBearer()
 
 
 async def has_access(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]) -> SessionTokenData | None:
+        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]) -> SessionData | None:
     """ Dependency is for OpenAPI docs (test) """
     return session_token_var.get(None)
 
@@ -36,9 +36,9 @@ def create_authenticated_session(user) -> SessionToken:
     return session_token
 
 
-def set_session_user(session_token=None):
+async def set_session_user(session_token=None):
     """ Set the plain text user-data from the encrypted token in a context variable """
-    token_data: SessionTokenData = get_session_token_data(session_token) if session_token else None
+    token_data: SessionData = get_session_token_data(session_token) if session_token else None
     session_token_var.set(token_data)
 
 

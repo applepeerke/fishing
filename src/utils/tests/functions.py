@@ -1,3 +1,4 @@
+import csv
 import json
 import datetime
 
@@ -190,6 +191,7 @@ async def get_check(api_route, client: AsyncClient, params=None, expected_http_s
     response = await get_to_endpoint(client=client, api_route=api_route, params=params)
     assert response.status_code == expected_http_status
 
+
 """
 POST check functions
 """
@@ -353,3 +355,25 @@ def _try_substitute(key, value, user):
 async def get_user_from_db(db, email):
     return await crud.get_one_where(db, User, User.email, email)
 
+
+def merge_dicts(d1, d2):
+    for key, value in d2.items():
+        if key in d1 and isinstance(d1[key], dict) and isinstance(value, dict):
+            merge_dicts(d1[key], value)
+        else:
+            d1[key] = value
+    return d1
+
+
+def get_csv_rows(path=None, skip_rows=1):
+    rows = _try_csv_rows(path, ',')
+    if not rows or len(rows[0]) == 1:
+        rows = _try_csv_rows(path, ';')
+    return rows[skip_rows:] if len(rows) > skip_rows else []
+
+
+def _try_csv_rows(path, delimiter) -> list:
+    with open(path, encoding='utf-8-sig', errors='replace') as csvFile:
+        csv_reader = csv.reader(
+            csvFile, delimiter=delimiter, quotechar='"', quoting=csv.QUOTE_MINIMAL, skipinitialspace=True)
+        return [row for row in csv_reader if row[0]]

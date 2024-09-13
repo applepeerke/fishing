@@ -1,8 +1,8 @@
 """init
 
-Revision ID: e91317c9720b
+Revision ID: 49c47e35bbab
 Revises: 
-Create Date: 2024-09-11 18:26:13.625843
+Create Date: 2024-09-13 17:34:28.526972
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e91317c9720b'
+revision: str = '49c47e35bbab'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -57,13 +57,15 @@ def upgrade() -> None:
     op.create_table('scope',
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('entity', sa.String(), nullable=False),
-    sa.Column('access', sa.String(), nullable=True),
+    sa.Column('access', sa.String(), nullable=False),
+    sa.Column('scope', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('created_by', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('updated_by', sa.String(), nullable=True),
     sa.Column('update_count', sa.Integer(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('scope')
     )
     op.create_table('user',
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),

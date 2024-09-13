@@ -3,11 +3,26 @@ from typing import List
 from uuid import UUID
 
 from pydantic import BaseModel, UUID4, Field
-from sqlalchemy import (Column, String, func, Table, ForeignKey)
+from sqlalchemy import (Column, String, func, Table, ForeignKey, event)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.domains.base.models import Base
 from src.utils.security.input_validation import REGEX_ALPHANUM_ASTERISK
+
+CRUD_ENTITIES = {'fishingwater', 'fisherman', 'fish', 'user', 'role', 'acl', 'scope'}
+CRUD_ACCESSES = {'create', 'read', 'update', 'delete'}
+
+
+class Entity(str, Enum):
+    none = None
+    all = '*'
+    fishingwater = 'fishingwater'
+    fisherman = 'fisherman'
+    fish = 'fish'
+    user = 'user'
+    role = 'role'
+    acl = 'acl'
+    scope = 'scope'
 
 
 class Access(str, Enum):
@@ -30,15 +45,30 @@ class Scope(Base):
     __tablename__ = 'scope'
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
     entity = Column(String, nullable=False)
-    access = Column(String, nullable=True, default=None)
+    access = Column(String, nullable=False)
+    scope = Column(String, nullable=False, unique=True)
     # Relations
     acls: Mapped[List['ACL']] = relationship(secondary=acl_scope, back_populates='scopes', passive_deletes=True)
+
+
+# Function to automatically update full_name before insert and update
+def update_scope(mapper, connection, target):
+    target.scope_name = f"{target.entity}_{target.access}"
+
+
+# Register the SQLAlchemy event to update full_name before insert and update
+event.listen(Scope, 'before_insert', update_scope)
+event.listen(Scope, 'before_update', update_scope)
 
 
 # Pydantic models
 class ScopeBase(BaseModel):
     entity: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_ASTERISK)
     access: Access = Access.none
+    scope_name: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_ASTERISK)
+
+    class Config:
+        from_attributes = True  # Enables compatibility with SQLAlchemy models
 
 
 class ScopeRead(ScopeBase):

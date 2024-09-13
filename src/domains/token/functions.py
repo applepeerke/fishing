@@ -7,7 +7,7 @@ from jwt import InvalidTokenError
 from starlette import status
 
 from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES, BEARER
-from src.domains.token.models import SessionTokenData, SessionToken
+from src.domains.token.models import SessionData, SessionToken
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -28,7 +28,7 @@ def create_session_token(user) -> SessionToken:
     return SessionToken(token=jwt_token, token_type=BEARER)
 
 
-def get_session_token_data(authorization_token) -> SessionTokenData:
+def get_session_token_data(authorization_token) -> SessionData:
     try:
         payload = jwt.decode(
             authorization_token,
@@ -41,7 +41,7 @@ def get_session_token_data(authorization_token) -> SessionTokenData:
         email: str = payload.get("sub")
         if not email:
             raise credentials_exception
-        return SessionTokenData(email=email)
+        return SessionData(email=email)
     except InvalidTokenError:
         raise credentials_exception
 
