@@ -65,14 +65,14 @@ async def _create_roles(roles: list, acls, db) -> [Role]:
     [await crud.add(db, Role(name=role_name, acls=acls))
      for role_name in roles
      if not await crud.get_one_where(db, Role, Role.name, role_name)]
-    return await crud.get_all(db, Role, relation=Role.acls)
+    return await crud.get_all(db, Role)
 
 
 async def _create_acls(acls: list, scopes, db) -> [ACL]:
     [await crud.add(db, ACL(name=acl, scopes=scopes))
      for acl in acls
      if not await crud.get_one_where(db, ACL, ACL.name, acl)]
-    return await crud.get_all(db, ACL, relation=ACL.scopes)
+    return await crud.get_all(db, ACL)
 
 
 async def _create_scopes(scopes: list, db) -> [Scope]:

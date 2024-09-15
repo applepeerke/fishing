@@ -22,7 +22,7 @@ async def test_cascading(client: AsyncClient, db: AsyncSession):
     # c. Delete role-1
     await crud.delete(db, Role, user_1.roles[0].id)
     #    User 1 must still exist with 2 roles (unfortunately) - but table "user_role" has 1 link.
-    user_1 = await crud.get_one(db, User, user_1.id, relation=User.roles)
+    user_1 = await crud.get_one(db, User, user_1.id)
     assert user_1 and len(user_1.roles) == 2
     #    Only role-2 must exist
     assert not await crud.get_one_where(db, Role, Role.name, 'role_1')
@@ -33,14 +33,14 @@ async def test_cascading(client: AsyncClient, db: AsyncSession):
 
     # e. Delete user-1
     await crud.delete(db, User, user_1.id)
-    assert not await crud.get_one(db, User, user_1.id, relation=User.roles)
+    assert not await crud.get_one(db, User, user_1.id)
     #    Role-2 must still exist
     roles = await crud.get_all(db, Role)
     assert len(roles) == 1
 
     # f. Delete user-2
     await crud.delete(db, User, user_2.id)
-    assert not await crud.get_one(db, User, user_1.id, relation=User.roles)
+    assert not await crud.get_one(db, User, user_1.id)
     # There should still be 1 role.
     roles = await crud.get_all(db, Role)
     assert len(roles) == 1
@@ -49,7 +49,8 @@ async def test_cascading(client: AsyncClient, db: AsyncSession):
 async def add_user_with_roles(db, email, roles: list = None) -> User:
     # a. Create user
     user = await crud.add(db, User(email=email))
-    user = await crud.get_one(db, User, user.id, relation=User.roles)  # Resolve the relations (empty here)
+    # Todo : still needed?
+    user = await crud.get_one(db, User, user.id)  # Resolve the relations (empty here)
     assert user is not None
     # Add the roles to the user
     if roles:
@@ -57,7 +58,7 @@ async def add_user_with_roles(db, email, roles: list = None) -> User:
             user.roles.append(role)
             await db.commit()
     # Verify
-    user = await crud.get_one(db, User, user.id, relation=User.roles)
+    user = await crud.get_one(db, User, user.id)
     assert len(user.roles) == len(roles) if roles else 0
     return user
 

@@ -23,13 +23,13 @@ async def add_scope_to_role(db: AsyncSession, role_id, scope_id):
 async def set_user_scopes_in_session(db: AsyncSession, email):
     scope_dict = {}
     # Populate
-    user = await crud.get_one_where(db, User, User.email, email, relation=User.roles)
+    user = await crud.get_one_where(db, User, User.email, email)
     # Todo: see if "get_one_where" can be ignored
     roles = user.roles
     for role in roles:
-        acls = await crud.get_one_where(db, Role, Role.name, role.name, relation=Role.acls)
+        acls = await crud.get_one_where(db, Role, Role.name, role.name)
         for acl in acls:
-            scopes = await crud.get_one_where(db, ACL, ACL.name, acl.name, relation=ACL.scopes)
+            scopes = await crud.get_one_where(db, ACL, ACL.name, acl.name)
             for scope in scopes:
                 scope_dict = _add_access(scope_dict, scope.entity, scope.access)
 
