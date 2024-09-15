@@ -9,6 +9,7 @@ from src.domains.role.models import Role
 from src.domains.scope.models import Scope
 from src.domains.token.models import SessionData
 from src.domains.user.models import User
+from src.session.session import authorize_session
 
 
 async def add_scope_to_role(db: AsyncSession, role_id, scope_id):
@@ -23,6 +24,7 @@ async def set_user_scopes_in_session(db: AsyncSession, email):
     scope_dict = {}
     # Populate
     user = await crud.get_one_where(db, User, User.email, email, relation=User.roles)
+    # Todo: see if "get_one_where" can be ignored
     roles = user.roles
     for role in roles:
         acls = await crud.get_one_where(db, Role, Role.name, role.name, relation=Role.acls)
@@ -42,8 +44,7 @@ async def set_user_scopes_in_session(db: AsyncSession, email):
             compressed_scopes[entity] = {ALL}
 
     # Update session data
-    session_data: SessionData = session_token_var.get(None)
-    session_data.scopes = compressed_scopes
+    authorize_session(compressed_scopes)
 
 
 def _add_access(scope_dict, entity, access) -> dict:

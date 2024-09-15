@@ -26,16 +26,16 @@ async def create_and_login_user(response: Response, db: AsyncSession = Depends(g
     response.headers.append(AUTHORIZATION, f'{oauth2_token.token_type} {oauth2_token.token}')
 
 
-async def create_fake_db_with_authenticated_user(db, email='dummy@example.nl', password='Welcome01!') -> SessionToken:
+async def create_fake_db_with_authenticated_user(db, email='fakedummy@example.nl', password='FakeWelcome01!') -> SessionToken:
     scopes = await _create_scopes(
         [
-            {'admin': ['*', Access.all]},
-         {'fisherman': ['fish', Access.all]},
-         {'fisherman': ['fishingwater', Access.read]},
-         {'fishingwater_manager': ['fishingwater', Access.all]}
+            {'fake_admin': ['*', Access.all]},
+         {'fake_fisherman': ['fake_fish', Access.all]},
+         {'fake_fisherman': ['fake_fishingwater', Access.read]},
+         {'fake_fishingwater_manager': ['fake_fishingwater', Access.all]}
         ], db)
-    acls = await _create_acls(['admin_group', 'fisherman_group', 'fishingwater_manager_group'], scopes, db)
-    roles = await _create_roles(['admin', 'fisherman', 'fishingwater_manager'], acls, db)
+    acls = await _create_acls(['fake_admin_group', 'fake_fisherman_group', 'fake_fishingwater_manager_group'], scopes, db)
+    roles = await _create_roles(['fake_admin', 'fake_fisherman', 'fake_fishingwater_manager'], acls, db)
     # Login
     # - Create the user as logged in.
     login_credentials = Login(email=email, password=password, password_repeat=password)

@@ -27,6 +27,12 @@ def authenticate_session(request: Request):
     set_session_user(session_token)
 
 
+def authorize_session(scopes: dict = None):
+    token_data = session_token_var.get(None)
+    token_data.scopes = scopes
+    session_token_var.set(token_data)
+
+
 def create_authenticated_session(user) -> SessionToken:
     """ After logging in and from tests """
     # - Create session token (oauth2)
@@ -36,7 +42,7 @@ def create_authenticated_session(user) -> SessionToken:
     return session_token
 
 
-async def set_session_user(session_token=None):
+def set_session_user(session_token=None):
     """ Set the plain text user-data from the encrypted token in a context variable """
     token_data: SessionData = get_session_token_data(session_token) if session_token else None
     session_token_var.set(token_data)

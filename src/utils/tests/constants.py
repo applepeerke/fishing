@@ -15,6 +15,7 @@ DETAIL = 'detail'
 PAYLOAD = 'payload'
 EXPECT = 'expect'
 EXPECT_DB = 'expect_db'
+INITIAL_DATA = 'initial_data'
 
 STATUS_CODE = 'status_code'
 

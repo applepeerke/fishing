@@ -22,7 +22,7 @@ async def add_authentication_header(request: Request, call_next):
     except Exception as e:
         return JSONResponse(
             status_code=500,
-            content={'detail': 'An unexpected error occurred in the session middleware'}
+            content={'detail': f'An unexpected error occurred in the session middleware: "{e}"'}
         )
 
 

@@ -82,10 +82,10 @@ def get_fixture_path(domain, ext, automatic_tests=False) -> str:
     return find_filename_path(file_name)
 
 
-async def insert_record(async_session: AsyncSession, entity, payload: dict):
+async def insert_record(db: AsyncSession, entity, payload: dict):
     statement = insert(entity).values(payload)
-    await async_session.execute(statement=statement)
-    await async_session.commit()
+    await db.execute(statement=statement)
+    await db.commit()
 
 
 def assert_response(response, expected_payload=None, expected_status=status.HTTP_200_OK):

@@ -79,8 +79,7 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
         await set_user_status(db, user, 'Invalid login attempt.')
     # Log in the user.
     await set_user_status(db, user, target_status=UserStatus.LoggedIn)
-    # Set user scopes in the session.
-    await set_user_scopes_in_session(db, user.email)
-
     # Create session token and update the response
     create_response_session_token(user, response)
+    # Set user scopes in the session.
+    await set_user_scopes_in_session(db, user.email)

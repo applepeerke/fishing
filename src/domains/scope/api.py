@@ -6,14 +6,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domains.base.functions import get_delete_response
 from src.db import crud
 from src.db.db import get_db_session
-from src.domains.scope.models import ScopeRead, Scope
+from src.domains.scope.models import ScopeRead, Scope, Access
 
 scope = APIRouter()
 
 
 @scope.post('/', response_model=ScopeRead)
 async def create_scope(scope_create: ScopeRead, db: AsyncSession = Depends(get_db_session)):
-    new_scope = Scope(entity=scope_create.entity, access=scope_create.access)
+    new_scope = Scope(entity=scope_create.entity, access=Access.get_access_value(scope_create.access))
     return await crud.add(db, new_scope)
 
 
