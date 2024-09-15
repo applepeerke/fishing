@@ -37,7 +37,7 @@ async def _create_db(test_tdd_scenarios_scopes: [TestCase], db: AsyncSession):
         entity_acl = json.loads(TC.payload)
         for entity, accesses in entity_acl.items():
             for access in accesses:
-                if not await crud.get_one_where(db, Scope, Scope.scope, f'{entity}_{access}'):
+                if not await crud.get_one_where(db, Scope, Scope.scope_name, f'{entity}_{access}'):
                     await crud.add(db, Scope(entity=entity, access=access))
 
     # - Add all roles/acls.
@@ -56,7 +56,7 @@ async def _create_db(test_tdd_scenarios_scopes: [TestCase], db: AsyncSession):
         entity_acl = json.loads(TC.payload)
         for entity, accesses in entity_acl.items():
             for access in accesses:
-                scope = await crud.get_one_where(db, Scope, Scope.scope, f'{entity}_{access}')
+                scope = await crud.get_one_where(db, Scope, Scope.scope_name, f'{entity}_{access}')
                 acl.scopes.append(scope)
                 await db.commit()
 

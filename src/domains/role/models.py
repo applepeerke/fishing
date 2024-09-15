@@ -18,8 +18,9 @@ class Role(Base):
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
     name = Column(String, nullable=False, index=True, unique=True)
     # Relations
-    users: Mapped[List['User']] = relationship(secondary=user_role, back_populates='roles', passive_deletes=True)
-    acls: Mapped[List['ACL']] = relationship(secondary=role_acl, back_populates='roles')
+    users: Mapped[List['User']] = relationship(
+        secondary=user_role, back_populates='roles', passive_deletes=True, lazy='selectin')
+    acls: Mapped[List['ACL']] = relationship(secondary=role_acl, back_populates='roles', lazy='selectin')
 
 
 # Pydantic models

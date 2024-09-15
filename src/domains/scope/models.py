@@ -66,7 +66,8 @@ class Scope(Base):
     access = Column(String, nullable=False)
     scope_name = Column(String, nullable=False, unique=True)
     # Relations
-    acls: Mapped[List['ACL']] = relationship(secondary=acl_scope, back_populates='scopes', passive_deletes=True)
+    acls: Mapped[List['ACL']] = relationship(
+        secondary=acl_scope, back_populates='scopes', passive_deletes=True, lazy='selectin')
 
 
 # Function to automatically update full_name before insert and update
