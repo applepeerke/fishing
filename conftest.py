@@ -12,7 +12,7 @@ from src.db.db import get_async_engine
 from src.domains.base.models import Base
 from src.main import app
 from src.utils.tests.functions import get_json, get_fixture_path
-from tests.tdd.TestCase import TestCase
+from tests.tdd.CsvTestCase import CsvTestCase
 from tests.tdd.tdd_login import get_tdd_test_scenarios_login
 from tests.tdd.tdd_scopes import get_tdd_test_scenarios_scopes
 

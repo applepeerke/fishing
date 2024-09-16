@@ -2,7 +2,7 @@ from starlette import status
 from src.utils.tests.constants import SUCCESS, FAIL, SUBST_MESSAGE, DETAIL
 
 
-class TestCase:
+class CsvTestCase:
     @property
     def seqno(self):
         return self._seqno

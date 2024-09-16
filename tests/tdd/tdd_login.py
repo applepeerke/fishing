@@ -1,6 +1,6 @@
 from src.utils.tests.constants import PAYLOAD, EXPECT_DB, EXPECT, NO_CHG
 from src.utils.tests.functions import create_nested_dict, get_csv_rows, merge_dicts
-from tests.tdd.TestCase import TestCase
+from tests.tdd.CsvTestCase import CsvTestCase
 
 
 def get_tdd_test_scenarios_login(path) -> dict:
@@ -21,7 +21,7 @@ def get_tdd_test_scenarios_login(path) -> dict:
     rows = get_csv_rows(path)
     d = {}
     for row in rows:
-        TC = TestCase(
+        TC = CsvTestCase(
             title=row[0],
             seqno=int(row[1]),
             r1=row[2],
@@ -57,7 +57,7 @@ def get_tdd_test_scenarios_login(path) -> dict:
     return d
 
 
-def _get_breadcrumbs(tc: TestCase, leaf) -> list:
+def _get_breadcrumbs(tc: CsvTestCase, leaf) -> list:
     """ The API route (last elements may be empty) """
     # ID = seqno | precondition UserStatus | executions | expected HTTP status
     breadcrumbs = [f'{str(tc.seqno).zfill(3)}|{tc.user_status_pre}|{tc.executions}|{tc.expected_response_http_status}']

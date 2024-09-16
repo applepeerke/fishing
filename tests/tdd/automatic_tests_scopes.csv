@@ -1,13 +1,13 @@
 ﻿;;;;Expected scopes (access is added)
-Title;TC;Roles;ACL;Entity, access
+Title;TC;Roles;ACLs;Entity, access
 0 roles;1;;;{}
-1 role all entities all access;2;admin;all_all;"{""entity"": {""*"": {""access"": [""*""]}}}"
-1 role all entities some access;3;deputy;all_some;"{""entity"": ""*"", ""access"": [""read"", ""update""]}"
-1 role some entities some access;4;secretary;some_some;" {""entity"": ""fisherman"", ""access"": [""read""]}"
-1 role some entities some access;5;guest;some_some;"{""entity"": {""fish"": {""access"": [""read""]}, ""fishingwater"": {""access"": [""read""]}}}"
-1 role some entities some access;6;fisherman;some_some;"{""entity"": {""fish"": {""access"": [""*""]}, ""fishingwater"": {""access"": [""read"", ""update"", ""delete""]}}}"
-1 role some entities all access;7;fishingwater_manager;some_all;"{""entity"": {""*"": {""access"": [""*""]}, ""fish"": {""access"": [""*""]}, ""fishingwater"": {""access"": [""*""]}}}"
-2 roles, also all entities all access;8;admin, fisherman;all_all, some_some;"{""entity"": {""*"": {""access"": [""*""]}}}"
-2 roles, also all entities some access;9;deputy, fisherman;all_some, some_some;"{""entity"": ""fish"": {""access"":  [""read"", ""update""]}, ""fisherman"":  {""access"": [""read"", ""update""]}, ""fishingwater"": {""access"": [""read"", ""update"", ""delete""]}}"
-2 roles, also some entities all access;10;fishingwater_manager, fisherman;some_all, some_some;"{""entity"": ""fish"": {""access"":  [""*""]}, ""fishingwater"": {""access"":  [""*""]}}"
-2 roles, only some entities some access;11;secretary, guest;some_some, some_some;"{""entity"": ""fish"": {""access"":  [""read""]}, ""fishingwater"": {""access"":  [""read""]}, ""fisherman"": {""access"":  [""read""]}}"
+1 role all entities all access;2;admin;all_all;"{""entity"": {""*"":  [""*""]}}"
+1 role all entities some access;3;deputy;all_some;"{""entity"": {""*"": [""read"", ""update""]}}"
+1 role some entities some access;4;secretary;some_some_for_secretary;" {""entity"": {""fisherman"": [""read""]}}"
+1 role some entities some access;5;guest;some_some_for_guest;"{""entity"": {""fish"":  [""read""], ""fishingwater"": [""read""]}}"
+1 role some entities some access;6;fisherman;some_some_for_fisherman;"{""entity"": {""fish"": [""*""], ""fishingwater"": [""read"", ""update"", ""delete""]}}"
+1 role some entities all access;7;fishingwater_manager;some_all;"{""entity"": {""fish"": [""*""], ""fishingwater"": [""*""]}}"
+2 roles, also all entities all access;8;admin, fisherman;all_all, some_some_for_fisherman;"{""entity"": {""*"": [""*""]}}"
+2 roles, also all entities some access;9;deputy, fisherman;all_some, some_some_for_fisherman;"{""entity"": {""fish"": [""*""], ""*"": [""read"", ""update""], ""fishingwater"": [""delete""]}}"
+2 roles, also some entities all access;10;fishingwater_manager, fisherman;some_all, some_some_for_fisherman;"{""entity"": {""fish"": [""*""],  ""fishingwater"": [""*""]}}"
+2 roles, only some entities some access;11;secretary, guest;some_some_for_secretary, some_some_for_guest;"{""entity"": {""fish"": [""read""], ""fishingwater"": [""read""], ""fisherman"": [""read""]}}"

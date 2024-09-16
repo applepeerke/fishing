@@ -43,7 +43,7 @@ def create_authenticated_session(user) -> SessionToken:
 
 
 def set_session_user(session_token=None):
-    """ Set the plain text user-data from the encrypted token in a context variable """
+    """ Set the insensitive data (email) from the encrypted token as plain text in a context variable """
     token_data: SessionData = get_session_token_data(session_token) if session_token else None
     session_token_var.set(token_data)
 

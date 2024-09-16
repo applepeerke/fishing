@@ -9,9 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.domains.base.models import Base
 from src.utils.security.input_validation import REGEX_ALPHANUM_ASTERISK
 
-CRUD_ENTITIES = {'fishingwater', 'fisherman', 'fish', 'user', 'role', 'acl', 'scope'}
-CRUD_ACCESSES = {'create', 'read', 'update', 'delete'}
-
 
 class Entity(str, Enum):
     none = None
@@ -53,7 +50,7 @@ class Access(str, Enum):
 
 
 # SqlAlchemy model
-acl_scope = Table('acl_scop', Base.metadata,
+acl_scope = Table('acl_scope', Base.metadata,
                   Column('acl_id', ForeignKey('acl.id', ondelete='CASCADE'), primary_key=True),
                   Column('scope_id', ForeignKey('scope.id', ondelete='CASCADE'), primary_key=True))
 
@@ -72,7 +69,7 @@ class Scope(Base):
 
 # Function to automatically update full_name before insert and update
 def update_scope_name(mapper, connection, target):
-    target.scope_name = f"{target.entity}_{target.access}"
+    target.scope_name = f'{target.entity}_{target.access}'
 
 
 # Register the SQLAlchemy event to update full_name before insert and update

@@ -49,8 +49,6 @@ async def test_cascading(client: AsyncClient, db: AsyncSession):
 async def add_user_with_roles(db, email, roles: list = None) -> User:
     # a. Create user
     user = await crud.add(db, User(email=email))
-    # Todo : still needed?
-    user = await crud.get_one(db, User, user.id)  # Resolve the relations (empty here)
     assert user is not None
     # Add the roles to the user
     if roles:
