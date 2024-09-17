@@ -2,11 +2,9 @@ import datetime
 import os
 
 from fastapi import HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from src.db import crud
-from src.domains.role.models import Role
 from src.domains.user.models import User, UserRead, UserStatus
 from src.utils.functions import find_filename_path, is_debug_mode, get_otp_expiration, get_password_expiration
 from src.utils.mail.mail import send_mail
@@ -147,27 +145,3 @@ def _reset_user_attributes(user) -> UserRead:
     user.blocked_until = None
     user.fail_count = 0
     return user
-
-
-# def map_user(user: User) -> UserRead:
-#     """ Map User (SQLAlchemy) to UserRead (pydantic) """
-#     user_read = UserRead(
-#         id=user.id,
-#         email=user.email,
-#         status=user.status,
-#         expiration=user.expiration,
-#         fail_count=user.fail_count,
-#         blocked_until=user.blocked_until
-#     )
-#     # This must be done afterward
-#     user_read.password = user.password
-#     user_read.roles = user.roles
-#     return user_read
-
-
-async def add_role_to_user(db: AsyncSession, user_id, role_id):
-    user = await crud.get_one_where(db, User, User.id, user_id, relation=User.roles)
-    role = await crud.get_one_where(db, Role, Role.id, role_id)
-    if user and role:
-        user.roles.append(role)
-        await db.commit()

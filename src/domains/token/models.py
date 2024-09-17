@@ -1,10 +1,13 @@
 from pydantic import BaseModel, EmailStr
 
-
-class SessionToken(BaseModel):
-    token: str
-    token_type: str
+from src.domains.token.constants import BEARER
 
 
-class SessionTokenData(BaseModel):
+class AuthenticationToken(BaseModel):
+    token: str | None = None
+    token_type: str = BEARER
+
+
+class SessionData(BaseModel):
     email: EmailStr | None = None
+    scopes: list[str] = []

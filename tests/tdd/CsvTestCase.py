@@ -2,7 +2,7 @@ from starlette import status
 from src.utils.tests.constants import SUCCESS, FAIL, SUBST_MESSAGE, DETAIL
 
 
-class TestCase:
+class CsvTestCase:
     @property
     def seqno(self):
         return self._seqno
@@ -63,8 +63,8 @@ class TestCase:
                  seqno,
                  r1,
                  r2,
-                 r3,
-                 payload,
+                 r3=None,
+                 payload=None,
                  repetitions=0,
                  expected_response_http_status=status.HTTP_200_OK,
                  expected_response_content=None,

@@ -15,7 +15,7 @@ from src.domains.role.api import role
 from src.domains.scope.api import scope
 from src.domains.test.populate_db import populate_fake_db
 from src.domains.user.api import user
-from src.middleware import add_authentication_header, add_process_time_header
+from src.middleware import add_process_time_header, add_db_session
 from src.session.session import has_access
 from src.utils.functions import is_debug_mode
 
@@ -50,7 +50,7 @@ app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
 app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (internal)'])
 
 # Add middleware
-app.add_middleware(BaseHTTPMiddleware, dispatch=add_authentication_header)
+app.add_middleware(BaseHTTPMiddleware, dispatch=add_db_session)
 app.add_middleware(BaseHTTPMiddleware, dispatch=add_process_time_header)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"],
                    allow_headers=["*"])

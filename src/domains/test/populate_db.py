@@ -9,7 +9,7 @@ from src.domains.acl.models import ACL
 from src.domains.login.models import Login
 from src.domains.role.models import Role
 from src.domains.scope.models import Scope, Access
-from src.domains.token.models import SessionToken
+from src.domains.token.models import AuthenticationToken
 from src.domains.user.models import User, UserStatus
 from src.session.session import create_authenticated_session
 from src.utils.functions import get_password_expiration
@@ -26,22 +26,23 @@ async def create_and_login_user(response: Response, db: AsyncSession = Depends(g
     response.headers.append(AUTHORIZATION, f'{oauth2_token.token_type} {oauth2_token.token}')
 
 
-async def create_fake_db_with_authenticated_user(db, email='dummy@example.nl', password='Welcome01!') -> SessionToken:
-    scopes = await _create_scopes(
+async def create_fake_db_with_authenticated_user(db, email='fakedummy@example.nl', password='FakeWelcome01!') -> AuthenticationToken:
+    all_scopes = await _create_scopes(
         [
-            {'admin': ['*', Access.all]},
-         {'fisherman': ['fish', Access.all]},
-         {'fisherman': ['fishingwater', Access.read]},
-         {'fishingwater_manager': ['fishingwater', Access.all]}
+            {'fake_admin': ['*', Access.all]},
+         {'fake_fisherman': ['fake_fish', Access.all]},
+         {'fake_fisherman': ['fake_fishingwater', Access.read]},
+         {'fake_fishingwater_manager': ['fake_fishingwater', Access.all]}
         ], db)
-    acls = await _create_acls(['admin_group', 'fisherman_group', 'fishingwater_manager_group'], scopes, db)
-    roles = await _create_roles(['admin', 'fisherman', 'fishingwater_manager'], acls, db)
+    acls = await _create_acls(
+        ['fake_admin_group', 'fake_fisherman_group', 'fake_fishingwater_manager_group'], all_scopes, db)
+    roles = await _create_roles(['fake_admin', 'fake_fisherman', 'fake_fishingwater_manager'], acls, db)
     # Login
     # - Create the user as logged in.
     login_credentials = Login(email=email, password=password, password_repeat=password)
     user = await _create_logged_in_user(login_credentials, roles, db)
     # - Authenticated the user in the session.
-    return create_authenticated_session(user)
+    return await create_authenticated_session(user.email, scopes=['*', Access.all], db=db)
 
 
 async def _create_logged_in_user(credentials: Login, roles, db) -> User:
@@ -65,14 +66,14 @@ async def _create_roles(roles: list, acls, db) -> [Role]:
     [await crud.add(db, Role(name=role_name, acls=acls))
      for role_name in roles
      if not await crud.get_one_where(db, Role, Role.name, role_name)]
-    return await crud.get_all(db, Role, relation=Role.acls)
+    return await crud.get_all(db, Role)
 
 
 async def _create_acls(acls: list, scopes, db) -> [ACL]:
     [await crud.add(db, ACL(name=acl, scopes=scopes))
      for acl in acls
      if not await crud.get_one_where(db, ACL, ACL.name, acl)]
-    return await crud.get_all(db, ACL, relation=ACL.scopes)
+    return await crud.get_all(db, ACL)
 
 
 async def _create_scopes(scopes: list, db) -> [Scope]:

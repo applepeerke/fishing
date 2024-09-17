@@ -2,37 +2,43 @@
  "initial_data": {
    "payload": {
      "id": "a2b1f62a-84d7-411b-ad1b-c1eac785c414",
-     "entity": "*",
-     "access": "*"
+     "entity": "fish",
+     "access": "*",
+     "scope_name": "fish_*"
    }
  },
  "create": {
    "payload": {
      "id": "d5660682-e285-4f79-ba2a-3997bb675c5d",
-     "entity": "fishingwater",
-     "access": "read"
+     "entity": "fish",
+     "access": "read",
+     "scope_name": "fish_read"
    },
    "expect": {
-     "entity": "fishingwater",
-     "access": "read"
+     "entity": "fish",
+     "access": "read",
+     "scope_name": "fish_read"
    }
  },
  "read": {
    "expect": {
-     "entity": "*",
-     "access": "*"
+     "entity": "fish",
+     "access": "*",
+     "scope_name": "fish_*"
    }
  },
  "update": {
    "payload": {
      "id": "a2b1f62a-84d7-411b-ad1b-c1eac785c414",
-     "entity": "fishingwater",
-     "access": "None"
+     "entity": "fish",
+     "access": "None",
+     "scope_name": "fish_None"
    },
    "expect": {
      "id": "a2b1f62a-84d7-411b-ad1b-c1eac785c414",
-     "entity": "fishingwater",
-     "access": "None"
+     "entity": "fish",
+     "access": "None",
+     "scope_name": "fish_None"
    }
  },
  "delete": {

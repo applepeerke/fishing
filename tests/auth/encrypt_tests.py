@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.utils.tests.constants import SUCCESS, FAIL, PAYLOAD
+from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import post_check, get_model, set_leaf
 
 

@@ -28,7 +28,7 @@ async def logout(
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail='The user has not the right status.')
 
     # a. Delete session authorization.
-    delete_session(request)
+    await delete_session(request)
     # b. Update db status.
     await set_user_status(db, user, target_status=UserStatus.Active)
     # c. Remove response authorization.

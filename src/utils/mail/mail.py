@@ -9,6 +9,9 @@ def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addre
     """
     Credits: https://stackoverflow.com/questions/6270782/how-to-send-an-email-with-python
     """
+    if not os.getenv('SMTP_ACTIVATED') == 'True':
+        return
+
     if not os.path.isfile(template_path):
         raise ValueError(f'Template "{template_path}" does not exist.')
     required_input('Subject', subject)
@@ -29,7 +32,7 @@ def send_mail(template_path, subject: str, from_mail_address: str, to_mail_addre
     msg['To'] = to_mail_addresses[0]
 
     # Send the message via our own SMTP server, but don't include the envelope header.
-    smtp = os.getenv('SMTP') if os.getenv('SMTP_ACTIVATED') == 'True' else 'localhost'
+    smtp = os.getenv('SMTP', 'localhost')
     s = smtplib.SMTP(smtp)
     if os.getenv('TEST_MAIL_ADDRESS', 'dummy@sample.com') not in to_mail_addresses:
         s.sendmail(from_mail_address, to_mail_addresses, msg.as_string())

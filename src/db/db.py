@@ -11,6 +11,7 @@ load_dotenv()
 
 
 def get_async_engine():
+    """ In pytest osenviron DATABASE_URI is changed, so the engine should be retrieved dynamically. """
     return create_async_engine(os.getenv("DATABASE_URI"), echo=True, future=True)
 
 
@@ -22,6 +23,6 @@ async def get_db_session() -> AsyncSession:
 
 
 async def init_models():
-    async with get_async_engine.begin() as conn:
+    async with get_async_engine().begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

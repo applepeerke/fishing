@@ -38,7 +38,7 @@ class User(Base):
     blocked_until = Column(DateTime(timezone=True), nullable=True)
     status = Column(Integer, default=UserStatus.Inactive)
     # Relations
-    roles: Mapped[List['Role']] = relationship(secondary=user_role, back_populates='users')
+    roles: Mapped[List['Role']] = relationship(secondary=user_role, back_populates='users', lazy='selectin')
 
 
 # Pydantic models

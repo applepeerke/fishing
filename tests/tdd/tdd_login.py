@@ -1,12 +1,9 @@
-import csv
-from src.utils.tests.constants import PAYLOAD, EXPECT_DB, EXPECT
-from src.utils.tests.functions import create_nested_dict
-from tests.tdd.TestCase import TestCase
-
-NO_CHG = '*NC'
+from src.utils.tests.constants import PAYLOAD, EXPECT_DB, EXPECT, NO_CHG
+from src.utils.tests.functions import create_nested_dict, get_csv_rows, merge_dicts
+from tests.tdd.CsvTestCase import CsvTestCase
 
 
-def get_tdd_test_scenarios(path) -> dict:
+def get_tdd_test_scenarios_login(path) -> dict:
     """
     Retrieve JSON from fishing/tests/data/{domain}.csv
     Example:
@@ -24,7 +21,7 @@ def get_tdd_test_scenarios(path) -> dict:
     rows = get_csv_rows(path)
     d = {}
     for row in rows:
-        TC = TestCase(
+        TC = CsvTestCase(
             title=row[0],
             seqno=int(row[1]),
             r1=row[2],
@@ -60,32 +57,9 @@ def get_tdd_test_scenarios(path) -> dict:
     return d
 
 
-def _get_breadcrumbs(tc: TestCase, leaf) -> list:
+def _get_breadcrumbs(tc: CsvTestCase, leaf) -> list:
     """ The API route (last elements may be empty) """
     # ID = seqno | precondition UserStatus | executions | expected HTTP status
     breadcrumbs = [f'{str(tc.seqno).zfill(3)}|{tc.user_status_pre}|{tc.executions}|{tc.expected_response_http_status}']
     breadcrumbs.extend([tc.r1, tc.r2, tc.r3, tc.expected_result, leaf])
     return breadcrumbs
-
-
-def merge_dicts(d1, d2):
-    for key, value in d2.items():
-        if key in d1 and isinstance(d1[key], dict) and isinstance(value, dict):
-            merge_dicts(d1[key], value)
-        else:
-            d1[key] = value
-    return d1
-
-
-def get_csv_rows(path=None, skip_rows=1):
-    rows = _try_csv_rows(path, ',')
-    if not rows or len(rows[0]) == 1:
-        rows = _try_csv_rows(path, ';')
-    return rows[skip_rows:] if len(rows) > skip_rows else []
-
-
-def _try_csv_rows(path, delimiter) -> list:
-    with open(path, encoding='utf-8-sig', errors='replace') as csvFile:
-        csv_reader = csv.reader(
-            csvFile, delimiter=delimiter, quotechar='"', quoting=csv.QUOTE_MINIMAL, skipinitialspace=True)
-        return [row for row in csv_reader if row[0]]
