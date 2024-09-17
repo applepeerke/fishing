@@ -15,16 +15,16 @@ class ScopeManager:
         self._email = email
         self._user_scopes = {}
 
-    async def get_user_scopes_set(self, compressed=True) -> set:
-        user_scopes = await self.get_user_scopes(compressed)
+    async def get_user_scopes(self, compressed=True) -> list:
+        user_scopes = await self.get_user_scopes_dict(compressed)
         # Set the unique set of scopes
-        return {
+        return list({
             f'{entity}_{access}'
             for entity, accesses in user_scopes.items()
             for access in accesses
-        }
+        })
 
-    async def get_user_scopes(self, compressed=True) -> dict:
+    async def get_user_scopes_dict(self, compressed=True) -> dict:
         # Populate
         user = await crud.get_one_where(self._db, User, User.email, self._email)
         [self._add_access(scope.entity, scope.access)
@@ -66,9 +66,3 @@ class ScopeManager:
                         self._user_scopes[entity].remove(access)
                         if not self._user_scopes[entity]:
                             del self._user_scopes[entity]
-
-        # [self._user_scopes[entity].remove(access)
-        #  for entity, accesses in self._user_scopes.items()
-        #  for access in all_entity_accesses
-        #  if entity != ALL]
-

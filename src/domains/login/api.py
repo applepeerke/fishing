@@ -10,9 +10,10 @@ from src.db.db import get_db_session
 from src.domains.login.models import Login
 from src.domains.login.models import LoginBase
 from src.domains.scope.functions import set_user_scopes_in_session
+from src.domains.scope.scope_manager import ScopeManager
 from src.domains.user.functions import validate_user, set_user_status, send_otp
 from src.domains.user.models import User, UserStatus
-from src.session.session import create_response_session_token
+from src.session.session import create_authorization_header_in_response
 from src.utils.functions import get_otp_expiration
 from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_password
 
@@ -79,7 +80,7 @@ async def login(credentials: Login, response: Response, db: AsyncSession = Depen
         await set_user_status(db, user, 'Invalid login attempt.')
     # Log in the user.
     await set_user_status(db, user, target_status=UserStatus.LoggedIn)
-    # Create session token and update the response
-    create_response_session_token(user, response)
+    # Create session token with user scopes and update the response
+    await create_authorization_header_in_response(db, email=user.email, response=response)
     # Set user scopes in the session.
     await set_user_scopes_in_session(db, user.email)

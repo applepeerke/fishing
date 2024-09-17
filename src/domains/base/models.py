@@ -47,14 +47,14 @@ class Base(AsyncAttrs, AuditMixin, DeclarativeBase):
 def set_created_by(mapper, connection, target):
     """ Event listener """
     # Get the current user from the context variable
-    session_token: SessionData = session_token_var.get(None)
-    target.created_by = session_token.email if session_token else UNKNOWN
+    token_data: SessionData = session_token_var.get(None)
+    target.created_by = token_data.email if token_data else UNKNOWN
 
 
 def set_updated_by(mapper, connection, target):
     """ Event listener """
-    user: SessionData = session_token_var.get(None)
-    target.updated_by = user.email if user else UNKNOWN
+    token_data: SessionData = session_token_var.get(None)
+    target.updated_by = token_data.email if token_data else UNKNOWN
 
 
 # Attach event listeners to SQLAlchemy models

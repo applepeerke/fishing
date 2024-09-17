@@ -35,7 +35,7 @@ async def test_scope_TDD(test_tdd_scenarios_scopes: list, client: AsyncClient, d
 
         # Get compressed scope_names from db
         scope_manager = ScopeManager(db, user.email)
-        scope_names_db = await scope_manager.get_user_scopes_set()
+        scope_names_db = await scope_manager.get_user_scopes()
         # Get scope names in payload
         scope_names_expected = {scope_name for scope_name in get_scope_names_from_payload(TC)}
         # Check
