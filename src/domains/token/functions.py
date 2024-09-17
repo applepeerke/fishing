@@ -3,7 +3,7 @@ import os
 
 import jwt
 from fastapi import HTTPException
-from fastapi.security import SecurityScopes, OAuth2PasswordBearer
+from fastapi.security import SecurityScopes
 from jwt import InvalidTokenError
 from pydantic import ValidationError
 from starlette import status
@@ -12,12 +12,6 @@ from src.db import crud
 from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES, BEARER
 from src.domains.token.models import SessionData, AuthenticationToken
 from src.domains.user.models import User
-
-# Todo
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="token",
-    scopes={"me": "Read information about the current user.", "items": "Read items."},
-)
 
 
 def create_authentication_token(email, scopes) -> AuthenticationToken:
