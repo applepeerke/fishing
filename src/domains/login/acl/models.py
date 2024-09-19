@@ -5,7 +5,7 @@ from pydantic import BaseModel, UUID4, Field
 from sqlalchemy import (Column, String, func, Table, ForeignKey)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.domains.base.models import Base
-from src.domains.scope.models import acl_scope
+from src.domains.login.scope.models import acl_scope
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
 # SqlAlchemy model

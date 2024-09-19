@@ -1,4 +1,4 @@
-from src.domains.password.models import ChangePassword
+from src.domains.login.password.models import ChangePassword
 from src.utils.security.crypto import verify_hash, is_valid_password
 
 

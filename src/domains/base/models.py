@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase
 
 from src.constants import UNKNOWN
-from src.domains.token.models import SessionData
+from src.domains.login.token.models import SessionData
 
 # Create a context variable for the session data
 session_data_var = contextvars.ContextVar('session_data')

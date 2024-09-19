@@ -5,11 +5,11 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db import crud
-from src.domains.acl.models import ACL
-from src.domains.role.models import Role
-from src.domains.scope.models import Scope
-from src.domains.scope.scope_manager import ScopeManager
-from src.domains.user.models import User
+from src.domains.login.acl.models import ACL
+from src.domains.login.role.models import Role
+from src.domains.login.scope.models import Scope
+from src.domains.login.scope.scope_manager import ScopeManager
+from src.domains.login.user.models import User
 from tests.tdd.CsvTestCase import CsvTestCase
 
 

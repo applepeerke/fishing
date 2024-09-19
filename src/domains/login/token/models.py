@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from src.domains.token.constants import BEARER
+from src.domains.login.token.constants import BEARER
 
 
 class AuthenticationToken(BaseModel):

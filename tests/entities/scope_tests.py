@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domains.scope.models import Scope
+from src.domains.login.scope.models import Scope
 from src.utils.tests.crud_test import CrudTest
 
 domain_url = 'scope'

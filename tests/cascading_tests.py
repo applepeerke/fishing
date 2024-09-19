@@ -3,8 +3,8 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db import crud
-from src.domains.role.models import Role
-from src.domains.user.models import User
+from src.domains.login.role.models import Role
+from src.domains.login.user.models import User
 
 
 @pytest.mark.asyncio

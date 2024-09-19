@@ -14,9 +14,9 @@ from src.constants import ALL
 from src.db import crud
 from src.db.db import get_db_session
 from src.domains.base.models import session_data_var
-from src.domains.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES, BEARER
-from src.domains.token.models import SessionData, Authorization
-from src.domains.user.models import User
+from src.domains.login.token.constants import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRY_MINUTES, BEARER
+from src.domains.login.token.models import SessionData, Authorization
+from src.domains.login.user.models import User
 
 security = HTTPBearer()
 

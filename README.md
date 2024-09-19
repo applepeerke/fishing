@@ -1,16 +1,16 @@
 # Fishing
 ## Purpose
-My purpose is to learn to build an authorized app, which uses containerized microservices in Python. 
-As an example I use a fishing simulation.
+My purpose is to build a Python authenticated FastAPI web app, using containerized microservices. 
+As an example I use a Fishing simulation.
 ## Implementation
 ### Database
 The project uses a Postgres database, which is built and migrated via alembic and maintained via asyncpg.
-For the models I use SQLAlchemy, combined with pydantic validation.
+For the models I use SQLAlchemy and pydantic validation.
 ### Authentication
 Authentication (2fa) is done via login with email handshaking and one-time-password. 
 An OAuth2 bearer token is used for maintaining the session.
 ### Testing
-Unit- and also automatic testing is done via pytest. A _virtual hacker_ is used to provide input validation.
+Unit- and also automatic testing is done via pytest. A _virtual hacker_ is used to provide some basic input validation.
 
 ## Prerequisites
  - Python 3.12
@@ -44,6 +44,7 @@ The tables should now have been created in your postgres database.
  - Run `main.py`
  - Head over to http://localhost:8085/api/v1/docs/ for the OpenAPI frontend.
  - Here you can try out the FastAPI endpoints.
+ - There is a test endpoint to populate the database with fake data, and to log-in a fake user. This can be convenient for trying out the login system. 
 ### Unit test
 In the terminal of your IDE, run `pytest`.
 
