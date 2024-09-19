@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.constants import ALL
 from src.db import crud
+from src.domains.role.models import Role
 from src.domains.user.models import User
 
 
@@ -15,8 +16,9 @@ class ScopeManager:
         self._email = email
         self._user_scopes = {}
 
-    async def get_user_scopes(self, compressed=True) -> list:
-        user_scopes = await self.get_user_scopes_dict(compressed)
+    async def get_user_scopes(self, compressed=True, roles: [Role] = None) -> list:
+        """ Return a User scope list. Roles can be used as a filter. """
+        user_scopes = await self._get_scopes_dict(compressed, roles)
         # Set the unique set of scopes
         return list({
             f'{entity}_{access}'
@@ -24,11 +26,13 @@ class ScopeManager:
             for access in accesses
         })
 
-    async def get_user_scopes_dict(self, compressed=True) -> dict:
+    async def _get_scopes_dict(self, compressed=True, roles: [Role] = None) -> dict:
+        """ Create a dict of User scopes. Roles can be used as a filter. """
+        role_names = [Role.name for Role.name in roles] if roles else []
         # Populate
         user = await crud.get_one_where(self._db, User, User.email, self._email)
         [self._add_access(scope.entity, scope.access)
-         for role in user.roles
+         for role in user.roles if not role_names or role.name in role_names
          for acl in role.acls
          for scope in acl.scopes]
 
@@ -66,3 +70,4 @@ class ScopeManager:
                         self._user_scopes[entity].remove(access)
                         if not self._user_scopes[entity]:
                             del self._user_scopes[entity]
+

@@ -33,8 +33,8 @@ Forgot password;30;password;forgot;;{};0;422;"{""type"": ""missing"",""loc"": ["
 Forgot password;31;password;forgot;;"{""email"": ""dummy@sample.com""}";0;200;{};;10;10;Inactive;Send otp
 Forgot password;32;password;forgot;;"{""email"": ""dummy@sample.com""}";0;200;{};;20;10;Inactive;Redirect to login/register.
 Forgot password;33;password;forgot;;"{""email"": ""dummy@sample.com""}";0;200;{};;30;10;Inactive;Redirect to login/register.
-Logout;34;logout;;;{};0;422;"{""type"": ""missing"",""loc"": [""body"", ""email""],""msg"": ""Field required""}";;NR;NR;;-
-Logout;35;logout;;;"{""email"": ""dummy@sample.com""}";0;403;*message;The user has not the right status.;10;10;Inactive;-
-Logout;36;logout;;;"{""email"": ""dummy@sample.com""}";0;403;*message;The user has not the right status.;20;20;Acknowledged;-
-Logout;37;logout;;;"{""email"": ""dummy@sample.com""}";0;403;*message;The user has not the right status.;30;30;Active;-
-Logout;38;logout;;;"{""email"": ""dummy@sample.com""}";0;200;;;40;30;Active;-
+Logout;34;logout;;;{};0;403;*message;Not authenticated;NR;NR;;-
+Logout;35;logout;;;"{""email"": ""dummy@sample.com""}";0;403;*message;Not authenticated;10;10;Inactive;-
+Logout;36;logout;;;"{""email"": ""dummy@sample.com""}";0;403;*message;Not authenticated;20;20;Acknowledged;-
+Logout;37;logout;;;"{""email"": ""dummy@sample.com""}";0;403;*message;Not authenticated;30;30;Active;-
+Logout;38;logout;;;"{""email"": ""dummy@sample.com""}";0;403;*message;Not authenticated;40;30;Active;-

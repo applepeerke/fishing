@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from conftest import test_data_login
 from src.constants import PASSWORD, EMAIL, TOKEN, LOGIN, LOGOUT
 from src.db import crud
+from src.domains.db_test.api import add_user_roles, create_fake_role_set
 from src.domains.user.models import User
 from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
@@ -42,11 +43,16 @@ async def test_login_happy_flow(client: AsyncClient, db: AsyncSession, test_data
     await change_password(db, ts.credentials)
     # d. Change password (from "Password1!" to "Password2!"). Status 10 -> 30.
     await post_check([PASSWORD, 'change'], ts.password_data, **kwargs)
-    # e. Login (with "Password2!")
+    # e. Authorize user (roles/acls/scopes).
+    email = ts.login_data[LOGIN]['register'][SUCCESS][PAYLOAD][EMAIL]
+    await create_fake_role_set(db)
+    await add_user_roles(db, email, ['fake_fisherman'])
+    # f. Login (with "Password2!")
     response = await post_check([LOGIN], ts.login_data, **kwargs)
     assert has_authorization_header(response) is True
-    # f. Logout
-    kwargs['headers'] = [(k, v) for k, v in response.headers.items()]
+    # g. Logout
+    # kwargs['headers'] = [(k, v) for k, v in response.headers.items()]
+    kwargs['headers'] = response.headers
     response = await post_check([LOGOUT], ts.logout_data, **kwargs)
     assert has_authorization_header(response) is False
 

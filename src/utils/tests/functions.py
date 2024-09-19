@@ -1,7 +1,6 @@
 import csv
-import json
 import datetime
-
+import json
 from json import JSONDecodeError
 from uuid import UUID
 
@@ -13,25 +12,17 @@ from starlette import status
 
 from src.constants import PASSWORD, AUTHORIZATION
 from src.db import crud
-from src.domains.token.constants import BEARER
 from src.domains.user.functions import set_user_status_related_attributes
 from src.domains.user.models import User, UserStatus
-
 from src.utils.functions import get_otp_expiration, get_password_expiration, find_filename_path, get_pk
+from src.utils.security.crypto import get_random_password, get_salted_hash
 from src.utils.security.crypto import verify_hash
 from src.utils.tests.constants import *
-from src.utils.security.crypto import get_random_password, get_salted_hash
 from src.utils.tests.constants import PAYLOAD
 
 
 def has_authorization_header(response):
     return any(header == AUTHORIZATION for header in response.headers)
-
-
-def get_authorization_header(response) -> dict:
-    for header, authorization in response.headers.items():
-        if header == AUTHORIZATION and authorization.startswith(BEARER):
-            return {AUTHORIZATION: authorization}
 
 
 async def initialize_user_from_fixture(api_route, expected_status, db, fixture, user_status: int | None):

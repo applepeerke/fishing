@@ -29,7 +29,8 @@
         "payload": {
           "email": "dummy@sample.com",
           "password": "Password2!",
-          "password_repeat": "Password2!"
+          "password_repeat": "Password2!",
+          "role_names": ["fake_fisherman"]
         },
         "expect": {
           "status_code": 200,

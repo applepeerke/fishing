@@ -8,6 +8,10 @@ class AuthenticationToken(BaseModel):
     token_type: str = BEARER
 
 
+class Authorization(AuthenticationToken):
+    scopes: list[str] = []
+
+
 class SessionData(BaseModel):
     email: EmailStr | None = None
     scopes: list[str] = []
