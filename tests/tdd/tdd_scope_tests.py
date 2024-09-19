@@ -33,16 +33,16 @@ async def test_scope_TDD(test_tdd_scenarios_scopes: list, client: AsyncClient, d
         user.roles = roles
         await db.commit()
 
-        # Get compressed scope_names from db
+        # Get compressed scope_names from db (for all user roles)
         scope_manager = ScopeManager(db, user.email)
         scope_names_db = await scope_manager.get_user_scopes()
-        # Get scope names in payload
+        # Get all scope names present in payload
         scope_names_expected = {scope_name for scope_name in get_scope_names_from_payload(TC)}
         # Check
         missing_in_db = {scope_name for scope_name in scope_names_expected if scope_name not in scope_names_db}
         missing_in_payload = {scope_name for scope_name in scope_names_db if scope_name not in scope_names_expected}
         assert not missing_in_db and not missing_in_payload
-        # Create
+        # Success
         print(f'* Test {TC.seqno} "{TC.title}" for scopes was successful.')
 
 

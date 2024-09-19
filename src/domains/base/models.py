@@ -8,8 +8,8 @@ from sqlalchemy.orm import DeclarativeBase
 from src.constants import UNKNOWN
 from src.domains.token.models import SessionData
 
-# Create a context variable for the authorization_token
-session_token_var = contextvars.ContextVar('session_token')
+# Create a context variable for the session data
+session_data_var = contextvars.ContextVar('session_data')
 
 
 class AuditMixin(object):
@@ -19,26 +19,6 @@ class AuditMixin(object):
     updated_by = Column(String, nullable=True)
     update_count = Column(Integer)
 
-    # @declared_attr
-    # def created_at(self):
-    #     return Column(DateTime(timezone=True), default=func.now())
-    #
-    # @declared_attr
-    # def created_by(self):
-    #     return Column(String)
-    #
-    # @declared_attr
-    # def updated_at(self):
-    #     return Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
-    #
-    # @declared_attr
-    # def updated_by(self):
-    #     return Column(String, nullable=True)
-    #
-    # @declared_attr
-    # def update_count(self):
-    #     return Column(Integer)
-
 
 class Base(AsyncAttrs, AuditMixin, DeclarativeBase):
     pass
@@ -47,13 +27,13 @@ class Base(AsyncAttrs, AuditMixin, DeclarativeBase):
 def set_created_by(mapper, connection, target):
     """ Event listener """
     # Get the current user from the context variable
-    token_data: SessionData = session_token_var.get(None)
+    token_data: SessionData = session_data_var.get(None)
     target.created_by = token_data.email if token_data else UNKNOWN
 
 
 def set_updated_by(mapper, connection, target):
     """ Event listener """
-    token_data: SessionData = session_token_var.get(None)
+    token_data: SessionData = session_data_var.get(None)
     target.updated_by = token_data.email if token_data else UNKNOWN
 
 

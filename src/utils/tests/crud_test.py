@@ -1,12 +1,12 @@
 from fastapi.exceptions import ResponseValidationError
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.responses import Response
 
-from src.constants import EMAIL, PASSWORD, LOGIN, AUTHORIZATION, ID
-from src.domains.test.populate_db import create_fake_db_with_authenticated_user
-from src.utils.tests.constants import SUCCESS, PAYLOAD, EXPECT, INITIAL_DATA
-from src.utils.tests.functions import insert_record, assert_response, get_json, get_authorization_header
+from src.constants import AUTHORIZATION, ID, LOGIN, EMAIL, PASSWORD, ROLE_NAMES
+from src.domains.db_test.api import get_fake_user_authorization
+from src.domains.token.models import Authorization
+from src.utils.tests.constants import PAYLOAD, EXPECT, INITIAL_DATA, SUCCESS
+from src.utils.tests.functions import insert_record, assert_response, get_json
 from src.utils.tests.virtual_hacker import tamper_items
 
 
@@ -76,18 +76,19 @@ class CrudTest:
             pass
 
     async def _preconditions(self, initial_data=None):
-        """ Set preconditions for tests. Injects directly in the db, ignoring api. """
-        # Create a fake db with a user, role, acls and scopes.
+        """ Set preconditions for tests. After every test pytest has cleared the db. """
         if self._login:
             test_data_login = get_json(LOGIN)
             payload = test_data_login[LOGIN][SUCCESS][PAYLOAD]
-            session_token = await create_fake_db_with_authenticated_user(self._db, payload[EMAIL], payload[PASSWORD])
-            response = Response()
-            response.headers.append(AUTHORIZATION, f'{session_token.token_type} {session_token.token}')
-            self._headers = get_authorization_header(response)
 
-        # Create an initial CRUD record
+            # Create a logged-in user from the json payload, with a fake role.
+            authorization: Authorization = await get_fake_user_authorization(
+                self._db, payload[EMAIL], payload[PASSWORD], payload[ROLE_NAMES])
+
+            # Add te authorization header.
+            self._headers = {AUTHORIZATION: f'{authorization.token_type} {authorization.token}'}
+
+        # Create an initial entity record.
         if initial_data:
             [await insert_record(self._db, self._model, initial_data[key])
              for key in initial_data if key.startswith(PAYLOAD)]
-

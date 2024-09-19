@@ -18,7 +18,10 @@ password_forgot = APIRouter()
 
 
 @password_change.post('/')
-async def change_password(credentials: ChangePassword, db: AsyncSession = Depends(get_db_session)):
+async def change_password(
+        credentials: ChangePassword,
+        db: AsyncSession = Depends(get_db_session)
+):
     """ Change OTP or password. """
     if not credentials:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
@@ -39,7 +42,10 @@ async def change_password(credentials: ChangePassword, db: AsyncSession = Depend
 
 
 @password_forgot.post('/')
-async def forgot_password(credentials: ChangePasswordBase, db: AsyncSession = Depends(get_db_session)):
+async def forgot_password(
+        credentials: ChangePasswordBase,
+        db: AsyncSession = Depends(get_db_session)
+):
     """ Send a new acknowledge mail with link and OTP. """
     if not credentials:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
@@ -51,7 +57,9 @@ async def forgot_password(credentials: ChangePasswordBase, db: AsyncSession = De
 
 
 @password_hash.post('/', response_model=PasswordEncrypted)
-def encrypt(payload: Password):
+def encrypt(
+        payload: Password
+):
     """ Hashing. Used for test purposes only. """
     if not payload:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
@@ -60,7 +68,9 @@ def encrypt(payload: Password):
 
 
 @password_verify.post('/')
-def validate_hash(payload: Password):
+def validate_hash(
+        payload: Password
+):
     """ Hash validation. Used for test purposes only. """
     if not payload:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
