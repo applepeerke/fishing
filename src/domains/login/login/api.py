@@ -10,13 +10,13 @@ from src.constants import EMAIL, TOKEN, AUTHORIZATION
 from src.db import crud
 from src.db.db import get_db_session
 from src.domains.base.models import session_data_var
-from src.domains.login.models import Login
-from src.domains.login.models import LoginBase
-from src.domains.scope.scope_manager import ScopeManager
-from src.domains.token.functions import get_authorization, is_authorized
-from src.domains.token.models import Authorization
-from src.domains.user.functions import validate_user, set_user_status, send_otp
-from src.domains.user.models import User, UserStatus
+from src.domains.login.login.models import Login
+from src.domains.login.login.models import LoginBase
+from src.domains.login.scope.scope_manager import ScopeManager
+from src.domains.login.token.functions import get_authorization, is_authorized
+from src.domains.login.token.models import Authorization
+from src.domains.login.user.functions import validate_user, set_user_status, send_otp
+from src.domains.login.user.models import User, UserStatus
 from src.utils.functions import get_otp_expiration
 from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_password
 

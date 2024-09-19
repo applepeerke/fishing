@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domains.acl.models import ACL
+from src.domains.login.acl.models import ACL
 from src.utils.tests.crud_test import CrudTest
 
 domain_url = 'acl'

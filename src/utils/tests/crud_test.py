@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.constants import AUTHORIZATION, ID, LOGIN, EMAIL, PASSWORD, ROLE_NAMES
 from src.domains.db_test.api import get_fake_user_authorization
-from src.domains.token.models import Authorization
+from src.domains.login.token.models import Authorization
 from src.utils.tests.constants import PAYLOAD, EXPECT, INITIAL_DATA, SUCCESS
 from src.utils.tests.functions import insert_record, assert_response, get_json
 from src.utils.tests.virtual_hacker import tamper_items

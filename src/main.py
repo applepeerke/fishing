@@ -6,15 +6,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.domains.acl.api import acl
-from src.domains.fishingwater.api import fishingwater
-from src.domains.login.api import login_register, login_login, login_acknowledge
-from src.domains.login.api import login_logout
-from src.domains.password.api import password_verify, password_forgot, password_change, password_hash
-from src.domains.role.api import role
-from src.domains.scope.api import scope
+from src.domains.login.acl.api import acl
+from src.domains.entities.fishingwater.api import fishingwater
+from src.domains.login.login.api import login_register, login_login, login_acknowledge
+from src.domains.login.login.api import login_logout
+from src.domains.login.password.api import password_verify, password_forgot, password_change, password_hash
+from src.domains.login.role.api import role
+from src.domains.login.scope.api import scope
 from src.domains.db_test.api import fake_user_login
-from src.domains.user.api import user
+from src.domains.login.user.api import user
 from src.middleware import add_process_time_header
 
 load_dotenv()

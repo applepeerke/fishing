@@ -5,10 +5,10 @@ from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domains.base.functions import get_delete_response
-from src.domains.fishingwater.models import FishingWater, FishingWaterRead, FishingWaterCreate
+from src.domains.entities.fishingwater.models import FishingWater, FishingWaterRead, FishingWaterCreate
 from src.db import crud
 from src.db.db import get_db_session
-from src.domains.token.functions import is_authorized
+from src.domains.login.token.functions import is_authorized
 
 fishingwater = APIRouter()
 

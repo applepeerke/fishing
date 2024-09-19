@@ -2,7 +2,7 @@ from pydantic import SecretStr
 from sqlalchemy.future import select
 
 from src.constants import ID
-from src.domains.scope.models import Access
+from src.domains.login.scope.models import Access
 
 """
 CRUD on SQLAlchemy

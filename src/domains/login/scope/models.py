@@ -79,13 +79,12 @@ event.listen(Scope, 'before_update', update_scope_name)
 
 # Pydantic models
 class ScopeBase(BaseModel):
+    # Enables compatibility with SQLAlchemy models
+    model_config = ConfigDict(from_attributes=True)
+
     entity: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_ASTERISK)
     access: Access = Access.none
     scope_name: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_ASTERISK)
-
-    model_config = ConfigDict(from_attributes=True)  # Enables compatibility with SQLAlchemy models
-    # class Config:
-    #     from_attributes = True  # Enables compatibility with SQLAlchemy models
 
 
 class ScopeRead(ScopeBase):

@@ -8,7 +8,7 @@ from conftest import test_data_login
 from src.constants import PASSWORD, EMAIL, TOKEN, LOGIN, LOGOUT
 from src.db import crud
 from src.domains.db_test.api import add_user_roles, create_fake_role_set
-from src.domains.user.models import User
+from src.domains.login.user.models import User
 from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.constants import SUCCESS, PAYLOAD
 from src.utils.tests.functions import post_check, get_leaf, get_json, get_model, get_user_from_db, get_check, \

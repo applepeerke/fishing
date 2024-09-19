@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from starlette import status
 
 from src.db import crud
-from src.domains.user.models import User, UserRead, UserStatus
+from src.domains.login.user.models import User, UserRead, UserStatus
 from src.utils.functions import find_filename_path, is_debug_mode, get_otp_expiration, get_password_expiration
 from src.utils.mail.mail import send_mail
 from src.utils.security.crypto import get_salted_hash, get_random_password

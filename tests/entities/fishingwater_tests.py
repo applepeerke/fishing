@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domains.fishingwater.models import FishingWater
+from src.domains.entities.fishingwater.models import FishingWater
 from src.utils.tests.crud_test import CrudTest
 
 domain_url = 'fishingwater'
