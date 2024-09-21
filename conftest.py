@@ -7,7 +7,7 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from src.constants import PASSWORD, LOGIN, SCOPES
+from src.utils.tests.constants import PASSWORD, LOGIN, SCOPES
 from src.db.db import get_async_engine
 from src.domains.base.models import Base
 from src.main import app

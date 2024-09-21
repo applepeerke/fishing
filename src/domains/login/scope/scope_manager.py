@@ -27,7 +27,7 @@ class ScopeManager:
         })
 
     async def _get_scopes_dict(self, compressed=True, roles: [Role] = None) -> dict:
-        """ Create a dict of User scopes. Roles can be used as a filter. """
+        """ Create a dict of User scopes. Roles can be used as a filter. Default all roles. """
         role_names = [Role.name for Role.name in roles] if roles else []
         # Populate
         user = await crud.get_one_where(self._db, User, User.email, self._email)

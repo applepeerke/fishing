@@ -4,13 +4,13 @@ import json
 from json import JSONDecodeError
 from uuid import UUID
 
-from fastapi import Response
+from fastapi import Response, HTTPException
 from httpx import AsyncClient
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.constants import PASSWORD, AUTHORIZATION
+from src.constants import AUTHORIZATION, X_REFRESH_TOKEN
 from src.db import crud
 from src.domains.login.user.functions import set_user_status_related_attributes
 from src.domains.login.user.models import User, UserStatus
@@ -22,7 +22,7 @@ from src.utils.tests.constants import PAYLOAD
 
 
 def has_authorization_header(response):
-    return any(header == AUTHORIZATION for header in response.headers)
+    return any(header in (AUTHORIZATION, X_REFRESH_TOKEN) for header in response.headers)
 
 
 async def initialize_user_from_fixture(api_route, expected_status, db, fixture, user_status: int | None):
@@ -51,7 +51,7 @@ async def _initialize_user(db, pk, target_status: int | None, plain_text_passwor
         plain_text_password = get_random_password()
     user.password = get_salted_hash(plain_text_password)
     if target_status == UserStatus.Expired:
-        user.expiration = datetime.datetime.now(datetime.timezone.utc)
+        user.password_expiration = datetime.datetime.now(datetime.timezone.utc)
     # c. Updert user
     if user_old:
         user.id = user_old.id
@@ -178,9 +178,12 @@ GET check
 """
 
 
-async def get_check(api_route, client: AsyncClient, params=None, expected_http_status=200):
-    response = await get_to_endpoint(client=client, api_route=api_route, params=params)
-    assert response.status_code == expected_http_status
+async def get_check(api_route, client: AsyncClient, expected_http_status=200, headers=None, params=None):
+    try:
+        response = await get_from_endpoint(client=client, api_route=api_route, params=params, headers=headers)
+        assert response.status_code == expected_http_status
+    except HTTPException as e:
+        assert e.status_code == expected_http_status
 
 
 """
@@ -247,11 +250,11 @@ async def assert_db(db, expected_payload, pk='email'):
     if PASSWORD in expected_payload:
         if expected_payload[PASSWORD] is None:
             assert user.password is None
-            assert user.expiration is None
+            assert user.password_expiration is None
         else:
             assert verify_hash(expected_payload[PASSWORD], user.password)
             if 'expiration' in expected_payload:
-                validate_expiration(user.expiration, expiration_type=expected_payload['expiration'])
+                validate_expiration(user.password_expiration, expiration_type=expected_payload['expiration'])
     if 'fail_count' in expected_payload:
         assert user.fail_count == expected_payload['fail_count']
     if 'status' in expected_payload:
@@ -266,7 +269,7 @@ def validate_expiration(db_expiration, delta_seconds_allowed=10.0, expiration_ty
     assert 0.0 < delta.total_seconds() < delta_seconds_allowed
 
 
-async def get_to_endpoint(client: AsyncClient, api_route, params=None, headers=None):
+async def get_from_endpoint(client: AsyncClient, api_route, params=None, headers=None):
     """ Precondition: JSON fixtures are defined by endpoint name. """
     route = '/'.join(api_route)
     return await client.get(f'{route}/', params=params, headers=headers)

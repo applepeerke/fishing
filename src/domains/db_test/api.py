@@ -10,9 +10,8 @@ from src.domains.login.acl.models import ACL
 from src.domains.login.login.models import Login
 from src.domains.login.role.models import Role
 from src.domains.login.scope.models import Scope, Access
-from src.domains.login.scope.scope_manager import ScopeManager
-from src.domains.login.token.functions import get_authorization
-from src.domains.login.token.models import Authorization
+from src.domains.login.token.functions import get_authentication
+from src.domains.login.token.models import Authentication
 from src.domains.login.user.models import User, UserStatus
 from src.utils.functions import get_password_expiration
 from src.utils.security.crypto import get_salted_hash
@@ -35,7 +34,7 @@ fake_roles = ['fake_admin',
               'fake_fishingwater_manager']
 
 
-@fake_user_login.post('/')
+@fake_user_login.post('/', response_model=Authentication)
 async def login_with_fake_user(
         response: Response,
         db: AsyncSession = Depends(get_db_session),
@@ -44,11 +43,12 @@ async def login_with_fake_user(
         role_name='fake_admin'
 ):
     # Authorize user
-    authorization: Authorization = await get_fake_user_authorization(db, email, password, [role_name])
-    response.headers.append(AUTHORIZATION, f'{authorization.token_type} {authorization.token}')
+    authentication: Authentication = await get_fake_user_authentication(db, email, password, [role_name])
+    response.headers.append(AUTHORIZATION, f'{authentication.token_type} {authentication.access_token}')
+    return authentication
 
 
-async def get_fake_user_authorization(db, email, password, role_names: list) -> Authorization:
+async def get_fake_user_authentication(db, email, password, role_names: list) -> Authentication:
     if not email or not password or not role_names:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='Email, password and role name(s) are required.')
 
@@ -78,7 +78,7 @@ async def add_user_roles(db, email, role_names: list):
     await db.commit()
 
 
-async def _insert_logged_in_user(credentials: Login, roles, db):
+async def _insert_logged_in_user(credentials: Login, roles, db) -> Authentication:
     # Delete user
     user = await get_user_from_db(db, credentials.email)
     if user:
@@ -87,17 +87,15 @@ async def _insert_logged_in_user(credentials: Login, roles, db):
     user = User(
         email=credentials.email,
         password=get_salted_hash(credentials.password.get_secret_value()),
-        expiration=get_password_expiration(),
+        password_expiration=get_password_expiration(),
         fail_count=0,
         status=UserStatus.LoggedIn,
         roles=roles
     )
     await crud.add(db, user)
 
-    # Get Authorization.
-    sm = ScopeManager(db, credentials.email)
-    scopes = await sm.get_user_scopes(roles)
-    return get_authorization(email=credentials.email, scopes=scopes)
+    # Get Authentication.
+    return await get_authentication(db, email=credentials.email, roles=roles)
 
 
 async def _create_roles(roles: list, acls, db) -> [Role]:

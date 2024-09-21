@@ -83,7 +83,7 @@ async def set_user_status(
 
         #   Expired
         #   - Expiration time reached
-        if user.expiration and user.expiration < datetime.datetime.now(datetime.timezone.utc):
+        if user.password_expiration and user.password_expiration < datetime.datetime.now(datetime.timezone.utc):
             if user.status == UserStatus.Acknowledged:
                 error_message = 'The temporary password has expired. Please register again.'
             else:
@@ -119,15 +119,15 @@ def set_user_status_related_attributes(user: User, target_status=None, renew_exp
         # Create the one time password (not hashed, 10 long)
         otp = get_random_password()
         user.password = get_salted_hash(otp)
-        user.expiration = get_otp_expiration()  # Short ttl
+        user.password_expiration = get_otp_expiration()  # Short ttl
         # Mail the OTP to the specified address.
         send_otp(user.email, otp)
     elif target_status == UserStatus.Acknowledged:
         pass
     elif target_status in (UserStatus.Active, UserStatus.LoggedIn):
-        user = _reset_user_attributes(user)
+        user = _reset_user_attributes(user, target_status)
         if renew_expiration:
-            user.expiration = get_password_expiration()  # Long ttl
+            user.password_expiration = get_password_expiration()  # Long ttl
     elif target_status == UserStatus.Blocked:  # max fail_count reached
         if not user.blocked_until:
             user.blocked_until = _get_blocked_until()
@@ -141,7 +141,9 @@ def _get_blocked_until():
     return datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=minutes)
 
 
-def _reset_user_attributes(user) -> UserRead:
+def _reset_user_attributes(user, target_status=None) -> UserRead:
     user.blocked_until = None
     user.fail_count = 0
+    if target_status != UserStatus.LoggedIn:
+        user.refresh_token_expiration = None
     return user

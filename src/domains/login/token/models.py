@@ -1,14 +1,18 @@
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr
 
 from src.domains.login.token.constants import BEARER
 
 
-class AuthenticationToken(BaseModel):
-    token: str | None = None
+class Authentication(BaseModel):
+    access_token: str | None = None
+    refresh_token: str | None = None
     token_type: str = BEARER
+    refresh_token_expiration: datetime | None = None
 
 
-class Authorization(AuthenticationToken):
+class Authorization(Authentication):
     scopes: list[str] = []
 
 
