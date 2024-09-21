@@ -1,0 +1,6 @@
+2024-09-21 21:34:27,680 - src.utils.logging.log - WARNING - src.domains.login.token.functions: user.refresh_token_expiration = 2024-10-21 19:34:27.680425+00:00 - before db
+2024-09-21 21:34:27,690 - src.utils.logging.log - WARNING - src.domains.login.token.functions: user.refresh_token_expiration = 2024-10-21 19:34:27.680425+00:00 - after db
+2024-09-21 21:34:28,038 - src.utils.logging.log - WARNING - src.domains.login.token.functions: user.refresh_token_expiration = 2024-09-21 19:34:28.037940+00:00 - before db
+2024-09-21 21:34:28,049 - src.utils.logging.log - WARNING - src.domains.login.token.functions: user.refresh_token_expiration = 2024-09-21 19:34:28.037940+00:00 - after db
+2024-09-21 21:34:45,545 - src.utils.logging.log - WARNING - src.domains.login.token.functions: user.refresh_token_expiration = 2024-09-21 19:34:45.545223+00:00 - before db
+2024-09-21 21:34:45,552 - src.utils.logging.log - WARNING - src.domains.login.token.functions: user.refresh_token_expiration = 2024-09-21 19:34:45.545223+00:00 - after db

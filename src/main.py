@@ -6,16 +6,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.domains.login.acl.api import acl
+from src.domains.db_test.api import fake_user_login
 from src.domains.entities.fishingwater.api import fishingwater
-from src.domains.login.login.api import login_register, login_login, login_acknowledge
+from src.domains.login.acl.api import acl
 from src.domains.login.login.api import login_logout
+from src.domains.login.login.api import login_register, login_login_with_credentials, login_acknowledge
 from src.domains.login.password.api import password_verify, password_forgot, password_change, password_hash
 from src.domains.login.role.api import role
 from src.domains.login.scope.api import scope
-from src.domains.db_test.api import fake_user_login
 from src.domains.login.user.api import user
-from src.middleware import add_process_time_header
+from src.middleware import add_process_time_header, auto_token_refresh
 
 load_dotenv()
 env = os.getenv('ENV')
@@ -30,7 +30,7 @@ app.include_router(fake_user_login, prefix='/test', tags=['Test'])
 # - Login
 app.include_router(login_register, prefix='/login/register', tags=['Login'])
 app.include_router(login_acknowledge, prefix='/login/acknowledge', tags=['Login'])
-app.include_router(login_login, prefix='/login', tags=['Login'])
+app.include_router(login_login_with_credentials, prefix='/login', tags=['Login'])
 # - Logout
 app.include_router(login_logout, prefix='/logout', tags=['Logout'])
 # - Password
@@ -47,6 +47,7 @@ app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
 app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (internal)'])
 
 # Add middleware
+app.add_middleware(BaseHTTPMiddleware, dispatch=auto_token_refresh)
 app.add_middleware(BaseHTTPMiddleware, dispatch=add_process_time_header)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"],
                    allow_headers=["*"])

@@ -20,3 +20,10 @@ INITIAL_DATA = 'initial_data'
 STATUS_CODE = 'status_code'
 
 NO_CHG = '*NC'
+
+# Breadcrumbs
+PASSWORD = 'password'
+LOGIN = 'login'
+LOGOUT = 'logout'
+FISHINGWATER = 'fishingwater'
+SCOPES = 'scopes'

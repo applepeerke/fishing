@@ -12,9 +12,7 @@ from src.db.db import get_db_session
 from src.domains.base.models import session_data_var
 from src.domains.login.login.models import Login
 from src.domains.login.login.models import LoginBase
-from src.domains.login.scope.scope_manager import ScopeManager
-from src.domains.login.token.functions import get_authorization, is_authorized
-from src.domains.login.token.models import Authorization
+from src.domains.login.token.functions import is_authorized, session_login
 from src.domains.login.user.functions import validate_user, set_user_status, send_otp
 from src.domains.login.user.models import User, UserStatus
 from src.utils.functions import get_otp_expiration
@@ -22,7 +20,7 @@ from src.utils.security.crypto import get_salted_hash, verify_hash, get_random_p
 
 login_register = APIRouter()
 login_acknowledge = APIRouter()
-login_login = APIRouter()
+login_login_with_credentials = APIRouter()
 login_logout = APIRouter()
 
 
@@ -48,7 +46,7 @@ async def register(
     user = User(
         email=payload.email,
         password=get_salted_hash(otp),
-        expiration=get_otp_expiration(),
+        password_expiration=get_otp_expiration(),
         status=UserStatus.Inactive
     )
     await crud.add(db, user)
@@ -79,10 +77,9 @@ async def acknowledge(
     await set_user_status(db, user, target_status=UserStatus.Acknowledged)
 
 
-@login_login.post('/')
-async def login(
+@login_login_with_credentials.post('/')
+async def login_with_credentials(
         credentials: Login,
-        response: Response,
         db: AsyncSession = Depends(get_db_session)
 ):
     """
@@ -100,15 +97,9 @@ async def login(
     if not verify_hash(credentials.password.get_secret_value(), user.password):
         await set_user_status(db, user, 'Invalid login attempt.')
 
-    # Log in
-    # - Get user scopes for all roles
-    scope_manager = ScopeManager(db, user.email)
-    scopes = await scope_manager.get_user_scopes()
-    # - Add the authorization header to the response
-    authorization: Authorization = get_authorization(user.email, scopes)
-    response.headers.append(AUTHORIZATION, f'{authorization.token_type} {authorization.token}')
-    # Log in the user.
-    await set_user_status(db, user, target_status=UserStatus.LoggedIn)
+    # Log in - session and db
+    response = await session_login(db, user, set_status=True)
+    return response
 
 
 @login_logout.post('/')
