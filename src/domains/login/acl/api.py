@@ -9,6 +9,7 @@ from src.db.db import get_db_session
 from src.domains.login.acl.models import ACLRead, ACL
 from src.domains.base.functions import get_delete_response
 from src.domains.login.token.functions import is_authorized
+from src.utils.logging.log import logger
 
 acl = APIRouter()
 
@@ -19,6 +20,7 @@ async def create_acl(
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['acl_create'])]
 ):
+    logger.info(f'{__name__}: creating new ACL "{acl_create.name}"')
     new_acl = ACL(name=acl_create.name)
     return await crud.add(db, new_acl)
 

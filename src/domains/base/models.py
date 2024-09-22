@@ -13,9 +13,10 @@ session_data_var = contextvars.ContextVar('session_data')
 
 
 class AuditMixin(object):
-    created_at = Column(DateTime(timezone=True), default=func.now())
+    created_at = Column(DateTime(timezone=True), default=func.timezone('UTC', func.now()))
     created_by = Column(String)
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=func.timezone('UTC', func.now()),
+                        onupdate=func.timezone('UTC', func.now()), nullable=False)
     updated_by = Column(String, nullable=True)
     update_count = Column(Integer)
 

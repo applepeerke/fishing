@@ -15,7 +15,7 @@ from src.domains.login.password.api import password_verify, password_forgot, pas
 from src.domains.login.role.api import role
 from src.domains.login.scope.api import scope
 from src.domains.login.user.api import user
-from src.middleware import add_process_time_header, auto_token_refresh
+from src.middleware import add_process_time_header, auto_token_refresh, add_log_entry
 
 load_dotenv()
 env = os.getenv('ENV')
@@ -49,6 +49,7 @@ app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (inter
 # Add middleware
 app.add_middleware(BaseHTTPMiddleware, dispatch=auto_token_refresh)
 app.add_middleware(BaseHTTPMiddleware, dispatch=add_process_time_header)
+app.add_middleware(BaseHTTPMiddleware, dispatch=add_log_entry)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"],
                    allow_headers=["*"])
 
