@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.domains.db_test.api import fake_user_login
+from src.domains.entities.fish.api import fish
+from src.domains.entities.fisherman.api import fisherman
 from src.domains.entities.fishingwater.api import fishingwater
 from src.domains.login.acl.api import acl
 from src.domains.login.login.api import login_logout
@@ -42,6 +44,8 @@ app.include_router(role, prefix='/role', tags=['Role'])
 app.include_router(acl, prefix='/acl', tags=['ACL'])
 app.include_router(scope, prefix='/scope', tags=['Scope'])
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'])
+app.include_router(fisherman, prefix='/fisherman', tags=['Fisherman'])
+app.include_router(fish, prefix='/fish', tags=['Fish'])
 # - Email/Password hashing (internal)
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
 app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (internal)'])

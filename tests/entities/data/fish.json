@@ -1,0 +1,55 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
+     "species": "Karper",
+     "length": null,
+     "weight_in_g": null,
+     "subspecies": null
+   }
+ },
+ "create": {
+   "payload": {
+     "species": "Ruisvoorn",
+     "length": "23.2",
+     "weight_in_g": "254",
+     "subspecies": null
+   },
+   "expect": {
+     "species": "Ruisvoorn",
+     "length": "23.2",
+     "weight_in_g": "254",
+     "subspecies": null
+   }
+ },
+ "read": {
+   "expect": {
+     "species": "Karper",
+     "length": null,
+     "weight_in_g": null,
+     "subspecies": null
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
+     "species": "Karper",
+     "length": "67.6",
+     "weight_in_g": "5000",
+     "subspecies": "Wild"
+   },
+   "expect": {
+     "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
+     "species": "Karper",
+     "length": "67.6",
+     "weight_in_g": "5000",
+     "subspecies": "Wild"
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The fish record has been deleted."
+   }
+ }
+}

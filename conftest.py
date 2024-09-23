@@ -54,11 +54,6 @@ def test_data_acl() -> dict:
 
 
 @pytest.fixture(scope="function")
-def test_data_fishingwater() -> dict:
-    return get_json('fishingwater')
-
-
-@pytest.fixture(scope="function")
 def test_data_role() -> dict:
     return get_json('role')
 
@@ -71,6 +66,21 @@ def test_data_scope() -> dict:
 @pytest.fixture(scope="function")
 def test_data_user() -> dict:
     return get_json('user')
+
+
+@pytest.fixture(scope="function")
+def test_data_fishingwater() -> dict:
+    return get_json('fishingwater')
+
+
+@pytest.fixture(scope="function")
+def test_data_fisherman() -> dict:
+    return get_json('fisherman')
+
+
+@pytest.fixture(scope="function")
+def test_data_fish() -> dict:
+    return get_json('fish')
 
 
 """ 
