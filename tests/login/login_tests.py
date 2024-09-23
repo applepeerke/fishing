@@ -64,7 +64,7 @@ async def test_login_happy_flow(client: AsyncClient, db: AsyncSession, test_data
     exp = Expiration(0, 0)
     response = await post_check([LOGIN], ts.login_data, **kwargs)
     await expect_expiration_days_around(db, email, exp)
-    # - No read access to Fishingwater (refresh token expired).
+    # - No read access to FishingWater (refresh token expired).
     await get_check([FISHINGWATER], client, 401, response.headers)
     """
     Expiration-2: access=0, refresh=30

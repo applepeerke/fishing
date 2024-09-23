@@ -1,0 +1,43 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "673bc0d0-c82c-4fe1-a2ac-ec757c4328c9",
+     "forename": "Jan",
+     "surname": "de Koning"
+   }
+ },
+ "create": {
+   "payload": {
+     "forename": "Piet",
+     "surname": "Heckel"
+   },
+   "expect": {
+     "forename": "Piet",
+     "surname": "Heckel"
+   }
+ },
+ "read": {
+   "expect": {
+     "forename": "Jan",
+     "surname": "de Koning"
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "673bc0d0-c82c-4fe1-a2ac-ec757c4328c9",
+     "forename": "Jan-Hendrik",
+     "surname": "De Koning"
+   },
+   "expect": {
+     "id": "673bc0d0-c82c-4fe1-a2ac-ec757c4328c9",
+     "forename": "Jan-Hendrik",
+     "surname": "De Koning"
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The fisherman record has been deleted."
+   }
+ }
+}

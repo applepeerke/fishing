@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domains.base.functions import get_delete_response
-from src.domains.entities.fishingwater.models import FishingWater, FishingWaterRead, FishingWaterCreate
+from src.domains.entities.fishingwater.models import FishingWater, FishingWaterRead, FishingWaterBase
 from src.db import crud
 from src.db.db import get_db_session
 from src.domains.login.token.functions import is_authorized
@@ -14,8 +14,8 @@ fishingwater = APIRouter()
 
 
 @fishingwater.post('/', response_model=FishingWaterRead)
-async def create_fishing(
-        fishingwater_create: FishingWaterCreate,
+async def create_fishingwater(
+        fishingwater_create: FishingWaterBase,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['fishing_create'])]
 ):
@@ -27,7 +27,7 @@ async def create_fishing(
 
 
 @fishingwater.get('/', response_model=list[FishingWaterRead])
-async def read_fishings(
+async def read_fishingwaters(
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['fishing_readall'])],
         skip: int = 0,
@@ -37,7 +37,7 @@ async def read_fishings(
 
 
 @fishingwater.get('/{id}', response_model=FishingWaterRead)
-async def read_fishing(
+async def read_fishingwater(
         id: UUID,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['fishing_read'])]
@@ -46,7 +46,7 @@ async def read_fishing(
 
 
 @fishingwater.put('/{id}', response_model=FishingWaterRead)
-async def update_fishing(
+async def update_fishingwater(
         id: UUID,
         fishing_update: FishingWaterRead,
         db: Annotated[AsyncSession, Depends(get_db_session)],
@@ -57,7 +57,7 @@ async def update_fishing(
 
 
 @fishingwater.delete('/{id}')
-async def delete_fishing(
+async def delete_fishingwater(
         id: UUID,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['fishing_delete'])]
