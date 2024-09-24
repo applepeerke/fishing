@@ -1561,3 +1561,16 @@
 2024-09-24 15:40:03,472 - INFO - src.middleware: End GET    user/?skip=0&limit=10                                                            Duration: 0.16945708301500417
 2024-09-24 15:40:34,135 - INFO - src.middleware: Str GET    fish/?skip=0&limit=100                                                          
 2024-09-24 15:40:34,274 - INFO - src.middleware: End GET    fish/?skip=0&limit=100                                                           Duration: 0.1388872090028599
+2024-09-24 15:51:50,655 - INFO - src.middleware: Str GET    fishingwater/?skip=0&limit=10                                                   
+2024-09-24 15:57:59,508 - INFO - src.middleware: Str GET    fishingwater/?skip=0&limit=10                                                   
+2024-09-24 15:57:59,705 - INFO - src.middleware: End GET    fishingwater/?skip=0&limit=10                                                    Duration: 0.1958440000016708
+2024-09-24 15:59:17,555 - INFO - src.middleware: Str GET    fisherman/?skip=0&limit=100010                                                  
+2024-09-24 15:59:17,671 - INFO - src.middleware: End GET    fisherman/?skip=0&limit=100010                                                   Duration: 0.11465062500792556
+2024-09-24 16:00:50,088 - INFO - src.middleware: Str GET    fisherman/?skip=0&limit=100010                                                  
+2024-09-24 16:00:50,252 - INFO - src.middleware: End GET    fisherman/?skip=0&limit=100010                                                   Duration: 0.16339841700391844
+2024-09-24 16:02:09,660 - INFO - src.middleware: Str GET    fish/?skip=0&limit=100                                                          
+2024-09-24 16:02:09,803 - INFO - src.middleware: End GET    fish/?skip=0&limit=100                                                           Duration: 0.1423960829852149
+2024-09-24 16:29:02,081 - INFO - src.middleware: Str GET    fish/?skip=0&limit=100                                                          
+2024-09-24 16:29:29,622 - INFO - src.middleware: Str GET    fish/?skip=0&limit=100                                                          
+2024-09-24 16:29:59,926 - INFO - src.middleware: Str GET    fish/?skip=0&limit=100                                                          
+2024-09-24 16:30:00,101 - INFO - src.middleware: End GET    fish/?skip=0&limit=100                                                           Duration: 0.1753313750086818

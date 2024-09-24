@@ -47,7 +47,12 @@ class FishBase(BaseModel):
     length: Optional[Decimal]
     weight_in_g: Optional[int] = Field(ge=0, le=100000)
     subspecies: Optional[Subspecies]
+    fisherman_id: UUID4 | None
+    fishingwater_id: UUID4 | None
 
 
 class FishRead(FishBase):
     id: UUID4
+    # Relations
+    # fishingwater: Optional[FishingWaterBase]
+    # fisherman: Optional[FishermanBase]
