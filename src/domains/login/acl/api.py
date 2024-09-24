@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db import crud
 from src.db.db import get_db_session
-from src.domains.login.acl.models import ACLRead, ACL
+from src.domains.login.acl.models import ACLRead, ACL, ACLBase
 from src.domains.base.functions import get_delete_response
 from src.domains.login.token.functions import is_authorized
 from src.utils.logging.log import logger
@@ -16,7 +16,7 @@ acl = APIRouter()
 
 @acl.post('/', response_model=ACLRead)
 async def create_acl(
-        acl_create: ACLRead,
+        acl_create: ACLBase,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['acl_create'])]
 ):

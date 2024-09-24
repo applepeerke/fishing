@@ -3,10 +3,10 @@ import os
 import pytest
 import pytest_asyncio
 from dotenv import load_dotenv
-from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
+from src.utils.client import get_async_client
 from src.utils.tests.constants import PASSWORD, LOGIN, SCOPES
 from src.db.db import get_async_engine
 from src.domains.base.models import Base
@@ -22,11 +22,12 @@ async_engine = get_async_engine()
 
 @pytest_asyncio.fixture
 async def client():
-    async with AsyncClient(
-            base_url=f"http://{os.getenv('API_V1_PREFIX')}",
-            transport=ASGITransport(app=app)
-    ) as client:
-        yield client
+    return get_async_client(app)
+    # async with AsyncClient(
+    #         base_url=f"http://{os.getenv('API_V1_PREFIX')}",
+    #         transport=ASGITransport(app=app)
+    # ) as client:
+    #     yield client
 
 
 @pytest_asyncio.fixture(scope="function")

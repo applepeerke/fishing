@@ -102,7 +102,7 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     await crud.delete(db, FishingWater, fishingwater_1.id)
     assert await crud.get_one(db, FishingWater, fishingwater_2.id) is not None
     assert len(await crud.get_all(db, Fisherman)) == 2
-    assert len(await crud.get_all(db, Fish)) == 2
+    assert len(await crud.get_all(db, Fish)) == 1  # With Fishingwater also fish is deleted.
     # e. Delete fisherman-1 - Caught Fish-1 should also be deleted.
     #    Fisherman 2 and fish 2 should still exist.
     await crud.delete(db, Fisherman, fisherman_1.id)

@@ -2,48 +2,60 @@
  "initial_data": {
    "payload": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
-     "species": "Karper",
+     "species": "Carp",
      "length": null,
      "weight_in_g": null,
-     "subspecies": null
+     "subspecies": null,
+     "fisherman_id": null,
+     "fishingwater_id": null
    }
  },
  "create": {
    "payload": {
-     "species": "Ruisvoorn",
+     "species": "Roach",
      "length": "23.2",
      "weight_in_g": "254",
-     "subspecies": null
+     "subspecies": null,
+     "fisherman_id": null,
+     "fishingwater_id": null
    },
    "expect": {
-     "species": "Ruisvoorn",
+     "species": "Roach",
      "length": "23.2",
      "weight_in_g": "254",
-     "subspecies": null
+     "subspecies": null,
+     "fisherman_id": null,
+     "fishingwater_id": null
    }
  },
  "read": {
    "expect": {
-     "species": "Karper",
+     "species": "Carp",
      "length": null,
      "weight_in_g": null,
-     "subspecies": null
+     "subspecies": null,
+     "fisherman_id": null,
+     "fishingwater_id": null
    }
  },
  "update": {
    "payload": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
-     "species": "Karper",
+     "species": "Carp",
      "length": "67.6",
      "weight_in_g": "5000",
-     "subspecies": "Wild"
+     "subspecies": "Wild",
+     "fisherman_id": null,
+     "fishingwater_id": null
    },
    "expect": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
-     "species": "Karper",
+     "species": "Carp",
      "length": "67.6",
      "weight_in_g": "5000",
-     "subspecies": "Wild"
+     "subspecies": "Wild",
+     "fisherman_id": null,
+     "fishingwater_id": null
    }
  },
  "delete": {

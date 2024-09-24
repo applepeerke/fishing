@@ -47,12 +47,17 @@ class FishBase(BaseModel):
     length: Optional[Decimal]
     weight_in_g: Optional[int] = Field(ge=0, le=100000)
     subspecies: Optional[Subspecies]
-    fisherman_id: UUID4 | None
-    fishingwater_id: UUID4 | None
+    fisherman_id: Optional[UUID4]
+    fishingwater_id: Optional[UUID4]
 
 
 class FishRead(FishBase):
     id: UUID4
     # Relations
-    # fishingwater: Optional[FishingWaterBase]
-    # fisherman: Optional[FishermanBase]
+#     fishingwater: 'Optional[FishingWaterBase]'
+#     fisherman: 'Optional[FishermanBase]'
+#
+#
+# from src.domains.entities.fishingwater.models import FishingWaterBase
+# from src.domains.entities.fisherman.models import FishermanBase
+# FishBase.update_forward_refs()

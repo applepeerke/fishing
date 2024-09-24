@@ -47,10 +47,6 @@ class UserBase(BaseModel):
     email: EmailStr
 
 
-class UserCreate(UserBase):
-    pass
-
-
 class UserUpdate(UserBase):
     password: Optional[SecretStr] = Field(min_length=8, max_length=256, default=None)
     password_expiration: Optional[datetime] = Field(default=None)

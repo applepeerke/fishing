@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domains.base.functions import get_delete_response
 from src.db import crud
 from src.db.db import get_db_session
-from src.domains.login.scope.models import ScopeRead, Scope, Access
+from src.domains.login.scope.models import ScopeRead, Scope, Access, ScopeBase
 from src.domains.login.token.functions import is_authorized
 
 scope = APIRouter()
@@ -15,7 +15,7 @@ scope = APIRouter()
 
 @scope.post('/', response_model=ScopeRead)
 async def create_scope(
-        scope_create: ScopeRead,
+        scope_create: ScopeBase,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['scope_create'])]
 ):

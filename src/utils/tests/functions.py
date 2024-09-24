@@ -16,6 +16,7 @@ from src.db import crud
 from src.domains.login.user.functions import set_user_status_related_attributes
 from src.domains.login.user.models import User, UserStatus
 from src.utils.functions import get_otp_expiration, get_password_expiration, find_filename_path, get_pk
+from src.utils.logging.log import logger
 from src.utils.security.crypto import get_random_password, get_salted_hash
 from src.utils.security.crypto import verify_hash
 from src.utils.tests.constants import *
