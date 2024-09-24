@@ -4,10 +4,10 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domains.base.functions import get_delete_response
-from src.domains.entities.fisherman.models import Fisherman, FishermanRead, FishermanBase
 from src.db import crud
 from src.db.db import get_db_session
+from src.domains.base.functions import get_delete_response
+from src.domains.entities.fisherman.models import Fisherman, FishermanRead, FishermanBase
 from src.domains.login.token.functions import is_authorized
 
 fisherman = APIRouter()

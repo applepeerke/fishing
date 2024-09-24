@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domains.base.functions import get_delete_response
 from src.domains.login.token.functions import is_authorized
-from src.domains.login.user.models import User, UserRead, UserCreate
+from src.domains.login.user.models import User, UserRead, UserBase
 from src.db import crud
 from src.db.db import get_db_session
 
@@ -15,7 +15,7 @@ user = APIRouter()
 
 @user.post('/', response_model=UserRead)
 async def create_user(
-        user_create: UserCreate,
+        user_create: UserBase,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['user_create'])]
 ):

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domains.base.functions import get_delete_response
 from src.db import crud
 from src.db.db import get_db_session
-from src.domains.login.role.models import RoleRead, Role
+from src.domains.login.role.models import RoleRead, Role, RoleBase
 from src.domains.login.token.functions import is_authorized
 
 role = APIRouter()
@@ -15,7 +15,7 @@ role = APIRouter()
 
 @role.post('/', response_model=RoleRead)
 async def create_role(
-        role_create: RoleRead,
+        role_create: RoleBase,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['role_create'])]
 ):
