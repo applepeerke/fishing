@@ -28,13 +28,13 @@ class FishingWater(Base):
         'Fish', back_populates='fishingwater', cascade='all, delete-orphan', lazy='selectin')
 
 
-
 # Pydantic models
 class FishingWaterBase(BaseModel):
     location: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_PLUS)
     type: str = Field(min_length=1, max_length=30, pattern=REGEX_ALPHANUM_PLUS)
     # Relations
     fishes: Optional[List[FishBase]] = []
+    fishermen: Optional[List[FishBase]] = []
 
 
 class FishingWaterRead(FishingWaterBase):

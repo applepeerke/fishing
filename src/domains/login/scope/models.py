@@ -7,6 +7,7 @@ from sqlalchemy import (Column, String, func, Table, ForeignKey, event)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.domains.base.models import Base
+from src.domains.login.scope.functions import get_scope_name
 from src.utils.security.input_validation import REGEX_ALPHANUM_ASTERISK
 
 
@@ -69,7 +70,7 @@ class Scope(Base):
 
 # Function to automatically update full_name before insert and update
 def update_scope_name(mapper, connection, target):
-    target.scope_name = f'{target.entity}_{target.access}'
+    target.scope_name = get_scope_name(target.entity, target.access)
 
 
 # Register the SQLAlchemy event to update full_name before insert and update

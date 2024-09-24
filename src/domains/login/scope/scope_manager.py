@@ -16,7 +16,7 @@ class ScopeManager:
         self._email = email
         self._user_scopes = {}
 
-    async def get_user_scopes(self, compressed=True, roles: [Role] = None) -> list:
+    async def get_user_scopes(self, roles: [Role] = None, compressed=True) -> list:
         """ Return a User scope list. Roles can be used as a filter. """
         user_scopes = await self._get_scopes_dict(compressed, roles)
         # Set the unique set of scopes
@@ -28,7 +28,7 @@ class ScopeManager:
 
     async def _get_scopes_dict(self, compressed=True, roles: [Role] = None) -> dict:
         """ Create a dict of User scopes. Roles can be used as a filter. Default all roles. """
-        role_names = [Role.name for Role.name in roles] if roles else []
+        role_names = [role.name for role in roles] if roles else []
         # Populate
         user = await crud.get_one_where(self._db, User, User.email, self._email)
         [self._add_access(scope.entity, scope.access)

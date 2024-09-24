@@ -3,7 +3,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.constants import AUTHORIZATION, ID, EMAIL, ROLE_NAMES
-from src.domains.db_test.api import get_fake_user_authentication
+from src.services.test.create_db.api import create_fake_authenticated_user
 from src.domains.login.token.models import Authentication
 from src.utils.tests.constants import PAYLOAD, EXPECT, INITIAL_DATA, SUCCESS, LOGIN, PASSWORD
 from src.utils.tests.functions import insert_record, assert_response, get_json
@@ -82,7 +82,7 @@ class CrudTest:
             payload = test_data_login[LOGIN][SUCCESS][PAYLOAD]
 
             # Create a logged-in user from the json payload, with a fake role.
-            authentication: Authentication = await get_fake_user_authentication(
+            authentication: Authentication = await create_fake_authenticated_user(
                 self._db, payload[EMAIL], payload[PASSWORD], payload[ROLE_NAMES])
 
             # Add te authorization header.

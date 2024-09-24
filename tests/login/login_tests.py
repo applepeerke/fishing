@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from conftest import test_data_login
 from src.constants import EMAIL, TOKEN
 from src.db import crud
-from src.domains.db_test.api import add_user_roles, create_fake_role_set
+from src.services.test.create_db.api import add_user_roles, create_fake_role_set
 from src.domains.login.token.functions import session_login
 from src.domains.login.user.models import User
 from src.utils.security.crypto import get_salted_hash

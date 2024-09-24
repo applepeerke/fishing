@@ -1,3 +1,5 @@
+from typing import cast
+
 from pydantic import SecretStr
 from sqlalchemy.future import select
 
@@ -30,18 +32,18 @@ async def get_all(db, obj_def, skip: int = 0, limit: int = 9999):
 
 async def get_one(db, obj_def, id):
     """ Get one by id """
-    result = await db.execute(select(obj_def).filter(obj_def.id == id))
+    result = await db.execute(select(obj_def).where(cast('ColumnElement[bool]', obj_def.id == id)))
     return result.scalars().first()
 
 
 async def get_where(db, obj_def, att_name, att_value):
-    result = await db.execute(select(obj_def).where(att_name == att_value))
+    result = await db.execute(select(obj_def).where(cast('ColumnElement[bool]', att_name == att_value)))
     objects = result.scalars().all()
     return objects
 
 
 async def get_one_where(db, obj_def, att_name, att_value):
-    result = await db.execute(select(obj_def).where(att_name == att_value))
+    result = await db.execute(select(obj_def).where(cast('ColumnElement[bool]', att_name == att_value)))
     return result.scalars().first()
 
 

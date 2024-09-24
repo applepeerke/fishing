@@ -1,14 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException
 from starlette import status
-from starlette.responses import Response
 
-from src.constants import AUTHORIZATION
 from src.db import crud
-from src.db.db import get_db_session
 from src.domains.login.acl.models import ACL
 from src.domains.login.login.models import Login
 from src.domains.login.role.models import Role
+from src.domains.login.scope.functions import get_scope_name
 from src.domains.login.scope.models import Scope, Access
 from src.domains.login.token.functions import get_authentication
 from src.domains.login.token.models import Authentication
@@ -17,7 +14,6 @@ from src.utils.functions import get_password_expiration
 from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.functions import get_user_from_db
 
-fake_user_login = APIRouter()
 
 fake_scopes = [{'fake_admin': ['*', Access.all.value]},
                {'fake_fisherman': ['fake_fish', Access.all.value]},
@@ -28,40 +24,42 @@ fake_acls = ['fake_admin_group',
              'fake_fisherman_group',
              'fake_fishingwater_manager_group']
 
-
 fake_roles = ['fake_admin',
               'fake_fisherman',
               'fake_fishingwater_manager']
 
 
-@fake_user_login.post('/', response_model=Authentication)
-async def login_with_fake_user(
-        response: Response,
-        db: AsyncSession = Depends(get_db_session),
-        email='fakedummy@example.nl',
-        password='FakeWelcome01!',
-        role_name='fake_admin'
-):
-    # Authorize user
-    authentication: Authentication = await get_fake_user_authentication(db, email, password, [role_name])
-    response.headers.append(AUTHORIZATION, f'{authentication.token_type} {authentication.access_token}')
-    return authentication
-
-
-async def get_fake_user_authentication(db, email, password, role_names: list) -> Authentication:
+async def create_fake_authenticated_user(db, email, password, role_names: list, clear_fake_db='true') -> Authentication:
     if not email or not password or not role_names:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='Email, password and role name(s) are required.')
+
+    if clear_fake_db == 'true':
+        await _delete_item(db, User, User.email, email)
+        [await _delete_item(db, Role, Role.name, name) for name in fake_roles]
+        [await _delete_item(db, ACL, ACL.name, name) for name in fake_acls]
+        [await _delete_item(db, Scope, Scope.scope_name, _get_scope_name(list(d.values()))) for d in fake_scopes]
 
     # Create fake Roles, with their ACLs and Scopes.
     roles: [Role] = await create_fake_role_set(db)
 
-    # Get the desired role(s)
+    # Get the specified role(s)
     filtered_roles = [role for role in roles if role.name in role_names]
     if not filtered_roles:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f'Roles "{role_names}" do not exist.')
+
     # Insert/replace the User as logged-in with certain role(s).
     return await _insert_logged_in_user(
         Login(email=email, password=password, password_repeat=password), filtered_roles, db)
+
+
+def _get_scope_name(values: list):
+    return get_scope_name(values[0][0], values[0][1])
+
+
+async def _delete_item(db, obj_def, att_name, att_value):
+    item = await crud.get_one_where(db, obj_def, att_name, att_value)
+    if item:
+        await crud.delete(db, obj_def, item.id)
 
 
 async def create_fake_role_set(db) -> [Role]:

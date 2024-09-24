@@ -1,4 +1,5 @@
 import os
+from typing import cast
 
 import uvicorn as uvicorn
 from dotenv import load_dotenv
@@ -6,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.domains.db_test.api import fake_user_login
+from src.services.test.create_db.api import fake_user_login
 from src.domains.entities.fish.api import fish
 from src.domains.entities.fisherman.api import fisherman
 from src.domains.entities.fishingwater.api import fishingwater
@@ -18,6 +19,8 @@ from src.domains.login.role.api import role
 from src.domains.login.scope.api import scope
 from src.domains.login.user.api import user
 from src.middleware import add_process_time_header, auto_token_refresh, add_log_entry
+from src.services.catch.api import catch
+from src.services.test.populate_fishing.api import fake_fishing_data
 
 load_dotenv()
 env = os.getenv('ENV')
@@ -27,8 +30,12 @@ os.environ['DATABASE_URI'] = os.getenv(f'DATABASE_URI_{env}')
 
 app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", root_path=os.getenv('API_V1_PREFIX'))
 
+
 # Add routes
-app.include_router(fake_user_login, prefix='/test', tags=['Test'])
+app.include_router(fake_user_login, prefix='/test/login', tags=['Test'])
+app.include_router(fake_fishing_data, prefix='/test/populate_db', tags=['Test'])
+# - Services
+app.include_router(catch, prefix='/fish/catch', tags=['Services'])
 # - Login
 app.include_router(login_register, prefix='/login/register', tags=['Login'])
 app.include_router(login_acknowledge, prefix='/login/acknowledge', tags=['Login'])
@@ -51,11 +58,11 @@ app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
 app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (internal)'])
 
 # Add middleware
-app.add_middleware(BaseHTTPMiddleware, dispatch=auto_token_refresh)
-app.add_middleware(BaseHTTPMiddleware, dispatch=add_process_time_header)
-app.add_middleware(BaseHTTPMiddleware, dispatch=add_log_entry)
-app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"],
-                   allow_headers=["*"])
+app.add_middleware(cast('_MiddlewareClass', BaseHTTPMiddleware), dispatch=auto_token_refresh)
+app.add_middleware(cast('_MiddlewareClass', BaseHTTPMiddleware), dispatch=add_process_time_header)
+app.add_middleware(cast('_MiddlewareClass', BaseHTTPMiddleware), dispatch=add_log_entry)
+app.add_middleware(cast('_MiddlewareClass', CORSMiddleware), allow_origins=origins, allow_credentials=True,
+                   allow_methods=["*"], allow_headers=["*"])
 
 if __name__ == '__main__':
     uvicorn.run("main:app", port=8085, host="0.0.0.0", reload=False)

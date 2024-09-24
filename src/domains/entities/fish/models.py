@@ -1,6 +1,6 @@
 from decimal import Decimal
 from enum import Enum
-from typing import Optional, List
+from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, UUID4, Field
@@ -8,7 +8,14 @@ from sqlalchemy import (Column, String, func, Integer, DECIMAL, ForeignKey)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db import Base
-from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
+
+
+class Species(str, Enum):
+    Ale = 'Ale'
+    Carp = 'Carp'
+    Perch = 'Perch'
+    Roach = 'Roach'
+    Pike = 'Pike'
 
 
 class Subspecies(str, Enum):
@@ -36,7 +43,7 @@ class Fish(Base):
 
 # Pydantic models
 class FishBase(BaseModel):
-    species: str = Field(min_length=1, max_length=20, pattern=REGEX_ALPHANUM_PLUS)
+    species: Species
     length: Optional[Decimal]
     weight_in_g: Optional[int] = Field(ge=0, le=100000)
     subspecies: Optional[Subspecies]
