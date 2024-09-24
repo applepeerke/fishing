@@ -1,11 +1,12 @@
 import csv
 import datetime
 import json
+import os
 from json import JSONDecodeError
 from uuid import UUID
 
 from fastapi import Response, HTTPException
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -217,7 +218,7 @@ async def post_check(
     response = await post_to_endpoint(
         client=client,
         api_route=api_route[route_from_index:],
-        fixture=payload,
+        json_fixture=payload,
         headers=headers
     )
     # Last execution:
@@ -275,10 +276,10 @@ async def get_from_endpoint(client: AsyncClient, api_route, params=None, headers
     return await client.get(f'{route}/', params=params, headers=headers)
 
 
-async def post_to_endpoint(client: AsyncClient, api_route, fixture, headers=None):
+async def post_to_endpoint(client: AsyncClient, api_route, json_fixture, headers=None):
     """ Precondition: JSON fixtures are defined by endpoint name. """
     route = '/'.join(api_route)
-    return await client.post(f'{route}/', json=fixture, headers=headers)
+    return await client.post(f'{route}/', json=json_fixture, headers=headers)
 
 
 def get_leaf(fixture, breadcrumbs: list, expected_result, payload=None) -> dict:
