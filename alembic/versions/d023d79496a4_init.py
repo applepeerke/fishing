@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 5509ac88ee1b
+Revision ID: d023d79496a4
 Revises: 
-Create Date: 2024-09-23 11:44:23.261143
+Create Date: 2024-09-25 16:21:26.187336
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '5509ac88ee1b'
+revision: str = 'd023d79496a4'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -34,6 +34,10 @@ def upgrade() -> None:
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('forename', sa.String(), nullable=False),
     sa.Column('surname', sa.String(), nullable=False),
+    sa.Column('fish_species', sa.String(), nullable=False),
+    sa.Column('frequency', sa.String(), nullable=False),
+    sa.Column('fishing_session_duration', sa.Integer(), nullable=False),
+    sa.Column('status', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('created_by', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
@@ -41,12 +45,22 @@ def upgrade() -> None:
     sa.Column('update_count', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_fisherman_forename'), 'fisherman', ['forename'], unique=False)
-    op.create_index(op.f('ix_fisherman_surname'), 'fisherman', ['surname'], unique=False)
+    op.create_table('fishingday',
+    sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('created_by', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_by', sa.String(), nullable=True),
+    sa.Column('update_count', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_fishingday_name'), 'fishingday', ['name'], unique=False)
     op.create_table('fishingwater',
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('location', sa.String(), nullable=False),
     sa.Column('type', sa.String(), nullable=False),
+    sa.Column('density', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('created_by', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
@@ -106,10 +120,15 @@ def upgrade() -> None:
     )
     op.create_table('fish',
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
     sa.Column('species', sa.String(), nullable=False),
-    sa.Column('length', sa.DECIMAL(precision=4, scale=1), nullable=True),
-    sa.Column('weight_in_g', sa.Integer(), nullable=True),
+    sa.Column('age', sa.Integer(), nullable=False),
+    sa.Column('length', sa.DECIMAL(precision=4, scale=1), nullable=False),
+    sa.Column('weight_in_g', sa.Integer(), nullable=False),
     sa.Column('subspecies', sa.String(), nullable=True),
+    sa.Column('active_at', sa.String(), nullable=False),
+    sa.Column('status', sa.String(), nullable=False),
+    sa.Column('relative_density', sa.Integer(), nullable=False),
     sa.Column('fisherman_id', sa.Uuid(), nullable=True),
     sa.Column('fishingwater_id', sa.Uuid(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
@@ -122,6 +141,13 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_fish_species'), 'fish', ['species'], unique=False)
+    op.create_table('fisherman_fishingday',
+    sa.Column('fisherman_id', sa.Uuid(), nullable=False),
+    sa.Column('fishingday_id', sa.Uuid(), nullable=False),
+    sa.ForeignKeyConstraint(['fisherman_id'], ['fisherman.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['fishingday_id'], ['fishingday.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('fisherman_id', 'fishingday_id')
+    )
     op.create_table('fishingwater_fisherman',
     sa.Column('fishingwater_id', sa.Uuid(), nullable=False),
     sa.Column('fisherman_id', sa.Uuid(), nullable=False),
@@ -151,6 +177,7 @@ def downgrade() -> None:
     op.drop_table('user_role')
     op.drop_table('role_acl')
     op.drop_table('fishingwater_fisherman')
+    op.drop_table('fisherman_fishingday')
     op.drop_index(op.f('ix_fish_species'), table_name='fish')
     op.drop_table('fish')
     op.drop_table('acl_scope')
@@ -162,8 +189,8 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_fishingwater_type'), table_name='fishingwater')
     op.drop_index(op.f('ix_fishingwater_location'), table_name='fishingwater')
     op.drop_table('fishingwater')
-    op.drop_index(op.f('ix_fisherman_surname'), table_name='fisherman')
-    op.drop_index(op.f('ix_fisherman_forename'), table_name='fisherman')
+    op.drop_index(op.f('ix_fishingday_name'), table_name='fishingday')
+    op.drop_table('fishingday')
     op.drop_table('fisherman')
     op.drop_table('acl')
     # ### end Alembic commands ###

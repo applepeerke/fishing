@@ -21,8 +21,7 @@ async def create_fishingwater(
 ):
     new_fishing = FishingWater(
         type=fishingwater_create.type,
-        location=fishingwater_create.location,
-        density=fishingwater_create.density
+        location=fishingwater_create.location
     )
     return await crud.add(db, new_fishing)
 

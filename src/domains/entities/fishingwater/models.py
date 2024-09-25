@@ -2,7 +2,7 @@ from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, UUID4, Field
-from sqlalchemy import (Column, String, func)
+from sqlalchemy import (Column, String, func, Float)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db import Base
@@ -17,6 +17,7 @@ class FishingWater(Base):
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
     location = Column(String, nullable=False, index=True)
     type = Column(String, nullable=False, index=True)
+    density = Column(Float, nullable=False, default=1)  # Fishes per m3
     # Relations
     fishermen = relationship(
         'Fisherman', secondary=fishingwater_fisherman, back_populates='fishingwaters', lazy='selectin')
@@ -28,6 +29,7 @@ class FishingWater(Base):
 class FishingWaterBase(BaseModel):
     location: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_PLUS)
     type: str = Field(min_length=1, max_length=30, pattern=REGEX_ALPHANUM_PLUS)
+    density: float = Field(ge=0.1, le=1)
 
 
 class FishingWaterRead(FishingWaterBase):

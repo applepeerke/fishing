@@ -3,35 +3,59 @@
    "payload": {
      "id": "673bc0d0-c82c-4fe1-a2ac-ec757c4328c9",
      "forename": "Jan",
-     "surname": "de Koning"
+     "surname": "de Koning",
+     "fish_species": "Carp",
+     "frequency": "Weekly",
+     "fishing_session_duration": 12,
+     "status": "Fishing"
    }
  },
  "create": {
    "payload": {
      "forename": "Piet",
-     "surname": "Heckel"
+     "surname": "Heckel",
+     "fish_species": "Pike",
+     "frequency": "Monthly",
+     "fishing_session_duration": 4,
+     "status": "Sleeping"
    },
    "expect": {
      "forename": "Piet",
-     "surname": "Heckel"
+     "surname": "Heckel",
+     "fish_species": "Pike",
+     "frequency": "Monthly",
+     "fishing_session_duration": 4,
+     "status": "Sleeping"
    }
  },
  "read": {
    "expect": {
      "forename": "Jan",
-     "surname": "de Koning"
+     "surname": "de Koning",
+     "fish_species": "Carp",
+     "frequency": "Weekly",
+     "fishing_session_duration": 12,
+     "status": "Fishing"
    }
  },
  "update": {
    "payload": {
      "id": "673bc0d0-c82c-4fe1-a2ac-ec757c4328c9",
      "forename": "Jan-Hendrik",
-     "surname": "De Koning"
+     "surname": "De Koning",
+     "fish_species": "Pike",
+     "frequency": "Monthly",
+     "fishing_session_duration": 4,
+     "status": "Fishing"
    },
    "expect": {
      "id": "673bc0d0-c82c-4fe1-a2ac-ec757c4328c9",
      "forename": "Jan-Hendrik",
-     "surname": "De Koning"
+     "surname": "De Koning",
+     "fish_species": "Pike",
+     "frequency": "Monthly",
+     "fishing_session_duration": 4,
+     "status": "Fishing"
    }
  },
  "delete": {

@@ -7,7 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.db import crud
 from src.db.db import get_db_session
 from src.domains.base.functions import get_delete_response
+from src.domains.entities.enums import FishStatus
 from src.domains.entities.fish.models import Fish, FishRead, FishBase
+from src.domains.entities.species.species import Species
 from src.domains.login.token.functions import is_authorized
 
 fish = APIRouter()
@@ -20,10 +22,15 @@ async def create_fish(
         _: Annotated[bool, Security(is_authorized, scopes=['fish_create'])]
 ):
     new_fish = Fish(
+        name=fish_create.name,
         species=fish_create.species,
+        age=fish_create.age,
         length=fish_create.length,
         weight_in_g=fish_create.weight_in_g,
-        subspecies=fish_create.subspecies
+        subspecies=fish_create.subspecies,
+        relative_density=fish_create.relative_density,
+        active_at=fish_create.active_at,
+        status=fish_create.status
     )
     return await crud.add(db, new_fish)
 

@@ -3,9 +3,14 @@
    "payload": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
      "species": "Carp",
-     "length": null,
-     "weight_in_g": null,
+     "length": 50.0,
+     "weight_in_g": 4000,
      "subspecies": null,
+     "name": "Clarissa",
+     "age": 3,
+     "active_at": "Both",
+     "status": "Sleeping",
+     "relative_density": 10,
      "fisherman_id": null,
      "fishingwater_id": null
    }
@@ -13,17 +18,27 @@
  "create": {
    "payload": {
      "species": "Roach",
-     "length": "23.2",
-     "weight_in_g": "254",
+     "length": 23.2,
+     "weight_in_g": 254,
      "subspecies": null,
+     "name": "Roachie",
+     "age": 5,
+     "active_at": "Day",
+     "status": "Sleeping",
+     "relative_density": 100,
      "fisherman_id": null,
      "fishingwater_id": null
    },
    "expect": {
      "species": "Roach",
-     "length": "23.2",
-     "weight_in_g": "254",
+     "length": 23.2,
+     "weight_in_g": 254,
      "subspecies": null,
+     "name": "Roachie",
+     "age": 5,
+     "active_at": "Day",
+     "status": "Sleeping",
+     "relative_density": 100,
      "fisherman_id": null,
      "fishingwater_id": null
    }
@@ -31,9 +46,14 @@
  "read": {
    "expect": {
      "species": "Carp",
-     "length": null,
-     "weight_in_g": null,
+     "length": 50.0,
+     "weight_in_g": 4000,
      "subspecies": null,
+     "name": "Clarissa",
+     "age": 3,
+     "active_at": "Both",
+     "status": "Sleeping",
+     "relative_density": "10",
      "fisherman_id": null,
      "fishingwater_id": null
    }
@@ -42,18 +62,28 @@
    "payload": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
      "species": "Carp",
-     "length": "67.6",
-     "weight_in_g": "5000",
+     "length": 67.6,
+     "weight_in_g": 5000,
      "subspecies": "Wild",
+     "name": "Clarissa",
+     "age": 1,
+     "active_at": "Both",
+     "status": "Sleeping",
+     "relative_density": 10,
      "fisherman_id": null,
      "fishingwater_id": null
    },
    "expect": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
      "species": "Carp",
-     "length": "67.6",
-     "weight_in_g": "5000",
+     "length": 67.6,
+     "weight_in_g": 5000,
      "subspecies": "Wild",
+     "name": "Clarissa",
+     "age": 1,
+     "active_at": "Both",
+     "status": "Sleeping",
+     "relative_density": 10,
      "fisherman_id": null,
      "fishingwater_id": null
    }

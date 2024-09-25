@@ -1,12 +1,11 @@
 import csv
 import datetime
 import json
-import os
 from json import JSONDecodeError
 from uuid import UUID
 
 from fastapi import Response, HTTPException
-from httpx import AsyncClient, ASGITransport
+from httpx import AsyncClient
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -16,7 +15,6 @@ from src.db import crud
 from src.domains.login.user.functions import set_user_status_related_attributes
 from src.domains.login.user.models import User, UserStatus
 from src.utils.functions import get_otp_expiration, get_password_expiration, find_filename_path, get_pk
-from src.utils.logging.log import logger
 from src.utils.security.crypto import get_random_password, get_salted_hash
 from src.utils.security.crypto import verify_hash
 from src.utils.tests.constants import *
@@ -171,7 +169,7 @@ def ignore_secret(response_value, expected_value):
 
 def to_string(value):
     return str(value) \
-        if isinstance(value, UUID) or isinstance(value, int) \
+        if isinstance(value, UUID) or isinstance(value, int) or isinstance(value, float) \
         else value
 
 

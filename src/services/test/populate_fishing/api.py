@@ -8,29 +8,31 @@ from starlette.responses import Response
 from src.constants import AUTHORIZATION
 from src.db import crud
 from src.db.db import get_db_session
-from src.domains.entities.fish.models import Fish, Species, Subspecies, FishBase
+from src.domains.entities.enums import Day
+from src.domains.entities.fish.models import Fish, FishBase
 from src.domains.entities.fisherman.models import Fisherman
+from src.domains.entities.fishingdays.models import FishingDay
 from src.domains.entities.fishingwater.models import FishingWater
 from src.domains.login.token.models import Authentication
-from src.services.test.functions import create_fake_authenticated_user
+from src.services.test.functions import create_fake_authenticated_user, create_a_random_fish
 from src.utils.client import get_async_client
 
 fake_fishing_data = APIRouter()
 
+fake_fishermen = [['Piet', 'Paaltjens', 'Carp', 'Weekly', 48, 'Sleeping'],
+                  ['Jan', 'Klaassen', 'Roach', 'Daily', 4, 'Sleeping'],
+                  ['Klaas', 'Janssen', 'Ale', 'Weekly', 6, 'Sleeping'],
+                  ['Agnes', 'Huibrechts', 'Perch', 'Monthly', 8, 'Sleeping']]
 
-fake_fishermen = [['Piet', 'Paaltjens'],
-                  ['Jan', 'Klaassen'],
-                  ['Klaas', 'Janssen'],
-                  ['Agnes', 'Huibrechts']]
-
-fake_fishingwaters = [['Leiden ZW', 'Kanaal'],
-                  ['Leiden O', 'Vliet'],
-                  ['Voorschoten', 'Meer'],
-                  ['Leiderdorp de Zijl', 'Rivier']]
+fake_fishingwaters = [['Leiden ZW', 'Kanaal', 30],
+                      ['Leiden O', 'Vliet', 40],
+                      ['Voorschoten', 'Meer', 100],
+                      ['Leiderdorp de Zijl', 'Rivier', 50]]
 
 
-species_keys = [k for k in Species.__dict__ if not k.startswith('_')]
-subspecies_keys = [k for k in Subspecies.__dict__ if not k.startswith('_')]
+days = [FishingDay(name=Day.Sunday), FishingDay(name=Day.Monday), FishingDay(name=Day.Tuesday),
+        FishingDay(name=Day.Wednesday), FishingDay(name=Day.Thursday), FishingDay(name=Day.Friday),
+        FishingDay(name=Day.Saturday), ]
 
 
 @fake_fishing_data.post('/')
@@ -68,31 +70,26 @@ async def populate_fishing_with_random_data(db, client, headers, no_of_fishes, n
 
 async def _create_random_fishes(db, no_of_fishes) -> [Fish]:
     [await crud.delete(db, Fish, item.id) for item in await crud.get_all(db, Fish)]
-    [await crud.add(db, _create_a_random_fish()) for _ in range(int(no_of_fishes))]
+    [await crud.add(db, create_a_random_fish()) for _ in range(int(no_of_fishes))]
     return await crud.get_all(db, Fish)
-
-
-def _create_a_random_fish() -> Fish:
-    species = species_keys[random.randint(0, len(species_keys) - 1)]
-    subspecies = subspecies_keys[random.randint(0, len(subspecies_keys) - 1)] if species == Species.Carp else None
-    return Fish(
-        species=species,
-        length=round(random.randint(50, 1200) / 10, 1),
-        weight_in_g=random.randint(20, 20000),
-        subspecies=subspecies
-    )
 
 
 async def _create_fishingwaters(db, items: list) -> [FishingWater]:
     [await crud.delete(db, FishingWater, item.id) for item in await crud.get_all(db, FishingWater)]
-    [await crud.add(db, FishingWater(location=item[0], type=item[1]))
+    [await crud.add(db, FishingWater(location=item[0], type=item[1], density=item[2]))
      for item in items]
     return await crud.get_all(db, FishingWater)
 
 
 async def _create_fishermen(db, items: list) -> [Fisherman]:
     [await crud.delete(db, Fisherman, item.id) for item in await crud.get_all(db, Fisherman)]
-    [await crud.add(db, Fisherman(forename=item[0], surname=item[1]))
+    [await crud.add(db, Fisherman(
+        forename=item[0],
+        surname=item[1],
+        fish_species=item[2],
+        frequency=item[3],
+        fishing_session_duration=item[4],
+        status=item[5]))
      for item in items]
     return await crud.get_all(db, Fisherman)
 
@@ -109,9 +106,14 @@ async def _catch_a_random_fish(client: AsyncClient, all_fishes, all_fishermen, h
     fisherman = fishermen_for_the_water[random.randint(0, len(fishermen_for_the_water) - 1)]
     pydantic_fish = FishBase(
         species=fish.species,
+        subspecies=fish.subspecies,
+        name=fish.name,
+        age=fish.age,
         length=fish.length,
         weight_in_g=fish.weight_in_g,
-        subspecies=fish.subspecies,
+        active_at=fish.active_at,
+        relative_density=fish.relative_density,
+        status=fish.status,
         fisherman_id=fisherman.id,
         fishingwater_id=None
     )
@@ -119,13 +121,19 @@ async def _catch_a_random_fish(client: AsyncClient, all_fishes, all_fishermen, h
 
 
 async def _create_random_fishing_relations(db, all_fishingwaters, all_fishermen, all_fishes):
-    fisherman_count = random.randint(1, len(all_fishermen) - 1)  # 1-all fishermen # 1-all fishes
+    fisherman_count = random.randint(1, len(all_fishermen) - 1)  # 1-all fishermen
+    fisherman_random_index_set = _get_random_index_set(all_fishermen, fisherman_count)
+    # Add random fishing days to fishermen
+    [all_fishermen[i].fishing_days.append(d)
+     for i in fisherman_random_index_set
+     for d in _get_random_days()]
+    # Select the fishermen
     s = 0
+    # Process fishingwaters
     for fishingwater in all_fishingwaters:
         fishes_per_water = int(len(all_fishes) / len(all_fishingwaters))
         # Add fishermen
-        random_index_set = _get_random_index_set(all_fishermen, fisherman_count)
-        [fishingwater.fishermen.append(all_fishermen[i]) for i in random_index_set]
+        [fishingwater.fishermen.append(all_fishermen[i]) for i in fisherman_random_index_set]
         # Add fishes (unique)
         e = min(s + fishes_per_water, len(all_fishes))
         [fishingwater.fishes.append(fish) for fish in all_fishes[s:e]]
@@ -141,3 +149,14 @@ def _get_random_index_set(items: list, random_subset_count: int) -> set:
     while len(index_set) < random_subset_count:
         index_set.add(random.randint(1, set_count - 1))  # get an index
     return index_set
+
+
+def _get_random_days() -> [Day]:
+    result = set()
+    days_count = random.randint(0, 6)
+    count = 0
+    while len(result) < days_count and count < 1000:
+        count += 1
+        i = random.randint(0, 6)
+        result.add(days[i])
+    return list(result)
