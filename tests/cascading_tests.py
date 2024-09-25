@@ -8,6 +8,7 @@ from src.domains.entities.fisherman.models import Fisherman
 from src.domains.entities.fishingwater.models import FishingWater
 from src.domains.login.role.models import Role
 from src.domains.login.user.models import User
+from src.services.test.functions import create_a_random_fish
 
 
 @pytest.mark.asyncio
@@ -69,17 +70,21 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     """ No "cascading all, delete" is used in relationships because that deletes e.g. roles when a user is deleted."""
     # a. Create base data
     # - Fish-1, 2, and 3
-    fish_1 = await crud.add(db, Fish(species='fish_1'))
-    fish_2 = await crud.add(db, Fish(species='fish_2'))
-    fish_3 = await crud.add(db, Fish(species='fish_3'))
+    fish_1 = await crud.add(db, create_a_random_fish())
+    fish_2 = await crud.add(db, create_a_random_fish())
+    fish_3 = await crud.add(db, create_a_random_fish())
     assert len(await crud.get_all(db, Fish)) == 3
     # - Fisherman-1 and 2
-    fisherman_1 = await crud.add(db, Fisherman(forename='Petri', surname='Heil'))
-    fisherman_2 = await crud.add(db, Fisherman(forename='John', surname='Catch'))
+    fisherman_1 = await crud.add(db, Fisherman(
+        forename='Petri', surname='Heil', fish_species='Carp', frequency='Weekly', fishing_session_duration=24,
+        status='Sleeping'))
+    fisherman_2 = await crud.add(db, Fisherman(
+        forename='John', surname='Catch', fish_species='Pike', frequency='Daily', fishing_session_duration=8,
+        status='Sleeping'))
     assert len(await crud.get_all(db, Fisherman)) == 2
     # - FishingWater-1 and 2
-    fishingwater_1 = await crud.add(db, FishingWater(location='Leiden', type='Rivier'))
-    fishingwater_2 = await crud.add(db, FishingWater(location='Voorschoten', type='Meer'))
+    fishingwater_1 = await crud.add(db, FishingWater(location='Leiden', type='Rivier', density=0.4))
+    fishingwater_2 = await crud.add(db, FishingWater(location='Voorschoten', type='Meer', density=1.0))
     assert len(await crud.get_all(db, FishingWater)) == 2
     # b. Populate fishing waters
     # - Add fish-1 and fish-3 to fishingwater-1 and fish-2 to fishingwater-2

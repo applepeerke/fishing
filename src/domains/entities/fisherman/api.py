@@ -21,7 +21,11 @@ async def create_fisherman(
 ):
     new_fisherman = Fisherman(
         forename=fisherman_create.forename,
-        surname=fisherman_create.surname
+        surname=fisherman_create.surname,
+        fish_species=fisherman_create.fish_species,
+        frequency=fisherman_create.frequency,
+        fishing_session_duration=fisherman_create.fishing_session_duration,
+        status=fisherman_create.status
     )
     return await crud.add(db, new_fisherman)
 

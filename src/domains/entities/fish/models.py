@@ -1,5 +1,4 @@
 from decimal import Decimal
-from enum import Enum
 from typing import Optional
 from uuid import UUID
 
@@ -8,31 +7,24 @@ from sqlalchemy import (Column, String, func, Integer, DECIMAL, ForeignKey)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db import Base
-
-
-class Species(str, Enum):
-    Ale = 'Ale'
-    Carp = 'Carp'
-    Perch = 'Perch'
-    Roach = 'Roach'
-    Pike = 'Pike'
-
-
-class Subspecies(str, Enum):
-    Row = 'Row'
-    Scale = 'Scale'
-    Leather = 'Leather'
-    Wild = 'Wild'
+from src.domains.entities.enums import ActiveAt, FishStatus, SpeciesEnum, CarpSubspecies
+from src.utils.functions import get_random_name
+from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
 
 # SqlAlchemy model
 class Fish(Base):
     __tablename__ = 'fish'
     id: Mapped[UUID] = mapped_column(nullable=False, primary_key=True, server_default=func.gen_random_uuid())
+    name = Column(String, nullable=False, default=get_random_name(10))
     species = Column(String, nullable=False, index=True)
-    length = Column(DECIMAL(4, 1), nullable=True)
-    weight_in_g = Column(Integer, nullable=True)
+    age = Column(Integer, nullable=False)
+    length = Column(DECIMAL(4, 1), nullable=False)
+    weight_in_g = Column(Integer, nullable=False)
     subspecies = Column(String, nullable=True)
+    active_at = Column(String, nullable=False, default=ActiveAt.Day)
+    status = Column(String, nullable=False, default=FishStatus.Sleeping)
+    relative_density = Column(Integer, nullable=False)
     # Foreign keys
     fisherman_id: Mapped[UUID] = mapped_column(ForeignKey('fisherman.id'), nullable=True)
     fishingwater_id: Mapped[UUID] = mapped_column(ForeignKey('fishingwater.id'), nullable=True)
@@ -43,10 +35,16 @@ class Fish(Base):
 
 # Pydantic models
 class FishBase(BaseModel):
-    species: Species
-    length: Optional[Decimal]
-    weight_in_g: Optional[int] = Field(ge=0, le=100000)
-    subspecies: Optional[Subspecies]
+    name: str = Field(min_length=1, max_length=30, pattern=REGEX_ALPHANUM_PLUS)
+    species: SpeciesEnum
+    age: int = Field(ge=0, le=100)
+    length: Decimal
+    weight_in_g: int = Field(ge=0, le=100000)
+    subspecies: Optional[CarpSubspecies]
+    active_at: ActiveAt
+    status: FishStatus
+    relative_density: int = Field(ge=1, le=100)
+    # Relations
     fisherman_id: Optional[UUID4]
     fishingwater_id: Optional[UUID4]
 
