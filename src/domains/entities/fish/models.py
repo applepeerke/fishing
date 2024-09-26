@@ -52,10 +52,11 @@ class FishBase(BaseModel):
 class FishRead(FishBase):
     id: UUID4
     # Relations
-#     fishingwater: 'Optional[FishingWaterBase]'
-#     fisherman: 'Optional[FishermanBase]'
-#
-#
+    # fishingwater: Optional['FishingWaterBase'] = []
+    fisherman: Optional['FishermanBase'] = []
+
+
+# Todo: Unfortunately update forward referencing does not work for FishingWater...
 # from src.domains.entities.fishingwater.models import FishingWaterBase
-# from src.domains.entities.fisherman.models import FishermanBase
-# FishBase.update_forward_refs()
+from src.domains.entities.fisherman.models import FishermanBase
+FishRead.update_forward_refs()

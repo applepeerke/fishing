@@ -51,5 +51,11 @@ class FishermanBase(BaseModel):
 class FishermanRead(FishermanBase):
     id: UUID4
     # Relations
+    fishingwaters: Optional[List['FishingWaterBase']] = []
     fishes: Optional[List[FishBase]] = []
     fishing_days: Optional[List[FishingDayBase]] = []
+
+
+# Import must be here to avoid circular imports.
+from src.domains.entities.fishingwater.models import FishingWaterBase
+FishermanRead.update_forward_refs()

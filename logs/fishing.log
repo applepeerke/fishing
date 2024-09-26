@@ -4451,3 +4451,346 @@
 2024-09-25 17:05:19,319 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.0011030420137103647
 2024-09-25 17:05:19,536 - INFO - src.middleware: Str POST   logout/                                                                         
 2024-09-25 17:05:19,537 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.001054332999046892
+2024-09-26 12:26:25,185 - INFO - src.middleware: Str POST   acl/                                                                            
+2024-09-26 12:26:25,223 - INFO - src.domains.login.acl.api: creating new ACL "fisherman_group"
+2024-09-26 12:26:25,281 - INFO - src.middleware: End POST   acl/                                                                             Duration: 0.09572662500431761
+2024-09-26 12:26:25,282 - INFO - src.middleware: Str GET    acl/1019c53e-d175-493e-aaf7-c546ed531731                                        
+2024-09-26 12:26:25,352 - INFO - src.middleware: End GET    acl/1019c53e-d175-493e-aaf7-c546ed531731                                         Duration: 0.06989250000333413
+2024-09-26 12:26:25,809 - INFO - src.middleware: Str GET    acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                        
+2024-09-26 12:26:25,878 - INFO - src.middleware: End GET    acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                         Duration: 0.0689732089813333
+2024-09-26 12:26:26,300 - INFO - src.middleware: Str PUT    acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                        
+2024-09-26 12:26:26,369 - INFO - src.middleware: End PUT    acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                         Duration: 0.0695641250058543
+2024-09-26 12:26:26,396 - INFO - src.middleware: Str PUT    acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                        
+2024-09-26 12:26:26,431 - INFO - src.middleware: End PUT    acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                         Duration: 0.034854582976549864
+2024-09-26 12:26:26,861 - INFO - src.middleware: Str DELETE acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                        
+2024-09-26 12:26:26,939 - INFO - src.middleware: End DELETE acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                         Duration: 0.07838237500982359
+2024-09-26 12:26:26,940 - INFO - src.middleware: Str GET    acl/b490cb42-ddee-41b7-965e-81cb6b19780e                                        
+2024-09-26 12:26:27,428 - INFO - src.middleware: Str POST   fish/                                                                           
+2024-09-26 12:26:27,494 - INFO - src.middleware: End POST   fish/                                                                            Duration: 0.06632366598933004
+2024-09-26 12:26:27,495 - INFO - src.middleware: Str GET    fish/d5f3e24e-8ced-487a-b57d-3120cbf89a69                                       
+2024-09-26 12:26:27,556 - INFO - src.middleware: End GET    fish/d5f3e24e-8ced-487a-b57d-3120cbf89a69                                        Duration: 0.06091000000014901
+2024-09-26 12:26:28,010 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:26:28,087 - INFO - src.middleware: End GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.07655774999875575
+2024-09-26 12:26:28,548 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:26:28,585 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.037095291016157717
+2024-09-26 12:26:29,019 - INFO - src.middleware: Str DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:26:29,084 - INFO - src.middleware: End DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.06464266599505208
+2024-09-26 12:26:29,084 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:26:29,558 - INFO - src.middleware: Str POST   fisherman/                                                                      
+2024-09-26 12:26:29,632 - INFO - src.middleware: End POST   fisherman/                                                                       Duration: 0.0738567500084173
+2024-09-26 12:26:29,633 - INFO - src.middleware: Str GET    fisherman/2f2c5f91-621e-4af5-a4ef-828ee4886b6a                                  
+2024-09-26 12:26:29,715 - INFO - src.middleware: End GET    fisherman/2f2c5f91-621e-4af5-a4ef-828ee4886b6a                                   Duration: 0.08233512498554774
+2024-09-26 12:26:30,160 - INFO - src.middleware: Str GET    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,228 - INFO - src.middleware: End GET    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.06795041699660942
+2024-09-26 12:26:30,668 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,737 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.06805649999296293
+2024-09-26 12:26:30,737 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,781 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.04415229201549664
+2024-09-26 12:26:30,782 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,822 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.03986937500303611
+2024-09-26 12:26:30,823 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,861 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.038827542011858895
+2024-09-26 12:26:30,862 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,898 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.03576179197989404
+2024-09-26 12:26:30,898 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,936 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.03757183300331235
+2024-09-26 12:26:30,937 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:30,980 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.04368008300662041
+2024-09-26 12:26:30,981 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:31,069 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.0874584999983199
+2024-09-26 12:26:31,069 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:31,104 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.03498995897825807
+2024-09-26 12:26:31,105 - INFO - src.middleware: Str PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:31,142 - INFO - src.middleware: End PUT    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.036698500014608726
+2024-09-26 12:26:31,587 - INFO - src.middleware: Str DELETE fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:31,655 - INFO - src.middleware: End DELETE fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                   Duration: 0.06873408399405889
+2024-09-26 12:26:31,656 - INFO - src.middleware: Str GET    fisherman/673bc0d0-c82c-4fe1-a2ac-ec757c4328c9                                  
+2024-09-26 12:26:32,148 - INFO - src.middleware: Str POST   fishingwater/                                                                   
+2024-09-26 12:26:32,218 - INFO - src.middleware: End POST   fishingwater/                                                                    Duration: 0.07087412499822676
+2024-09-26 12:26:32,219 - INFO - src.middleware: Str GET    fishingwater/1c3ad566-b6fc-4839-aae6-ac629a06e35c                               
+2024-09-26 12:26:32,286 - INFO - src.middleware: End GET    fishingwater/1c3ad566-b6fc-4839-aae6-ac629a06e35c                                Duration: 0.06726654100930318
+2024-09-26 12:26:32,721 - INFO - src.middleware: Str GET    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                               
+2024-09-26 12:26:32,788 - INFO - src.middleware: End GET    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                                Duration: 0.06736062502022833
+2024-09-26 12:26:33,225 - INFO - src.middleware: Str PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                               
+2024-09-26 12:26:33,301 - INFO - src.middleware: End PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                                Duration: 0.07643862499389797
+2024-09-26 12:26:33,302 - INFO - src.middleware: Str PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                               
+2024-09-26 12:26:33,339 - INFO - src.middleware: End PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                                Duration: 0.037144333007745445
+2024-09-26 12:26:33,340 - INFO - src.middleware: Str PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                               
+2024-09-26 12:26:33,381 - INFO - src.middleware: End PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                                Duration: 0.04087462500319816
+2024-09-26 12:26:33,381 - INFO - src.middleware: Str PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                               
+2024-09-26 12:26:33,420 - INFO - src.middleware: End PUT    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                                Duration: 0.0382226669753436
+2024-09-26 12:26:33,888 - INFO - src.middleware: Str DELETE fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                               
+2024-09-26 12:26:33,956 - INFO - src.middleware: End DELETE fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                                Duration: 0.06765970899141394
+2024-09-26 12:26:33,956 - INFO - src.middleware: Str GET    fishingwater/3fa85f64-5717-4562-b3fc-2c963f66afa6                               
+2024-09-26 12:26:34,483 - INFO - src.middleware: Str POST   role/                                                                           
+2024-09-26 12:26:34,553 - INFO - src.middleware: End POST   role/                                                                            Duration: 0.07019254099577665
+2024-09-26 12:26:34,554 - INFO - src.middleware: Str GET    role/8bae2e3e-aef4-4299-b8f6-cefabec15b78                                       
+2024-09-26 12:26:34,621 - INFO - src.middleware: End GET    role/8bae2e3e-aef4-4299-b8f6-cefabec15b78                                        Duration: 0.06678983301389962
+2024-09-26 12:26:35,078 - INFO - src.middleware: Str GET    role/af0702e1-acaa-4034-a11b-407483130639                                       
+2024-09-26 12:26:35,147 - INFO - src.middleware: End GET    role/af0702e1-acaa-4034-a11b-407483130639                                        Duration: 0.06967641599476337
+2024-09-26 12:26:35,559 - INFO - src.middleware: Str PUT    role/af0702e1-acaa-4034-a11b-407483130639                                       
+2024-09-26 12:26:35,632 - INFO - src.middleware: End PUT    role/af0702e1-acaa-4034-a11b-407483130639                                        Duration: 0.07355783300590701
+2024-09-26 12:26:35,633 - INFO - src.middleware: Str PUT    role/af0702e1-acaa-4034-a11b-407483130639                                       
+2024-09-26 12:26:35,670 - INFO - src.middleware: End PUT    role/af0702e1-acaa-4034-a11b-407483130639                                        Duration: 0.03679891600040719
+2024-09-26 12:26:36,098 - INFO - src.middleware: Str DELETE role/af0702e1-acaa-4034-a11b-407483130639                                       
+2024-09-26 12:26:36,163 - INFO - src.middleware: End DELETE role/af0702e1-acaa-4034-a11b-407483130639                                        Duration: 0.06534762497176416
+2024-09-26 12:26:36,164 - INFO - src.middleware: Str GET    role/af0702e1-acaa-4034-a11b-407483130639                                       
+2024-09-26 12:26:36,668 - INFO - src.middleware: Str POST   scope/                                                                          
+2024-09-26 12:26:36,739 - INFO - src.middleware: End POST   scope/                                                                           Duration: 0.07116662498447113
+2024-09-26 12:26:36,740 - INFO - src.middleware: Str GET    scope/13ec8c88-ad4c-46bc-9be8-8b8288751743                                      
+2024-09-26 12:26:36,804 - INFO - src.middleware: End GET    scope/13ec8c88-ad4c-46bc-9be8-8b8288751743                                       Duration: 0.06449558399617672
+2024-09-26 12:26:37,244 - INFO - src.middleware: Str GET    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:37,340 - INFO - src.middleware: End GET    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                       Duration: 0.09566683298908174
+2024-09-26 12:26:37,766 - INFO - src.middleware: Str PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:37,835 - INFO - src.middleware: End PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                       Duration: 0.06888954201713204
+2024-09-26 12:26:37,836 - INFO - src.middleware: Str PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:37,871 - INFO - src.middleware: End PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                       Duration: 0.03498604201013222
+2024-09-26 12:26:37,871 - INFO - src.middleware: Str PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:37,910 - INFO - src.middleware: End PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                       Duration: 0.03856366599211469
+2024-09-26 12:26:37,910 - INFO - src.middleware: Str PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:37,949 - INFO - src.middleware: End PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                       Duration: 0.03847304100054316
+2024-09-26 12:26:37,950 - INFO - src.middleware: Str PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:37,988 - INFO - src.middleware: End PUT    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                       Duration: 0.03830087499227375
+2024-09-26 12:26:38,455 - INFO - src.middleware: Str DELETE scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:38,518 - INFO - src.middleware: End DELETE scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                       Duration: 0.06286258398904465
+2024-09-26 12:26:38,519 - INFO - src.middleware: Str GET    scope/a2b1f62a-84d7-411b-ad1b-c1eac785c414                                      
+2024-09-26 12:26:39,021 - INFO - src.middleware: Str POST   user/                                                                           
+2024-09-26 12:26:39,087 - INFO - src.middleware: End POST   user/                                                                            Duration: 0.06590149999829009
+2024-09-26 12:26:39,088 - INFO - src.middleware: Str GET    user/0f34b7da-9e7c-4b73-ab4a-0d4f7d4e6657                                       
+2024-09-26 12:26:39,156 - INFO - src.middleware: End GET    user/0f34b7da-9e7c-4b73-ab4a-0d4f7d4e6657                                        Duration: 0.06808399999863468
+2024-09-26 12:26:39,597 - INFO - src.middleware: Str GET    user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:39,663 - INFO - src.middleware: End GET    user/5443fc14-eef2-468d-8bd5-360bc9790090                                        Duration: 0.06652170800953172
+2024-09-26 12:26:40,094 - INFO - src.middleware: Str PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:40,170 - INFO - src.middleware: End PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                        Duration: 0.07635554199805483
+2024-09-26 12:26:40,171 - INFO - src.middleware: Str PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:40,208 - INFO - src.middleware: End PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                        Duration: 0.036719666997669265
+2024-09-26 12:26:40,208 - INFO - src.middleware: Str PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:40,246 - INFO - src.middleware: End PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                        Duration: 0.0376164999906905
+2024-09-26 12:26:40,246 - INFO - src.middleware: Str PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:40,282 - INFO - src.middleware: End PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                        Duration: 0.0358223750081379
+2024-09-26 12:26:40,283 - INFO - src.middleware: Str PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:40,322 - INFO - src.middleware: End PUT    user/5443fc14-eef2-468d-8bd5-360bc9790090                                        Duration: 0.03959470798145048
+2024-09-26 12:26:40,782 - INFO - src.middleware: Str DELETE user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:40,850 - INFO - src.middleware: End DELETE user/5443fc14-eef2-468d-8bd5-360bc9790090                                        Duration: 0.0683372089988552
+2024-09-26 12:26:40,851 - INFO - src.middleware: Str GET    user/5443fc14-eef2-468d-8bd5-360bc9790090                                       
+2024-09-26 12:26:41,046 - INFO - src.middleware: Str POST   encrypt/                                                                        
+2024-09-26 12:26:41,272 - INFO - src.middleware: End POST   encrypt/                                                                         Duration: 0.2260493750218302
+2024-09-26 12:26:41,272 - INFO - src.middleware: Str POST   encrypt/verify/                                                                 
+2024-09-26 12:26:41,488 - INFO - src.middleware: End POST   encrypt/verify/                                                                  Duration: 0.2153333339956589
+2024-09-26 12:26:41,488 - INFO - src.middleware: Str POST   encrypt/verify/                                                                 
+2024-09-26 12:26:41,489 - INFO - src.middleware: End POST   encrypt/verify/                                                                  Duration: 0.0010071670112665743
+2024-09-26 12:26:41,490 - INFO - src.middleware: Str POST   encrypt/verify/                                                                 
+2024-09-26 12:26:41,491 - INFO - src.middleware: End POST   encrypt/verify/                                                                  Duration: 0.0008975829987321049
+2024-09-26 12:26:41,615 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:42,090 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.4742866670130752
+2024-09-26 12:26:42,222 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:42,224 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.0016408750088885427
+2024-09-26 12:26:42,594 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:43,060 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.4658234170055948
+2024-09-26 12:26:43,060 - INFO - src.middleware: Str GET    login/acknowledge/?email=dummy%40sample.com&token=%242b%2412%24qahxlSWZTWgaQ....
+2024-09-26 12:26:43,315 - INFO - src.middleware: End GET    login/acknowledge/?email=dummy%40sample.com&token=%242b%2412%24qahxlSWZTWgaQ.... Duration: 0.2548946249880828
+2024-09-26 12:26:43,540 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:44,225 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.684676542005036
+2024-09-26 12:26:44,273 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:26:44,535 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.26193966600112617
+2024-09-26 12:26:44,536 - INFO - src.middleware: Str POST   logout/                                                                         
+2024-09-26 12:26:44,617 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.08169591700425372
+2024-09-26 12:26:44,618 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:26:44,896 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.27804304199526086
+2024-09-26 12:26:44,900 - INFO - src.middleware: Str GET    fishingwater/                                                                   
+2024-09-26 12:26:44,961 - INFO - src.middleware: End GET    fishingwater/                                                                    Duration: 0.06073254102375358
+2024-09-26 12:26:44,973 - INFO - src.middleware: Str GET    fishingwater/                                                                   
+2024-09-26 12:26:45,035 - INFO - src.middleware: End GET    fishingwater/                                                                    Duration: 0.06167312499019317
+2024-09-26 12:26:45,397 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:45,863 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.46533433301374316
+2024-09-26 12:26:46,087 - INFO - src.middleware: Str GET    login/acknowledge/?email=dummy%40sample.com&token=%242b%2412%24AyYIRdFb4%2FVK...
+2024-09-26 12:26:46,335 - INFO - src.middleware: End GET    login/acknowledge/?email=dummy%40sample.com&token=%242b%2412%24AyYIRdFb4%2FVK... Duration: 0.2476840839954093
+2024-09-26 12:26:46,335 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:46,590 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2550267500046175
+2024-09-26 12:26:46,591 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:47,271 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.6801762089889962
+2024-09-26 12:26:47,622 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:48,089 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.46644145899335854
+2024-09-26 12:26:48,090 - INFO - src.middleware: Str GET    login/acknowledge/?email=dummy%40sample.com&token=%242b%2412%2484FD6crnlQ081r...
+2024-09-26 12:26:48,342 - INFO - src.middleware: End GET    login/acknowledge/?email=dummy%40sample.com&token=%242b%2412%2484FD6crnlQ081r... Duration: 0.2528296670061536
+2024-09-26 12:26:48,343 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:48,600 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.25670199998421595
+2024-09-26 12:26:48,600 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:48,854 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.253713333979249
+2024-09-26 12:26:48,855 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:49,110 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2552783749997616
+2024-09-26 12:26:49,111 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:49,364 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2538028330018278
+2024-09-26 12:26:49,365 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:49,655 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2900320000189822
+2024-09-26 12:26:50,012 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:26:50,045 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.03297070899861865
+2024-09-26 12:26:50,268 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:50,299 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.031740167003590614
+2024-09-26 12:26:50,520 - INFO - src.middleware: Str POST   password/forgot/                                                                
+2024-09-26 12:26:50,550 - INFO - src.middleware: End POST   password/forgot/                                                                 Duration: 0.030101000011200085
+2024-09-26 12:26:50,770 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:50,801 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.030391541979042813
+2024-09-26 12:26:51,021 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:26:51,052 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.030991750012617558
+2024-09-26 12:26:51,271 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:51,303 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.03203345800284296
+2024-09-26 12:26:51,521 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:51,552 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.0309134169947356
+2024-09-26 12:26:51,770 - INFO - src.middleware: Str POST   password/forgot/                                                                
+2024-09-26 12:26:52,232 - INFO - src.middleware: End POST   password/forgot/                                                                 Duration: 0.4619091250060592
+2024-09-26 12:26:52,453 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:26:52,485 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.03221270799986087
+2024-09-26 12:26:52,703 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:52,739 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.03561766599887051
+2024-09-26 12:26:52,959 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:52,992 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.03301374998409301
+2024-09-26 12:26:53,211 - INFO - src.middleware: Str POST   password/forgot/                                                                
+2024-09-26 12:26:53,678 - INFO - src.middleware: End POST   password/forgot/                                                                 Duration: 0.467163333989447
+2024-09-26 12:26:54,111 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:54,144 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.03268358402419835
+2024-09-26 12:26:54,363 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:54,395 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.03172262501902878
+2024-09-26 12:26:54,399 - INFO - src.middleware: Str POST   login/register/                                                                 
+2024-09-26 12:26:54,859 - INFO - src.middleware: End POST   login/register/                                                                  Duration: 0.46029966601054184
+2024-09-26 12:26:55,507 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:55,541 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.03486470799543895
+2024-09-26 12:26:55,760 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:56,017 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2570145830104593
+2024-09-26 12:26:56,018 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:56,272 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2539446669979952
+2024-09-26 12:26:56,272 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:56,529 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2569579580158461
+2024-09-26 12:26:56,530 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:56,788 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.25870637499610893
+2024-09-26 12:26:56,789 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:57,046 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.25680599999031983
+2024-09-26 12:26:57,046 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:57,078 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.031167999986791983
+2024-09-26 12:26:57,297 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:57,554 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2573189169925172
+2024-09-26 12:26:57,555 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:57,812 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.2571789590001572
+2024-09-26 12:26:57,812 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:58,070 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.25717770800110884
+2024-09-26 12:26:58,070 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:58,326 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.25548150000395253
+2024-09-26 12:26:58,545 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:58,546 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.001253791997442022
+2024-09-26 12:26:58,764 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:58,765 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.001149624993558973
+2024-09-26 12:26:58,982 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:58,983 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.0011349169944878668
+2024-09-26 12:26:59,203 - INFO - src.middleware: Str POST   password/change/                                                                
+2024-09-26 12:26:59,887 - INFO - src.middleware: End POST   password/change/                                                                 Duration: 0.6840245829953346
+2024-09-26 12:27:00,533 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:00,572 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.03890429102466442
+2024-09-26 12:27:00,791 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:00,823 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.031723499996587634
+2024-09-26 12:27:01,041 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,080 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.039304666017415
+2024-09-26 12:27:01,299 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,336 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.03627162502380088
+2024-09-26 12:27:01,336 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,368 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.03193737502442673
+2024-09-26 12:27:01,369 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,406 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.03706316600437276
+2024-09-26 12:27:01,406 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,443 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.03718008298892528
+2024-09-26 12:27:01,444 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,484 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.04004170899861492
+2024-09-26 12:27:01,485 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,517 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.032322582992492244
+2024-09-26 12:27:01,739 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,780 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.04106683301506564
+2024-09-26 12:27:01,781 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,817 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.035955833009211347
+2024-09-26 12:27:01,817 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,855 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.038275792001513764
+2024-09-26 12:27:01,856 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:01,899 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.042584125010762364
+2024-09-26 12:27:02,119 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:02,120 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.0013687909813597798
+2024-09-26 12:27:02,339 - INFO - src.middleware: Str POST   login/                                                                          
+2024-09-26 12:27:02,594 - INFO - src.middleware: End POST   login/                                                                           Duration: 0.25524045797646977
+2024-09-26 12:27:02,594 - INFO - src.middleware: Str POST   password/forgot/                                                                
+2024-09-26 12:27:02,595 - INFO - src.middleware: End POST   password/forgot/                                                                 Duration: 0.001064208016032353
+2024-09-26 12:27:03,028 - INFO - src.middleware: Str POST   password/forgot/                                                                
+2024-09-26 12:27:03,066 - INFO - src.middleware: End POST   password/forgot/                                                                 Duration: 0.037540958990575746
+2024-09-26 12:27:03,285 - INFO - src.middleware: Str POST   password/forgot/                                                                
+2024-09-26 12:27:03,754 - INFO - src.middleware: End POST   password/forgot/                                                                 Duration: 0.4689424580137711
+2024-09-26 12:27:03,972 - INFO - src.middleware: Str POST   password/forgot/                                                                
+2024-09-26 12:27:04,442 - INFO - src.middleware: End POST   password/forgot/                                                                 Duration: 0.46975037502124906
+2024-09-26 12:27:04,443 - INFO - src.middleware: Str POST   logout/                                                                         
+2024-09-26 12:27:04,444 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.0011041669931728393
+2024-09-26 12:27:04,877 - INFO - src.middleware: Str POST   logout/                                                                         
+2024-09-26 12:27:04,878 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.0011906670115422457
+2024-09-26 12:27:05,095 - INFO - src.middleware: Str POST   logout/                                                                         
+2024-09-26 12:27:05,096 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.0010810420208144933
+2024-09-26 12:27:05,315 - INFO - src.middleware: Str POST   logout/                                                                         
+2024-09-26 12:27:05,316 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.0011975420056842268
+2024-09-26 12:27:05,534 - INFO - src.middleware: Str POST   logout/                                                                         
+2024-09-26 12:27:05,535 - INFO - src.middleware: End POST   logout/                                                                          Duration: 0.0010430830006953329
+2024-09-26 12:28:20,758 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:28:20,986 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.22688695800025016
+2024-09-26 12:28:37,306 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:28:37,405 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.09918649998144247
+2024-09-26 12:30:33,406 - INFO - src.middleware: Str POST   fish/                                                                           
+2024-09-26 12:30:33,474 - INFO - src.middleware: End POST   fish/                                                                            Duration: 0.06828645800123923
+2024-09-26 12:30:33,475 - INFO - src.middleware: Str GET    fish/951f8d03-f456-4eff-a691-8f17bdc7d9aa                                       
+2024-09-26 12:30:33,537 - INFO - src.middleware: End GET    fish/951f8d03-f456-4eff-a691-8f17bdc7d9aa                                        Duration: 0.062026208004681394
+2024-09-26 12:30:33,993 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:30:34,067 - INFO - src.middleware: End GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.07462191701051779
+2024-09-26 12:30:34,505 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:30:34,542 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03684670801158063
+2024-09-26 12:30:35,020 - INFO - src.middleware: Str DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:30:35,104 - INFO - src.middleware: End DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.0847190830099862
+2024-09-26 12:30:35,105 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:31:35,817 - INFO - src.middleware: Str POST   fish/                                                                           
+2024-09-26 12:31:35,884 - INFO - src.middleware: End POST   fish/                                                                            Duration: 0.06678612501127645
+2024-09-26 12:31:35,885 - INFO - src.middleware: Str GET    fish/ae1452b2-bc76-4d2b-a49f-aa902fd4e722                                       
+2024-09-26 12:31:35,950 - INFO - src.middleware: End GET    fish/ae1452b2-bc76-4d2b-a49f-aa902fd4e722                                        Duration: 0.06570158299291506
+2024-09-26 12:31:36,401 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:31:36,468 - INFO - src.middleware: End GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.06686883300426416
+2024-09-26 12:31:36,917 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:31:36,953 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.036653125018347055
+2024-09-26 12:31:37,396 - INFO - src.middleware: Str DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:31:37,461 - INFO - src.middleware: End DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.0651817080215551
+2024-09-26 12:31:37,462 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:32:26,284 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:32:26,356 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.07184445898747072
+2024-09-26 12:33:37,744 - INFO - src.middleware: Str POST   fish/                                                                           
+2024-09-26 12:33:37,813 - INFO - src.middleware: End POST   fish/                                                                            Duration: 0.06827395802247338
+2024-09-26 12:33:37,813 - INFO - src.middleware: Str GET    fish/f03f6bec-137a-41a3-9ace-43d6fdb5c3d6                                       
+2024-09-26 12:33:37,877 - INFO - src.middleware: End GET    fish/f03f6bec-137a-41a3-9ace-43d6fdb5c3d6                                        Duration: 0.06343524999101646
+2024-09-26 12:33:38,341 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:38,401 - INFO - src.middleware: End GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.06003237498225644
+2024-09-26 12:33:38,842 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:38,909 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.06681545797619037
+2024-09-26 12:33:38,937 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:38,974 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03646166599355638
+2024-09-26 12:33:38,974 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,012 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03811216601752676
+2024-09-26 12:33:39,013 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,051 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.037590541993267834
+2024-09-26 12:33:39,051 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,125 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.07368008300545625
+2024-09-26 12:33:39,126 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,165 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03896366700064391
+2024-09-26 12:33:39,165 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,202 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03676516600535251
+2024-09-26 12:33:39,203 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,241 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03822145800222643
+2024-09-26 12:33:39,241 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,279 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03736499999649823
+2024-09-26 12:33:39,279 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,316 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.036989042011555284
+2024-09-26 12:33:39,317 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,355 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03783820799435489
+2024-09-26 12:33:39,355 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,396 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.040198750008130446
+2024-09-26 12:33:39,396 - INFO - src.middleware: Str PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,435 - INFO - src.middleware: End PUT    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.03859170799842104
+2024-09-26 12:33:39,897 - INFO - src.middleware: Str DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       
+2024-09-26 12:33:39,962 - INFO - src.middleware: End DELETE fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                        Duration: 0.0649822500126902
+2024-09-26 12:33:39,963 - INFO - src.middleware: Str GET    fish/41be8f34-7bd2-4cb2-bc11-91fe05512726                                       

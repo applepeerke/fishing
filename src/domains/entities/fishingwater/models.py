@@ -6,6 +6,7 @@ from sqlalchemy import (Column, String, func, Float)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db import Base
+from src.domains.entities.enums import WaterType
 from src.domains.entities.fish.models import FishBase
 from src.domains.entities.fisherman.models import FishermanBase, fishingwater_fisherman
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
@@ -28,7 +29,7 @@ class FishingWater(Base):
 # Pydantic models
 class FishingWaterBase(BaseModel):
     location: str = Field(min_length=1, max_length=50, pattern=REGEX_ALPHANUM_PLUS)
-    type: str = Field(min_length=1, max_length=30, pattern=REGEX_ALPHANUM_PLUS)
+    type: WaterType
     density: float = Field(ge=0.1, le=1)
 
 

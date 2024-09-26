@@ -3,25 +3,25 @@
    "payload": {
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
-     "type": "Ongedefinieerd",
+     "type": "Pond",
      "density": 1.0
    }
  },
  "create": {
    "payload": {
      "location": "Leiden-ZW-kanaal",
-     "type": "Meer",
+     "type": "Lake",
      "density": 0.5
    },
    "expect": {
-     "type": "Meer",
+     "type": "Lake",
      "density": 0.5
    }
  },
  "read": {
    "expect": {
      "location": "Leiden-ZW",
-     "type": "Ongedefinieerd",
+     "type": "Pond",
      "density": 1.0
    }
  },
@@ -29,13 +29,13 @@
    "payload": {
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
-     "type": "Rivier",
+     "type": "River",
      "density": 0.3
    },
    "expect": {
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
-     "type": "Rivier",
+     "type": "River",
      "density": 0.3
    }
  },
