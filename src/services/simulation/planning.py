@@ -13,6 +13,7 @@ from src.utils.tests.round_robin import RoundRobin
 class Planning:
 
     def __init__(self):
+        self._day_names = [self._get_day_name(2025, day) for day in range(1, 8)]
         self._daily_schedule = {}
 
     async def create_planning(self, db: AsyncSession, year: int = 2025) -> dict:
@@ -28,22 +29,24 @@ class Planning:
 
         # Populate the schedule with the fishermen fishing days
         for fisherman in fishermen:
-            days = fisherman.fishing_days
+            day_names = [day.name.value for day in fisherman.fishing_days]
+            if not all(day_name in self._day_names for day_name in day_names):
+                raise ValueError(f'Not all fisherman day names "{day_names}" '
+                                 f'are present in datetime values "{self._day_names}"')
             if fisherman.frequency == Frequency.Weekly:
                 [fishermen_set.add(fisherman) for ymd, fishermen_set in self._daily_schedule.items()
-                 if self._get_ds_key_element(ymd, 3) in days]
+                 if self._get_ds_key_element(ymd, 3) in day_names]
             elif fisherman.frequency == Frequency.Monthly:
-                monthly_fishing_days = self._get_monthly_days(year, days)
+                monthly_fishing_days = self._get_monthly_days(year, day_names)
                 [fishermen_set.add(fisherman) for ymd, fishermen_set in self._daily_schedule.items()
                  if ymd in monthly_fishing_days]
 
         return self._daily_schedule
 
     def _get_daily_schedule_for_a_year(self, year):
-        start_date = datetime.strptime(f'{year}0101', '%y%m%d')
+        start_date = datetime.strptime(f'{year}0101', '%Y%m%d')
         day_name = start_date.strftime("%A")
-        day_names = [self._get_day_name(year, day) for day in range(1, 7)]
-        day_names_cycle = RoundRobin(day_names, day_name)
+        day_names_cycle = RoundRobin(self._day_names, day_name)
 
         for month in range(1, 13):
             for day in range(1, monthrange(year, month)[1] + 1):
@@ -84,5 +87,5 @@ class Planning:
 
     @staticmethod
     def _get_day_name(year, day_no: int) -> str:
-        date = datetime.strptime(f'{year}010{day_no}', '%y%m%d')
+        date = datetime.strptime(f'{year}010{day_no}', '%Y%m%d')
         return date.strftime("%A")

@@ -5,29 +5,27 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import Response
 
-from src.constants import AUTHORIZATION
 from src.db import crud
 from src.db.db import get_db_session
 from src.domains.entities.enums import Day
 from src.domains.entities.fish.models import Fish, FishBase
 from src.domains.entities.fisherman.models import Fisherman
-from src.domains.entities.fishingdays.models import FishingDay
+from src.domains.entities.fishingday.models import FishingDay
 from src.domains.entities.fishingwater.models import FishingWater
-from src.domains.login.token.models import Authentication
-from src.services.test.functions import create_fake_authenticated_user, create_a_random_fish
+from src.services.test.functions import create_a_random_fish, login_with_fake_admin, get_random_item
 from src.utils.client import get_async_client
 
 fake_fishing_data = APIRouter()
 
 fake_fishermen = [['Piet', 'Paaltjens', 'Carp', 'Weekly', 48, 'Sleeping'],
-                  ['Jan', 'Klaassen', 'Roach', 'Daily', 4, 'Sleeping'],
+                  ['Jan', 'Klaassen', 'Roach', 'Weekly', 4, 'Sleeping'],
                   ['Klaas', 'Janssen', 'Ale', 'Weekly', 6, 'Sleeping'],
                   ['Agnes', 'Huibrechts', 'Perch', 'Monthly', 8, 'Sleeping']]
 
-fake_fishingwaters = [['Leiden ZW', 'Kanaal', 30],
-                      ['Leiden O', 'Vliet', 40],
-                      ['Voorschoten', 'Meer', 100],
-                      ['Leiderdorp de Zijl', 'Rivier', 50]]
+fake_fishingwaters = [['Leiden ZW', 'Kanaal', 0.30, 0],
+                      ['Leiden O', 'Vliet', 0.40, 0],
+                      ['Voorschoten', 'Meer', 1.00, 10000],
+                      ['Leiderdorp de Zijl', 'Rivier', 0.50, 0]]
 
 
 days = [FishingDay(name=Day.Sunday), FishingDay(name=Day.Monday), FishingDay(name=Day.Tuesday),
@@ -40,43 +38,44 @@ async def create_random_fishing_data(
         response: Response,
         db: AsyncSession = Depends(get_db_session),
         no_of_fishes='100',
+        no_of_fishingwaters='4',
         no_of_catches='20',
-        clear_fishing_data=True
+        clear_fake_db='true'
 ):
     # Authorize user
-    email = 'fakedummy@example.nl'
-    password = 'FakeWelcome01!'
-    role_name = 'fake_admin'
-    authentication: Authentication = await create_fake_authenticated_user(
-        db, email, password, [role_name], clear_fishing_data)
-    response.headers.append(AUTHORIZATION, f'{authentication.token_type} {authentication.access_token}')
+    clear_fake_db = False if str(clear_fake_db).lower() == 'false' else True
+    await login_with_fake_admin(db=db, clear_fake_db=clear_fake_db)
     # Populate fishing db with random data
     from src.main import app
     client = get_async_client(app)
-    await populate_fishing_with_random_data(db, client, response.headers, no_of_fishes, no_of_catches)
+    await populate_fishing_with_random_data(
+        db, client, response.headers, int(no_of_fishingwaters), int(no_of_fishes), int(no_of_catches))
 
 
-async def populate_fishing_with_random_data(db, client, headers, no_of_fishes, no_of_catches):
-    # Create the fake Roles with their ACLs and Scopes.
+async def populate_fishing_with_random_data(db, client, headers, no_of_fishingwaters, no_of_fishes, no_of_catches=0):
+    # Create random data
     all_fishes = await _create_random_fishes(db, no_of_fishes)
-    all_fishingwaters = await _create_fishingwaters(db, fake_fishingwaters)
+    all_fishingwaters = await _create_random_fishingwaters(db, fake_fishingwaters, no_of_fishingwaters)
     all_fishermen = await _create_fishermen(db, fake_fishermen)
-    # Relations
+    # Create random relations
     await _create_random_fishing_relations(db, all_fishingwaters, all_fishermen, all_fishes)
     # Catch some fishes
-    catches = min(int(no_of_catches), int(no_of_fishes))
-    [await _catch_a_random_fish(client, all_fishes, all_fishermen, headers) for _ in range(catches)]
+    target_catch_count = min(no_of_catches, no_of_fishes)
+    [await _catch_a_random_fish(client, all_fishes, all_fishermen, headers) for _ in range(target_catch_count)]
 
 
-async def _create_random_fishes(db, no_of_fishes) -> [Fish]:
+async def _create_random_fishes(db, no_of_fishes: int) -> [Fish]:
     [await crud.delete(db, Fish, item.id) for item in await crud.get_all(db, Fish)]
     [await crud.add(db, create_a_random_fish()) for _ in range(int(no_of_fishes))]
     return await crud.get_all(db, Fish)
 
 
-async def _create_fishingwaters(db, items: list) -> [FishingWater]:
+async def _create_random_fishingwaters(db, items: list, no_of_fishingwaters: int) -> [FishingWater]:
+    no_of_fishingwaters = min(len(items), no_of_fishingwaters)
+    index_set = _get_random_index_set(items, no_of_fishingwaters)
+    items = [items[i] for i in range(len(items)) if i in index_set]
     [await crud.delete(db, FishingWater, item.id) for item in await crud.get_all(db, FishingWater)]
-    [await crud.add(db, FishingWater(location=item[0], type=item[1], density=item[2]))
+    [await crud.add(db, FishingWater(location=item[0], water_type=item[1], density=item[2], m3=item[3]))
      for item in items]
     return await crud.get_all(db, FishingWater)
 
@@ -97,13 +96,16 @@ async def _create_fishermen(db, items: list) -> [Fisherman]:
 async def _catch_a_random_fish(client: AsyncClient, all_fishes, all_fishermen, headers):
     # Get random swimming fish
     swimming_fishes = [fish for fish in all_fishes if not fish.fisherman_id]
-    fish = swimming_fishes[random.randint(0, len(swimming_fishes) - 1)]
+    fish = get_random_item(swimming_fishes)
     # Get random fisherman belonging to the fishingwater of the fish
     fishermen_for_the_water = [
         fisherman for fisherman in all_fishermen
         for water in fisherman.fishingwaters
         if fish.fishingwater_id == water.id]
-    fisherman = fishermen_for_the_water[random.randint(0, len(fishermen_for_the_water) - 1)]
+    # No fishermen for the water
+    if not fishermen_for_the_water:
+        return
+    fisherman = get_random_item(fishermen_for_the_water)
     pydantic_fish = FishBase(
         species=fish.species,
         subspecies=fish.subspecies,
@@ -115,13 +117,13 @@ async def _catch_a_random_fish(client: AsyncClient, all_fishes, all_fishermen, h
         relative_density=fish.relative_density,
         status=fish.status,
         fisherman_id=fisherman.id,
-        fishingwater_id=None
+        fishingwater_id=fish.fishingwater_id
     )
     await client.post('/fish/catch/', json=pydantic_fish.json(), headers=headers)
 
 
 async def _create_random_fishing_relations(db, all_fishingwaters, all_fishermen, all_fishes):
-    fisherman_count = random.randint(1, len(all_fishermen) - 1)  # 1-all fishermen
+    fisherman_count = random.randint(1, len(all_fishermen))  # 1-all fishermen
     fisherman_random_index_set = _get_random_index_set(all_fishermen, fisherman_count)
     # Add random fishing days to fishermen
     [all_fishermen[i].fishing_days.append(d)
@@ -143,11 +145,11 @@ async def _create_random_fishing_relations(db, all_fishingwaters, all_fishermen,
 
 def _get_random_index_set(items: list, random_subset_count: int) -> set:
     set_count = len(items)
-    if set_count < random_subset_count or set_count == 0:
-        return set()
     index_set = set()
-    while len(index_set) < random_subset_count:
-        index_set.add(random.randint(1, set_count - 1))  # get an index
+    count = 0
+    while len(index_set) < random_subset_count and count < 1000:
+        count += 1
+        index_set.add(random.randint(0, set_count - 1))  # get an index
     return index_set
 
 

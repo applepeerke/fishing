@@ -7,7 +7,7 @@ class WaterType(str, Enum):
     Lake = 'Lake'
     Canal = 'Canal'
     Pond = 'Pond'
-    See = 'See'
+    Sea = 'Sea'
 
 
 class SpeciesEnum(str, Enum):
