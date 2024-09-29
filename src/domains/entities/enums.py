@@ -1,6 +1,15 @@
 from enum import Enum
 
 
+class WaterType(str, Enum):
+    River = 'River'
+    Brook = 'River'
+    Lake = 'Lake'
+    Canal = 'Canal'
+    Pond = 'Pond'
+    Sea = 'Sea'
+
+
 class SpeciesEnum(str, Enum):
     Ale = 'Ale'
     Carp = 'Carp'
@@ -31,7 +40,6 @@ class FishStatus(str, Enum):
 class Frequency(str, Enum):
     Monthly = 'Monthly'
     Weekly = 'Weekly'
-    Daily = 'Daily'
 
 
 class FishermanStatus(str, Enum):

@@ -1,8 +1,8 @@
-import random
-
 from fastapi import HTTPException
 from starlette import status
+from starlette.responses import Response
 
+from src.constants import AUTHORIZATION
 from src.db import crud
 from src.domains.entities.enums import SpeciesEnum, CarpSubspecies
 from src.domains.entities.fish.models import Fish
@@ -15,10 +15,9 @@ from src.domains.login.scope.models import Scope, Access
 from src.domains.login.token.functions import get_authentication
 from src.domains.login.token.models import Authentication
 from src.domains.login.user.models import User, UserStatus
-from src.utils.functions import get_password_expiration
+from src.utils.functions import get_password_expiration, get_random_item
 from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.functions import get_user_from_db
-
 
 fake_scopes = [{'fake_admin': ['*', Access.all.value]},
                {'fake_fisherman': ['fake_fish', Access.all.value]},
@@ -37,11 +36,25 @@ species_keys = [k for k in SpeciesEnum.__dict__ if not k.startswith('_')]
 subspecies_keys = [k for k in CarpSubspecies.__dict__ if not k.startswith('_')]
 
 
-async def create_fake_authenticated_user(db, email, password, role_names: list, clear_fake_db='true') -> Authentication:
+async def login_with_fake_admin(
+        db, clear_fake_db=True, response=None, email=None, password=None, role_names=None) -> Response:
+    # Authorize user
+    email = 'fakedummy@example.nl' if not email else email
+    password = 'FakeWelcome01!' if not password else password
+    role_names = ['fake_admin'] if not role_names else role_names
+    authentication: Authentication = await _create_fake_authenticated_user(
+        db, email, password, role_names, clear_fake_db=clear_fake_db)
+    if not response:
+        response = Response()
+    response.headers.append(AUTHORIZATION, f'{authentication.token_type} {authentication.access_token}')
+    return response
+
+
+async def _create_fake_authenticated_user(db, email, password, role_names: list, clear_fake_db=True) -> Authentication:
     if not email or not password or not role_names:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='Email, password and role name(s) are required.')
 
-    if clear_fake_db == 'true':
+    if clear_fake_db:
         await _delete_item(db, User, User.email, email)
         [await _delete_item(db, Role, Role.name, name) for name in fake_roles]
         [await _delete_item(db, ACL, ACL.name, name) for name in fake_acls]
@@ -126,10 +139,9 @@ async def _create_scopes(scopes: list, db) -> [Scope]:
 
 def create_a_random_fish(species_name=None, subspecies_name=None) -> Fish:
     if not species_name:
-        species_name = species_keys[random.randint(0, len(species_keys) - 1)]
+        species_name = get_random_item(species_keys)
     if not subspecies_name:
-        subspecies_name = subspecies_keys[random.randint(0, len(subspecies_keys) - 1)] \
-            if species_name == SpeciesEnum.Carp else None
+        subspecies_name = get_random_item(subspecies_keys) if species_name == SpeciesEnum.Carp else None
     species = Species(species_name)
     return Fish(
         species=species_name,
@@ -141,3 +153,5 @@ def create_a_random_fish(species_name=None, subspecies_name=None) -> Fish:
         active_at=species.active_at,
         relative_density=species.relative_density
     )
+
+

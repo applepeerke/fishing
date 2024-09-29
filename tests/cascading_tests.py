@@ -3,6 +3,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db import crud
+from src.domains.entities.enums import Frequency
 from src.domains.entities.fish.models import Fish
 from src.domains.entities.fisherman.models import Fisherman
 from src.domains.entities.fishingwater.models import FishingWater
@@ -76,15 +77,15 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     assert len(await crud.get_all(db, Fish)) == 3
     # - Fisherman-1 and 2
     fisherman_1 = await crud.add(db, Fisherman(
-        forename='Petri', surname='Heil', fish_species='Carp', frequency='Weekly', fishing_session_duration=24,
+        forename='Petri', surname='Heil', fish_species='Carp', frequency=Frequency.Weekly, fishing_session_duration=24,
         status='Sleeping'))
     fisherman_2 = await crud.add(db, Fisherman(
-        forename='John', surname='Catch', fish_species='Pike', frequency='Daily', fishing_session_duration=8,
+        forename='John', surname='Catch', fish_species='Pike', frequency=Frequency.Weekly, fishing_session_duration=8,
         status='Sleeping'))
     assert len(await crud.get_all(db, Fisherman)) == 2
     # - FishingWater-1 and 2
-    fishingwater_1 = await crud.add(db, FishingWater(location='Leiden', type='Rivier', density=0.4))
-    fishingwater_2 = await crud.add(db, FishingWater(location='Voorschoten', type='Meer', density=1.0))
+    fishingwater_1 = await crud.add(db, FishingWater(location='Leiden', water_type='River', density=0.4))
+    fishingwater_2 = await crud.add(db, FishingWater(location='Voorschoten', water_type='Lake', density=1.0, m3=10000))
     assert len(await crud.get_all(db, FishingWater)) == 2
     # b. Populate fishing waters
     # - Add fish-1 and fish-3 to fishingwater-1 and fish-2 to fishingwater-2
@@ -107,7 +108,7 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     await crud.delete(db, FishingWater, fishingwater_1.id)
     assert await crud.get_one(db, FishingWater, fishingwater_2.id) is not None
     assert len(await crud.get_all(db, Fisherman)) == 2
-    assert len(await crud.get_all(db, Fish)) == 1  # With Fishingwater also fish is deleted.
+    assert len(await crud.get_all(db, Fish)) == 1  # With Fishingwater also fish is deleted .
     # e. Delete fisherman-1 - Caught Fish-1 should also be deleted.
     #    Fisherman 2 and fish 2 should still exist.
     await crud.delete(db, Fisherman, fisherman_1.id)

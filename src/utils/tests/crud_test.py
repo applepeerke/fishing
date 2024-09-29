@@ -2,9 +2,8 @@ from fastapi.exceptions import ResponseValidationError
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.constants import AUTHORIZATION, ID, EMAIL, ROLE_NAMES
-from src.services.test.create_db.api import create_fake_authenticated_user
-from src.domains.login.token.models import Authentication
+from src.constants import ID, EMAIL, ROLE_NAMES
+from src.services.test.functions import login_with_fake_admin
 from src.utils.tests.constants import PAYLOAD, EXPECT, INITIAL_DATA, SUCCESS, LOGIN, PASSWORD
 from src.utils.tests.functions import insert_record, assert_response, get_json
 from src.utils.tests.virtual_hacker import tamper_items
@@ -82,11 +81,15 @@ class CrudTest:
             payload = test_data_login[LOGIN][SUCCESS][PAYLOAD]
 
             # Create a logged-in user from the json payload, with a fake role.
-            authentication: Authentication = await create_fake_authenticated_user(
-                self._db, payload[EMAIL], payload[PASSWORD], payload[ROLE_NAMES])
+            response = await login_with_fake_admin(
+                db=self._db,
+                email=payload[EMAIL],
+                password=payload[PASSWORD],
+                role_names=payload[ROLE_NAMES]
+            )
 
-            # Add te authorization header.
-            self._headers = {AUTHORIZATION: f'{authentication.token_type} {authentication.access_token}'}
+            # Add te authorization headers.
+            self._headers = response.headers
 
         # Create an initial entity record.
         if initial_data:

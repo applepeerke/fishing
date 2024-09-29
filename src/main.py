@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from src.services.simulation.api import simulation
 from src.services.test.create_db.api import fake_user_login
 from src.domains.entities.fish.api import fish
 from src.domains.entities.fisherman.api import fisherman
@@ -35,6 +36,7 @@ app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", root_path=os.getenv
 app.include_router(fake_user_login, prefix='/test/login', tags=['Test'])
 app.include_router(fake_fishing_data, prefix='/test/populate_db', tags=['Test'])
 # - Services
+app.include_router(simulation, prefix='/simulation', tags=['Services'])
 app.include_router(catch, prefix='/fish/catch', tags=['Services'])
 # - Login
 app.include_router(login_register, prefix='/login/register', tags=['Login'])
@@ -53,6 +55,7 @@ app.include_router(scope, prefix='/scope', tags=['Scope'])
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'])
 app.include_router(fisherman, prefix='/fisherman', tags=['Fisherman'])
 app.include_router(fish, prefix='/fish', tags=['Fish'])
+app.include_router(fish, prefix='/fishingday', tags=['Fishing day'])
 # - Email/Password hashing (internal)
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
 app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (internal)'])

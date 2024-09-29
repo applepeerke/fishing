@@ -3,40 +3,47 @@
    "payload": {
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
-     "type": "Ongedefinieerd",
-     "density": 1.0
+     "water_type": "Pond",
+     "density": 1.0,
+     "m3": 10000
    }
  },
  "create": {
    "payload": {
      "location": "Leiden-ZW-kanaal",
-     "type": "Meer",
-     "density": 0.5
+     "water_type": "River",
+     "density": 0.5,
+     "m3": 0
    },
    "expect": {
-     "type": "Meer",
-     "density": 0.5
+     "location": "Leiden-ZW-kanaal",
+     "water_type": "River",
+     "density": 0.5,
+     "m3": 0
    }
  },
  "read": {
    "expect": {
      "location": "Leiden-ZW",
-     "type": "Ongedefinieerd",
-     "density": 1.0
+     "water_type": "Pond",
+     "density": 1.0,
+     "m3": 10000
    }
  },
  "update": {
    "payload": {
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
-     "type": "Rivier",
-     "density": 0.3
+     "water_type": "River",
+     "density": 0.3,
+     "m3": 0
    },
    "expect": {
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
-     "type": "Rivier",
-     "density": 0.3
+     "water_type": "River",
+     "density": 0.3,
+     "m3": 0
    }
  },
  "delete": {

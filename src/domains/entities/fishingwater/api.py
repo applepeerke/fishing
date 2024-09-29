@@ -20,9 +20,10 @@ async def create_fishingwater(
         _: Annotated[bool, Security(is_authorized, scopes=['fishing_create'])]
 ):
     new_fishing = FishingWater(
-        type=fishingwater_create.type,
+        water_type=fishingwater_create.water_type,
         location=fishingwater_create.location,
-        density=fishingwater_create.density
+        density=fishingwater_create.density,
+        m3=fishingwater_create.m3
     )
     return await crud.add(db, new_fishing)
 

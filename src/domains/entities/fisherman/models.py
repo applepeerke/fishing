@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.db.db import Base
 from src.domains.entities.enums import SpeciesEnum, Frequency, FishermanStatus
 from src.domains.entities.fish.models import FishBase
-from src.domains.entities.fishingdays.models import FishingDayBase, fisherman_fishingday
+from src.domains.entities.fishingday.models import FishingDayBase, fisherman_fishingday
 from src.utils.functions import get_random_name
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
@@ -51,5 +51,11 @@ class FishermanBase(BaseModel):
 class FishermanRead(FishermanBase):
     id: UUID4
     # Relations
+    # fishingwaters: Optional[List['FishingWaterBase']] = []
     fishes: Optional[List[FishBase]] = []
     fishing_days: Optional[List[FishingDayBase]] = []
+
+
+# Import must be here to avoid circular imports - Alembic crashes on this.
+# from src.domains.entities.fishingwater.models import FishingWaterBase
+# FishermanRead.update_forward_refs()

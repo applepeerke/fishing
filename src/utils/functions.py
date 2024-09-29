@@ -3,11 +3,11 @@ import os
 import random
 
 from dateutil.relativedelta import relativedelta
-
 from src.utils.tests.constants import PAYLOAD
 
 
 NAME_CHARS = 'aaaaaabbcddeeeeeeffgghhiiiiijjkkllmmnnnooooooppqrrsssttuuuuuuvvwwxyyz'
+NAME_CHARS_LIST = [item for item in NAME_CHARS]
 
 
 def is_debug_mode() -> bool:
@@ -85,6 +85,12 @@ def get_pk(fixture, pk_name):
 def get_random_name(max_length=20) -> str:
     name = []
     for i in range(random.randint(5, max(5, max_length))):
-        index = random.randint(0, len(NAME_CHARS) - 1)
-        name.append(NAME_CHARS[index])
+        name.append(get_random_item(NAME_CHARS_LIST))
     return ''.join(name).title()
+
+
+def get_random_item(items: list):
+    if not items:
+        return None
+    index = random.randint(0, len(items) - 1)
+    return items[index]

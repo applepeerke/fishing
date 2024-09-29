@@ -1,8 +1,8 @@
 """init
 
-Revision ID: d023d79496a4
+Revision ID: 25765572b84d
 Revises: 
-Create Date: 2024-09-25 16:21:26.187336
+Create Date: 2024-09-28 11:40:13.231881
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd023d79496a4'
+revision: str = '25765572b84d'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -58,9 +58,10 @@ def upgrade() -> None:
     op.create_index(op.f('ix_fishingday_name'), 'fishingday', ['name'], unique=False)
     op.create_table('fishingwater',
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.Column('water_type', sa.String(), nullable=False),
     sa.Column('location', sa.String(), nullable=False),
-    sa.Column('type', sa.String(), nullable=False),
     sa.Column('density', sa.Float(), nullable=False),
+    sa.Column('m3', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('created_by', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
@@ -68,8 +69,7 @@ def upgrade() -> None:
     sa.Column('update_count', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_fishingwater_location'), 'fishingwater', ['location'], unique=False)
-    op.create_index(op.f('ix_fishingwater_type'), 'fishingwater', ['type'], unique=False)
+    op.create_index(op.f('ix_fishingwater_water_type'), 'fishingwater', ['water_type'], unique=False)
     op.create_table('role',
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
@@ -186,8 +186,7 @@ def downgrade() -> None:
     op.drop_table('scope')
     op.drop_index(op.f('ix_role_name'), table_name='role')
     op.drop_table('role')
-    op.drop_index(op.f('ix_fishingwater_type'), table_name='fishingwater')
-    op.drop_index(op.f('ix_fishingwater_location'), table_name='fishingwater')
+    op.drop_index(op.f('ix_fishingwater_water_type'), table_name='fishingwater')
     op.drop_table('fishingwater')
     op.drop_index(op.f('ix_fishingday_name'), table_name='fishingday')
     op.drop_table('fishingday')
