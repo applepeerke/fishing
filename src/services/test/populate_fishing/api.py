@@ -8,12 +8,14 @@ from starlette.responses import Response
 from src.db import crud
 from src.db.db import get_db_session
 from src.domains.entities.enums import Day
-from src.domains.entities.fish.models import Fish, FishBase
+from src.domains.entities.fishspecies.models import FishSpecies, FishSpeciesModel
 from src.domains.entities.fisherman.models import Fisherman
 from src.domains.entities.fishingday.models import FishingDay
 from src.domains.entities.fishingwater.models import FishingWater
-from src.services.test.functions import create_a_random_fish, login_with_fake_admin, get_random_item
+from src.services.simulation.functions import create_a_random_fishspecies
+from src.services.test.functions import login_with_fake_admin
 from src.utils.client import get_async_client
+from src.utils.functions import get_random_item
 
 fake_fishing_data = APIRouter()
 
@@ -64,10 +66,10 @@ async def populate_fishing_with_random_data(db, client, headers, no_of_fishingwa
     [await _catch_a_random_fish(client, all_fishes, all_fishermen, headers) for _ in range(target_catch_count)]
 
 
-async def _create_random_fishes(db, no_of_fishes: int) -> [Fish]:
-    [await crud.delete(db, Fish, item.id) for item in await crud.get_all(db, Fish)]
-    [await crud.add(db, create_a_random_fish()) for _ in range(int(no_of_fishes))]
-    return await crud.get_all(db, Fish)
+async def _create_random_fishes(db, no_of_fishes: int) -> [FishSpecies]:
+    [await crud.delete(db, FishSpecies, item.id) for item in await crud.get_all(db, FishSpecies)]
+    [await crud.add(db, create_a_random_fishspecies()) for _ in range(int(no_of_fishes))]
+    return await crud.get_all(db, FishSpecies)
 
 
 async def _create_random_fishingwaters(db, items: list, no_of_fishingwaters: int) -> [FishingWater]:
@@ -106,13 +108,9 @@ async def _catch_a_random_fish(client: AsyncClient, all_fishes, all_fishermen, h
     if not fishermen_for_the_water:
         return
     fisherman = get_random_item(fishermen_for_the_water)
-    pydantic_fish = FishBase(
-        species=fish.species,
-        subspecies=fish.subspecies,
-        name=fish.name,
-        age=fish.age,
-        length=fish.length,
-        weight_in_g=fish.weight_in_g,
+    pydantic_fish = FishSpeciesModel(
+        species=fish.species_name,
+        subspecies=fish.subspecies_name,
         active_at=fish.active_at,
         relative_density=fish.relative_density,
         status=fish.status,

@@ -3,10 +3,11 @@ import random
 from src.constants import STRIPE
 from src.db import crud
 from src.domains.entities.enums import ActiveAt, SpeciesEnum
-from src.domains.entities.fish.models import Fish
+from src.domains.entities.fish.fish import FishSpecies, Fish
 from src.domains.entities.fishingwater.models import FishingWater
-from src.domains.entities.species.species import Species
+from src.domains.entities.fishspecies.models import FishSpecies
 from src.services.simulation.fishing_session import FishingSession
+from src.services.simulation.functions import fishspecies_to_fish
 from src.services.simulation.planning import Planning
 from src.utils.functions import get_random_item
 from src.utils.logging.log import logger
@@ -18,7 +19,7 @@ class Simulation:
         self._fishing_session = {}
         self._species_def = {}
         self._fishing_waters = {}
-        self._fishes_per_species_per_water = {}  # {water_id: {species_name: [fishes] }}
+        self._fishes_per_species_per_water = {}  # {water_id: {species_name: count}}
         self._starting_hours_of_fishing_sessions_today = {}
 
     async def run(self, db):
@@ -27,24 +28,26 @@ class Simulation:
         calendar = await planning.create_planning(db, year=2025)
 
         # Get fish species definitions
-        self._species_def = {species_enum: Species(species_enum) for species_enum in SpeciesEnum}
+        self._species_def = {species_enum: FishSpecies(species_enum) for species_enum in SpeciesEnum}
 
         # List fishes per fishing water
         self._fishing_waters = {water.id: water for water in await crud.get_all(db, FishingWater)}
-        fishes = [fish for fish in await crud.get_all(db, Fish)]
+        fish_specieses = [fishspecies for fishspecies in await crud.get_all(db, FishSpecies)]
 
         # List fishes per species per water
         self._fishes_per_species_per_water = {}
-        for fish in fishes:
-            species_name = fish.species
-            water_name = self._get_water_name(fish.fishingwater_id)
+        for species in fish_specieses:
+            species_name = species.species_name
+            water_name = self._get_water_name(species.fishingwater_id)
             if water_name:
                 if water_name not in self._fishes_per_species_per_water:
                     self._fishes_per_species_per_water[water_name] = {}
                 if species_name not in self._fishes_per_species_per_water[water_name]:
-                    self._fishes_per_species_per_water[water_name][species_name] = []
-                # Add the fish
-                self._fishes_per_species_per_water[water_name][species_name].append(fish)
+                    self._fishes_per_species_per_water[water_name][species_name] = 0
+                # Add the fish species count
+                fish_specieses = await crud.get_where(
+                    db, FishSpecies, FishSpecies.fishingwater_id, species.fishingwater_id)
+                self._fishes_per_species_per_water[water_name][species_name] = len(fish_specieses)
 
         # Logging
         fishermen_names = {self._get_full_name(fm) for fm_set in calendar.values() for fm in fm_set}
@@ -54,8 +57,8 @@ class Simulation:
         logger.info('Fishingwaters:')
 
         for water_name in fishingwater_names:
-            fish_text = [f'{species_name}({len(fishes)})'
-                         for species_name, fishes in self._fishes_per_species_per_water[water_name].items()]
+            fish_text = [f'{species_name}({fish_count})'
+                         for species_name, fish_count in self._fishes_per_species_per_water[water_name].items()]
             logger.info(f'{water_name}: {", ".join(fish_text)}')
         logger.info(STRIPE)
         # Fish the year around
@@ -153,39 +156,51 @@ class Simulation:
                 # Threshold is reached when potentially >= 1 fish is encountered (N.B. this may be 10 as well).
                 if session.encounters > 1:
                     encounter_count = int(session.encounters)
-                    caught_count = 0
                     # Evaluate the potential fish(es) caught
-                    for i in range(encounter_count):
-                        # There may be no fishes left in the water ... so possible encounters are not real
-                        species_count = self._get_species_count(session.fishingwater_name, species_name)
-                        fish = self._get_random_fish(session.fishingwater_name, species_name)
-                        if fish:
-                            # Keep the fish(es) in a life-net
-                            session.caught_fishes.append(fish)
-                            caught_count += 1
-                            # Show your catch to the world
-                            logger.info(f'{self._get_log_prefix(calender_date, hour)}'
-                                        f'{fisherman_fullname} caught a {species_name} of {fish.length} cm and '
-                                        f'{fish.weight_in_g/500} lbs.')
-                        elif species_count > 0:
-                            # Last fish caught
-                            logger.warning(f'{self._get_log_prefix(calender_date, hour)}'
-                                           f'{fisherman_fullname} CAUGHT THE LAST FISH !!!')
-
+                    [self._evaluate_encounter(fisherman_fullname, session, species_name, calender_date, hour)
+                     for _ in range(encounter_count)]
                     # Continue fishing
                     session.encounters = 0.0
+
+    def _evaluate_encounter(self, fisherman_fullname, session, species_name, calender_date, hour):
+        # There may be no fishes left in the water ... so possible encounters are not real
+        species_count = self._fishes_per_species_per_water[session.fishingwater_name][species_name]
+        if species_count == 0:
+            return
+
+        # Fish was caught
+        valid_fish: Fish = self._get_random_fish(session.fishingwater_name, species_name)
+        if not valid_fish:
+            return
+
+        # Fish can be kept
+        self._fishes_per_species_per_water[session.fishingwater_name][species_name] -= 1
+
+        # Keep the fish in a life-net
+        session.caught_fishes.append(valid_fish)
+
+        # Show your catch to the world
+        logger.info(f'{self._get_log_prefix(calender_date, hour)}'
+                    f'{fisherman_fullname} caught a {species_name} of {valid_fish.length} cm and '
+                    f'{valid_fish.weight_in_g / 500} lbs.')
+        if species_count == 0:
+            # Last fish caught
+            logger.warning(f'{self._get_log_prefix(calender_date, hour)} {fisherman_fullname} CAUGHT THE LAST FISH !!!')
 
     @staticmethod
     def _get_log_prefix(calender_date, hour):
         return f'{calender_date[:14]} - {str(hour).zfill(2)}.00: '
 
     def _get_random_fish(self, water_name, species_name) -> Fish | None:
-        fishes = self._fishes_per_species_per_water[water_name][species_name]
-        if not fishes:
+        fishspecies_count = self._fishes_per_species_per_water[water_name][species_name]
+        if fishspecies_count == 0:
             return None
-        index = random.randint(0, len(fishes) - 1)
-        fish = fishes.pop(index)
-        return fish
+
+        self._fishes_per_species_per_water[water_name][species_name] -= 1
+        fish = fishspecies_to_fish(species_name)
+
+        # Throw back if too small
+        return fish if fish.length > fish.minium_length else None
 
     def _get_water_name(self, water_id) -> str:
         water: FishingWater = self._fishing_waters.get(water_id, None)
@@ -196,12 +211,9 @@ class Simulation:
         return f'{fisherman.forename} {fisherman.surname}'
 
     @staticmethod
-    def _get_species_names(fishes: [Species]):
-        return list({fish.species for fish in fishes})
+    def _get_species_names(fishes: [FishSpecies]):
+        return list({fish.species_name for fish in fishes})
 
     @staticmethod
     def _get_random_fishingwater(fisherman) -> FishingWater | None:
         return get_random_item(fisherman.fishingwaters)
-
-    def _get_species_count(self, water_name, species_name) -> int:
-        return len(self._fishes_per_species_per_water[water_name][species_name])

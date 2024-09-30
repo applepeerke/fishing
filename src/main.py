@@ -9,7 +9,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.services.simulation.api import simulation
 from src.services.test.create_db.api import fake_user_login
-from src.domains.entities.fish.api import fish
+from src.domains.entities.fishspecies.api import fish
 from src.domains.entities.fisherman.api import fisherman
 from src.domains.entities.fishingwater.api import fishingwater
 from src.domains.login.acl.api import acl
@@ -54,7 +54,7 @@ app.include_router(acl, prefix='/acl', tags=['ACL'])
 app.include_router(scope, prefix='/scope', tags=['Scope'])
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'])
 app.include_router(fisherman, prefix='/fisherman', tags=['Fisherman'])
-app.include_router(fish, prefix='/fish', tags=['Fish'])
+app.include_router(fish, prefix='/fishspecies', tags=['Fish species'])
 app.include_router(fish, prefix='/fishingday', tags=['Fishing day'])
 # - Email/Password hashing (internal)
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])

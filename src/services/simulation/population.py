@@ -1,5 +1,5 @@
 from src.domains.entities.enums import WaterType
-from src.domains.entities.fish.models import Fish
+from src.domains.entities.fishspecies.models import FishSpecies
 from src.domains.entities.fishingwater.models import FishingWater, FLOATING_WATER
 from src.services.test.functions import create_a_random_fish
 
@@ -9,7 +9,7 @@ class Population:
         self. _fishingwaters = {}
         self. _fishingwater_species_fishes = {}
 
-    def add_fishes(self, fishingwater: FishingWater, species_name, fishes: [Fish]):
+    def add_fishes(self, fishingwater: FishingWater, species_name, fishes: [FishSpecies]):
         # Ini Fishingwater
         self._fishingwaters[fishingwater.id] = fishingwater
         # Ini Fishingwater_species_fishes
@@ -23,7 +23,7 @@ class Population:
         # # Todo TER:
         #     self._fishingwaters[fishingwater.id][species_name].density =
 
-    def catch_a_fish(self, fishingwater: FishingWater, species_name) -> Fish | None:
+    def catch_a_fish(self, fishingwater: FishingWater, species_name) -> FishSpecies | None:
         if species_name not in self._fishingwaters[fishingwater.id]:
             return None
         fish = self._fishingwaters[fishingwater.id][species_name].pop()

@@ -80,8 +80,8 @@ def test_data_fisherman() -> dict:
 
 
 @pytest.fixture(scope="function")
-def test_data_fish() -> dict:
-    return get_json('fish')
+def test_data_fishspecies() -> dict:
+    return get_json('fishspecies')
 
 
 """ 
