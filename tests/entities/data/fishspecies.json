@@ -2,12 +2,8 @@
  "initial_data": {
    "payload": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
-     "species": "Carp",
-     "length": 50.0,
-     "weight_in_g": 4000,
-     "subspecies": null,
-     "name": "Clarissa",
-     "age": 3,
+     "species_name": "Carp",
+     "subspecies_name": null,
      "active_at": "Both",
      "status": "Sleeping",
      "relative_density": 10,
@@ -17,12 +13,8 @@
  },
  "create": {
    "payload": {
-     "species": "Roach",
-     "length": 23.2,
-     "weight_in_g": 254,
-     "subspecies": null,
-     "name": "Roachie",
-     "age": 5,
+     "species_name": "Roach",
+     "subspecies_name": null,
      "active_at": "Day",
      "status": "Sleeping",
      "relative_density": 100,
@@ -30,12 +22,8 @@
      "fishingwater_id": null
    },
    "expect": {
-     "species": "Roach",
-     "length": 23.2,
-     "weight_in_g": 254,
-     "subspecies": null,
-     "name": "Roachie",
-     "age": 5,
+     "species_name": "Roach",
+     "subspecies_name": null,
      "active_at": "Day",
      "status": "Sleeping",
      "relative_density": 100,
@@ -45,12 +33,8 @@
  },
  "read": {
    "expect": {
-     "species": "Carp",
-     "length": 50.0,
-     "weight_in_g": 4000,
-     "subspecies": null,
-     "name": "Clarissa",
-     "age": 3,
+     "species_name": "Carp",
+     "subspecies_name": null,
      "active_at": "Both",
      "status": "Sleeping",
      "relative_density": "10",
@@ -61,12 +45,8 @@
  "update": {
    "payload": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
-     "species": "Carp",
-     "length": 67.6,
-     "weight_in_g": 5000,
-     "subspecies": "Wild",
-     "name": "Clarissa",
-     "age": 1,
+     "species_name": "Carp",
+     "subspecies_name": "Wild",
      "active_at": "Both",
      "status": "Sleeping",
      "relative_density": 10,
@@ -75,12 +55,8 @@
    },
    "expect": {
      "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
-     "species": "Carp",
-     "length": 67.6,
-     "weight_in_g": 5000,
-     "subspecies": "Wild",
-     "name": "Clarissa",
-     "age": 1,
+     "species_name": "Carp",
+     "subspecies_name": "Wild",
      "active_at": "Both",
      "status": "Sleeping",
      "relative_density": 10,
@@ -91,7 +67,7 @@
  "delete": {
    "expect": {
      "status_code": 200,
-     "message": "The fish record has been deleted."
+     "message": "The fishspecies record has been deleted."
    }
  }
 }

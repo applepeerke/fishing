@@ -6,7 +6,7 @@ from starlette import status
 
 from src.db import crud
 from src.db.db import get_db_session
-from src.domains.entities.fish.models import Fish, FishBase
+from src.domains.entities.fishspecies.models import FishSpecies, FishSpeciesModel
 from src.domains.entities.fisherman.models import Fisherman
 from src.domains.entities.fishingwater.models import FishingWater
 from src.domains.login.token.functions import is_authorized
@@ -16,7 +16,7 @@ catch = APIRouter()
 
 @catch.post('/')
 async def catch_a_fish(
-        fish: FishBase,
+        fish: FishSpeciesModel,
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['fish_catch'])],
 ):
@@ -27,7 +27,7 @@ async def catch_a_fish(
             status_code=status.HTTP_400_BAD_REQUEST, detail='The fish was not hooked by a fisherman.')
 
     # Fish must not been caught already
-    fish_old = await crud.get_one(db, Fish, fish.id)
+    fish_old = await crud.get_one(db, FishSpecies, fish.id)
     if fish_old.fisherman_id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail='The fish was caught already.')

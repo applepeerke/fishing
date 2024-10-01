@@ -23,7 +23,9 @@ async def start_simulation(
     # Populate fishing db with random data
     from src.main import app
     client = get_async_client(app)
-    await populate_fishing_with_random_data(db, client, response.headers, int(no_of_fishing_waters), int(no_of_fishes))
+
+    await populate_fishing_with_random_data(
+        db, client, response.headers, int(no_of_fishing_waters), int(no_of_fishes))
 
     simulator = Simulation()
     await simulator.run(db)

@@ -4,9 +4,6 @@ from starlette.responses import Response
 
 from src.constants import AUTHORIZATION
 from src.db import crud
-from src.domains.entities.enums import SpeciesEnum, CarpSubspecies
-from src.domains.entities.fish.models import Fish
-from src.domains.entities.species.species import Species
 from src.domains.login.acl.models import ACL
 from src.domains.login.login.models import Login
 from src.domains.login.role.models import Role
@@ -15,7 +12,7 @@ from src.domains.login.scope.models import Scope, Access
 from src.domains.login.token.functions import get_authentication
 from src.domains.login.token.models import Authentication
 from src.domains.login.user.models import User, UserStatus
-from src.utils.functions import get_password_expiration, get_random_item
+from src.utils.functions import get_password_expiration
 from src.utils.security.crypto import get_salted_hash
 from src.utils.tests.functions import get_user_from_db
 
@@ -31,9 +28,6 @@ fake_acls = ['fake_admin_group',
 fake_roles = ['fake_admin',
               'fake_fisherman',
               'fake_fishingwater_manager']
-
-species_keys = [k for k in SpeciesEnum.__dict__ if not k.startswith('_')]
-subspecies_keys = [k for k in CarpSubspecies.__dict__ if not k.startswith('_')]
 
 
 async def login_with_fake_admin(
@@ -70,7 +64,11 @@ async def _create_fake_authenticated_user(db, email, password, role_names: list,
 
     # Insert/replace the User as logged-in with certain role(s).
     return await _insert_logged_in_user(
-        Login(email=email, password=password, password_repeat=password), filtered_roles, db)
+        Login(email=email,
+              password=password,
+              password_repeat=password
+              ),
+        filtered_roles, db)
 
 
 def _get_scope_name(values: list):
@@ -135,23 +133,3 @@ async def _create_scopes(scopes: list, db) -> [Scope]:
     [await crud.delete(db, Scope, scope.id) for scope in await crud.get_all(db, Scope)]
     [await crud.add(db, Scope(entity=v[0], access=v[1])) for scope in scopes for k, v in scope.items()]
     return await crud.get_all(db, Scope)
-
-
-def create_a_random_fish(species_name=None, subspecies_name=None) -> Fish:
-    if not species_name:
-        species_name = get_random_item(species_keys)
-    if not subspecies_name:
-        subspecies_name = get_random_item(subspecies_keys) if species_name == SpeciesEnum.Carp else None
-    species = Species(species_name)
-    return Fish(
-        species=species_name,
-        name=species.name,
-        age=species.age,
-        length=species.length,
-        weight_in_g=species.weight_in_g,
-        subspecies=subspecies_name,
-        active_at=species.active_at,
-        relative_density=species.relative_density
-    )
-
-

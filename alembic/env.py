@@ -30,7 +30,7 @@ from src.domains.login.acl.models import ACL
 from src.domains.login.scope.models import Scope
 from src.domains.entities.fishingwater.models import FishingWater
 from src.domains.entities.fisherman.models import Fisherman
-from src.domains.entities.fish.models import Fish
+from src.domains.entities.fishspecies.models import FishSpecies
 
 target_metadata = Base.metadata
 

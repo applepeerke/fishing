@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db import Base
 from src.domains.entities.enums import WaterType
-from src.domains.entities.fish.models import FishBase
+from src.domains.entities.fishspecies.models import FishSpeciesModel
 from src.domains.entities.fisherman.models import FishermanBase, fishingwater_fisherman
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
@@ -26,7 +26,7 @@ class FishingWater(Base):
     fishermen = relationship(
         'Fisherman', secondary=fishingwater_fisherman, back_populates='fishingwaters', lazy='selectin')
     fishes = relationship(
-        'Fish', back_populates='fishingwater', cascade='all, delete-orphan', lazy='selectin')
+        'FishSpecies', back_populates='fishingwater', cascade='all, delete-orphan', lazy='selectin')
 
 
 # Pydantic models
@@ -48,5 +48,5 @@ class FishingWaterBase(BaseModel):
 class FishingWaterRead(FishingWaterBase):
     id: UUID4
     # Relations
-    fishes: Optional[List[FishBase]] = []
+    fishes: Optional[List[FishSpeciesModel]] = []
     fishermen: Optional[List[FishermanBase]] = []

@@ -4,12 +4,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db import crud
 from src.domains.entities.enums import Frequency
-from src.domains.entities.fish.models import Fish
+from src.domains.entities.fishspecies.models import FishSpecies
 from src.domains.entities.fisherman.models import Fisherman
 from src.domains.entities.fishingwater.models import FishingWater
 from src.domains.login.role.models import Role
 from src.domains.login.user.models import User
-from src.services.test.functions import create_a_random_fish
+from src.services.simulation.functions import create_a_random_fishspecies
 
 
 @pytest.mark.asyncio
@@ -71,10 +71,10 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     """ No "cascading all, delete" is used in relationships because that deletes e.g. roles when a user is deleted."""
     # a. Create base data
     # - Fish-1, 2, and 3
-    fish_1 = await crud.add(db, create_a_random_fish())
-    fish_2 = await crud.add(db, create_a_random_fish())
-    fish_3 = await crud.add(db, create_a_random_fish())
-    assert len(await crud.get_all(db, Fish)) == 3
+    fish_1 = await crud.add(db, create_a_random_fishspecies())
+    fish_2 = await crud.add(db, create_a_random_fishspecies())
+    fish_3 = await crud.add(db, create_a_random_fishspecies())
+    assert len(await crud.get_all(db, FishSpecies)) == 3
     # - Fisherman-1 and 2
     fisherman_1 = await crud.add(db, Fisherman(
         forename='Petri', surname='Heil', fish_species='Carp', frequency=Frequency.Weekly, fishing_session_duration=24,
@@ -108,12 +108,12 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     await crud.delete(db, FishingWater, fishingwater_1.id)
     assert await crud.get_one(db, FishingWater, fishingwater_2.id) is not None
     assert len(await crud.get_all(db, Fisherman)) == 2
-    assert len(await crud.get_all(db, Fish)) == 1  # With Fishingwater also fish is deleted .
+    assert len(await crud.get_all(db, FishSpecies)) == 2  # With Fishingwater also fish is deleted .
     # e. Delete fisherman-1 - Caught Fish-1 should also be deleted.
     #    Fisherman 2 and fish 2 should still exist.
     await crud.delete(db, Fisherman, fisherman_1.id)
     assert len(await crud.get_all(db, Fisherman)) == 1
-    assert len(await crud.get_all(db, Fish)) == 1
+    assert len(await crud.get_all(db, FishSpecies)) == 1
     # f. Delete fishingwater-2 - Fisherman 2 should still exist.
     await crud.delete(db, FishingWater, fishingwater_2.id)
     assert await crud.get_one(db, Fisherman, fisherman_2.id) is not None
@@ -121,7 +121,7 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     await crud.delete(db, Fisherman, fisherman_2.id)
     assert not await crud.get_all(db, FishingWater)
     assert not await crud.get_all(db, Fisherman)
-    assert not await crud.get_all(db, Fish)
+    assert not await crud.get_all(db, FishSpecies)
 
 
 async def catch_a_fish(db, fishingwater, fisherman, fish_to_catch):
