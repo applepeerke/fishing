@@ -7,9 +7,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from src.domains.entities.fishingday.api import fishingday
 from src.services.simulation.api import simulation
 from src.services.test.create_db.api import fake_user_login
-from src.domains.entities.fishspecies.api import fish
+from src.domains.entities.fishspecies.api import fishspecies
 from src.domains.entities.fisherman.api import fisherman
 from src.domains.entities.fishingwater.api import fishingwater
 from src.domains.login.acl.api import acl
@@ -20,7 +21,6 @@ from src.domains.login.role.api import role
 from src.domains.login.scope.api import scope
 from src.domains.login.user.api import user
 from src.middleware import add_process_time_header, auto_token_refresh, add_log_entry
-from src.services.catch.api import catch
 from src.services.test.populate_fishing.api import fake_fishing_data
 
 load_dotenv()
@@ -33,11 +33,11 @@ app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", root_path=os.getenv
 
 
 # Add routes
-app.include_router(fake_user_login, prefix='/test/login', tags=['Test'])
-app.include_router(fake_fishing_data, prefix='/test/populate_db', tags=['Test'])
 # - Services
 app.include_router(simulation, prefix='/simulation', tags=['Services'])
-app.include_router(catch, prefix='/fish/catch', tags=['Services'])
+# - Test
+app.include_router(fake_user_login, prefix='/test/login', tags=['Test'])
+app.include_router(fake_fishing_data, prefix='/test/populate_db', tags=['Test'])
 # - Login
 app.include_router(login_register, prefix='/login/register', tags=['Login'])
 app.include_router(login_acknowledge, prefix='/login/acknowledge', tags=['Login'])
@@ -54,8 +54,8 @@ app.include_router(acl, prefix='/acl', tags=['ACL'])
 app.include_router(scope, prefix='/scope', tags=['Scope'])
 app.include_router(fishingwater, prefix='/fishingwater', tags=['Fishing water'])
 app.include_router(fisherman, prefix='/fisherman', tags=['Fisherman'])
-app.include_router(fish, prefix='/fishspecies', tags=['Fish species'])
-app.include_router(fish, prefix='/fishingday', tags=['Fishing day'])
+app.include_router(fishspecies, prefix='/fishspecies', tags=['Fish species'])
+app.include_router(fishingday, prefix='/fishingday', tags=['Fishing day'])
 # - Email/Password hashing (internal)
 app.include_router(password_hash, prefix='/encrypt', tags=['Hash (internal)'])
 app.include_router(password_verify, prefix='/encrypt/verify', tags=['Hash (internal)'])

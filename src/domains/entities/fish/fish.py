@@ -66,6 +66,16 @@ class FishSpecies(Fish):
     def minium_length_to_keep(self):
         return self._minimum_length_to_keep
 
+    @property
+    def caught_count(self):
+        return self._caught_count
+    """
+    Setters
+    """
+    @caught_count.setter
+    def caught_count(self, value):
+        self._caught_count = value
+
     def __init__(self,
                  species_name: SpeciesEnum,
                  subspecies_name,
@@ -103,6 +113,7 @@ class FishSpecies(Fish):
         #       0.5-5 lbs/year, max. 80 => random growth * age
         self._length = min(self._age * self._yearly_growth_in_cm, self._max_length)
         self._weight_in_g = min(self._age * self._yearly_growth_in_g, self._max_weight)
+        self._caught_count = 0
 
     @staticmethod
     def _get_random_growth(growth_rate):
@@ -162,7 +173,7 @@ class Perch(FishSpecies):
             None,
             ActiveAt.Day,
             30,
-            3,
+            4,
             200,
             60,
             5000,
@@ -177,7 +188,7 @@ class Roach(FishSpecies):
             None,
             ActiveAt.Day,
             100,
-            2,
+            4,
             100,
             40,
             2000,

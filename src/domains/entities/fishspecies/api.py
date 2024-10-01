@@ -10,10 +10,10 @@ from src.domains.base.functions import get_delete_response
 from src.domains.entities.fishspecies.models import FishSpecies, FishReadModel, FishSpeciesModel
 from src.domains.login.token.functions import is_authorized
 
-fish = APIRouter()
+fishspecies = APIRouter()
 
 
-@fish.post('/', response_model=FishReadModel)
+@fishspecies.post('/', response_model=FishReadModel)
 async def create_fish(
         fish_create: FishSpeciesModel,
         db: Annotated[AsyncSession, Depends(get_db_session)],
@@ -29,7 +29,7 @@ async def create_fish(
     return await crud.add(db, new_fish)
 
 
-@fish.get('/', response_model=list[FishReadModel])
+@fishspecies.get('/', response_model=list[FishReadModel])
 async def read_fishes(
         db: Annotated[AsyncSession, Depends(get_db_session)],
         _: Annotated[bool, Security(is_authorized, scopes=['fish_readall'])],
@@ -39,7 +39,7 @@ async def read_fishes(
     return await crud.get_all(db, FishSpecies, skip=skip, limit=limit)
 
 
-@fish.get('/{id}', response_model=FishReadModel)
+@fishspecies.get('/{id}', response_model=FishReadModel)
 async def read_fish(
         id: UUID,
         db: Annotated[AsyncSession, Depends(get_db_session)],
@@ -48,7 +48,7 @@ async def read_fish(
     return await crud.get_one(db, FishSpecies, id)
 
 
-@fish.put('/{id}', response_model=FishReadModel)
+@fishspecies.put('/{id}', response_model=FishReadModel)
 async def update_fish(
         id: UUID,
         fish_update: FishReadModel,
@@ -59,7 +59,7 @@ async def update_fish(
     return await crud.upd(db, FishSpecies, fish_update)
 
 
-@fish.delete('/{id}')
+@fishspecies.delete('/{id}')
 async def delete_fish(
         id: UUID,
         db: Annotated[AsyncSession, Depends(get_db_session)],

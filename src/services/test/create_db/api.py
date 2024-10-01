@@ -12,10 +12,7 @@ async def login_with_fake_user(
         db: AsyncSession = Depends(get_db_session),
         email='fakedummy@example.nl',
         password='FakeWelcome01!',
-        role_name='fake_admin',
-        clear_fake_db='false'
+        role_name='fake_admin'
 ):
     # Authorize user
-    clear_fake_db = False if str(clear_fake_db).lower() == 'false' else True
-    kwargs = {'db': db, 'email': email, 'password': password, 'role_names': [role_name], 'clear_fake_db': clear_fake_db}
-    return await login_with_fake_admin(**kwargs)
+    return await login_with_fake_admin(db, email=email, password=password, role_names=[role_name])
