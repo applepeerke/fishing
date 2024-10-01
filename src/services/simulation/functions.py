@@ -13,7 +13,7 @@ def create_a_random_fishspecies(species_name=None, subspecies_name=None) -> Fish
         species_name = get_random_item(species_keys)
     if not subspecies_name:
         subspecies_name = get_random_item(subspecies_keys) if species_name == SpeciesEnum.Carp else None
-    fish = fishspecies_to_fish(species_name)
+    fish = fishspecies_to_random_fish(species_name)
     return FishSpecies(
         species_name=species_name,
         subspecies_name=subspecies_name,
@@ -22,7 +22,7 @@ def create_a_random_fishspecies(species_name=None, subspecies_name=None) -> Fish
     )
 
 
-def fishspecies_to_fish(species_name: SpeciesEnum):
+def fishspecies_to_random_fish(species_name: SpeciesEnum | str):
     """ Here the occurrences """
     if species_name == SpeciesEnum.Ale:
         return Ale()

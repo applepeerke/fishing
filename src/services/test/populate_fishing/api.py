@@ -109,8 +109,8 @@ async def _catch_a_random_fish(client: AsyncClient, all_fishes, all_fishermen, h
         return
     fisherman = get_random_item(fishermen_for_the_water)
     pydantic_fish = FishSpeciesModel(
-        species=fish.species_name,
-        subspecies=fish.subspecies_name,
+        species_name=fish.species_name,
+        subspecies_name=fish.subspecies_name,
         active_at=fish.active_at,
         relative_density=fish.relative_density,
         status=fish.status,

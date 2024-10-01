@@ -1,10 +1,12 @@
+from uuid import UUID
+
 from src.domains.entities.fish.fish import FishSpecies
 
 
 class FishingSession:
 
     def __init__(self,
-                 fishingwater_name,
+                 fishingwater_id,
                  species: FishSpecies,
                  session_duration: int,
                  encounters_per_hour_expected: float,
@@ -12,7 +14,7 @@ class FishingSession:
                  encounters=0.0,
                  caught_fishes=None
                  ):
-        self._fishingwater_name: str = fishingwater_name
+        self._fishingwater_id: UUID = fishingwater_id
         self._species: FishSpecies = species
         self._session_duration: int = session_duration
         self._encounters_per_hour_expected: float = encounters_per_hour_expected
@@ -21,8 +23,8 @@ class FishingSession:
         self._encounters: float = encounters
 
     @property
-    def fishingwater_name(self):
-        return self._fishingwater_name
+    def fishingwater_id(self):
+        return self._fishingwater_id
 
     @property
     def species(self):

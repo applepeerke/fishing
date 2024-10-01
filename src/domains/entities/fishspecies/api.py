@@ -20,8 +20,8 @@ async def create_fish(
         _: Annotated[bool, Security(is_authorized, scopes=['fish_create'])]
 ):
     new_fish = FishSpecies(
-        species=fish_create.species_name,
-        subspecies=fish_create.subspecies_name,
+        species_name=fish_create.species_name,
+        subspecies_name=fish_create.subspecies_name,
         relative_density=fish_create.relative_density,
         active_at=fish_create.active_at,
         status=fish_create.status
