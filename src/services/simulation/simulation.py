@@ -44,10 +44,8 @@ class Simulation:
         }
 
         # Add a random fish per water per species occurrences.
-        [self._add_random_fish(
-            water_id=fishing_water_id,
-            species_name=species_name)
-            for fishing_water_id, water in self._fishing_waters.items()
+        [self._add_random_fish(water_id=water_id, species_name=species_name)
+            for water_id, water in self._fishing_waters.items()
             for species_name, specieses in fish_specieses.items()
             for _ in specieses]
 
@@ -62,11 +60,14 @@ class Simulation:
         logger.info(STRIPE)
         logger.info(f'Fishermen: {", ".join(fishermen_names)}')
         logger.info('Fishingwaters:')
-        for water_id, fishes_per_species in self._fishes_per_species_per_water.items():
-            fish_text = [f'{species_name.value}({len(fishes)})' for species_name, fishes in fishes_per_species.items()]
-            logger.info(f'{self._get_water_name(water_id)}: {", ".join(fish_text)}')
-        logger.info(STRIPE)
 
+        for water_id, water in self._fishing_waters.items():
+            logger.info(
+                (f'{self._get_water_name(water_id)}: {", ".join([
+                    f'{species_name.value}({len(specieses)})' 
+                    for species_name, specieses in fish_specieses.items()])}')
+)
+        logger.info(STRIPE)
         # Fish the year around
         [self._process_day(calender_date, fishermen)
          for calender_date, fishermen in calendar.items() if fishermen]
@@ -150,7 +151,7 @@ class Simulation:
             encounters_per_hour_expected=expected_encounters_per_hour
         )
         logger.info(f'{self._get_log_prefix(calender_date, hour)}'
-                    f'{fullname} starts fishing at { self._get_water_name(fishingwater.id)}.')
+                    f'{fullname} starts fishing at {self._get_water_name(fishingwater.id)}.')
 
     def _end_fishing(self, session, fullname, calender_date, hour):
         if session.caught_fishes:
@@ -185,49 +186,59 @@ class Simulation:
         species_name = session.species.species_name
 
         # Fish was caught
-        valid_fish: Fish = self._catch_random_fish(session.fishingwater_id, species_name)
+        valid_fish: Fish = self._encounter_random_fish(session.fishingwater_id, species_name)
         if not valid_fish:
             logger.info(f'{self._get_log_prefix(calender_date, hour)}'
-                        f'{fisherman_fullname} almost caught a {species_name.value}. {self._remark}.')
+                        f'{fisherman_fullname} almost caught a {species_name.value}.{self._remark}')
             return
 
         # Keep the fish in a life-net
         session.caught_fishes.append(valid_fish)
 
         # Last fish of this species in the water?
-        suffix = ' THIS WAS THE LAST FISH !!!' \
-            if len(self._fishes_per_species_per_water[session.fishingwater_id][species_name]) == 0 \
+        species_fishes = self._fishes_per_species_per_water[session.fishingwater_id][species_name]
+        smart_fishes_count = sum(1 for f in species_fishes if f.caught_count > 0)
+        suffix = ' THIS WAS THE LAST (NOT SMART) FISH !!!' \
+            if len(species_fishes) == smart_fishes_count \
             else ''
 
         # Show your catch to the world
         logger.info(f'{self._get_log_prefix(calender_date, hour)}'
                     f'{fisherman_fullname} caught a {species_name.value} of {valid_fish.length} cm and '
-                    f'{valid_fish.weight_in_g / 500} lbs.{suffix}')
+                    f'{valid_fish.weight_in_g / 500} lbs.{self._remark}{suffix}')
 
     @staticmethod
     def _get_log_prefix(calender_date, hour):
         return f'{calender_date[:14]} - {str(hour).zfill(2)}.00: '
 
-    def _catch_random_fish(self, water_id, species_name) -> Fish | None:
-        self._remark = None
+    def _encounter_random_fish(self, water_id, species_name) -> Fish | None:
+        self._remark = ''
         fishes_per_species = self._fishes_per_species_per_water[water_id][species_name]
 
         # No fish of this species left.
-        if len(fishes_per_species) == 0:
-            self._remark = 'This was not a fish'
+        if not fishes_per_species:
+            self._remark = ' This was not a fish.'
             return None
 
-        fish = fishes_per_species.pop()
+        fish = fishes_per_species.pop(0)  # Not last one, because it may be appended again.
 
         # Too small: throw back.
         if fish.length <= fish.minium_length_to_keep:
+            fish.caught_count += 1
             fishes_per_species.append(fish)
-            self._remark = 'Fish thrown back, it has not the required minimum length'
+            self._remark = ' Fish thrown back, it has not the required minimum length.'
+            return None
+
+        # Too smart: not hooked.
+        if fish.caught_count > 0:
+            fishes_per_species.append(fish)
+            self._remark = ' Fish was not hooked, it was caught earlier.'
             return None
 
         # Floating water: add a new random fish
         if self._is_water_floating(water_id):
             fishes_per_species.append(fishspecies_to_random_fish(species_name))
+            self._remark = ' Fish added (this is floating water).'
 
         # Valid fish.
         return fish

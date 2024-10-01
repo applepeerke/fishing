@@ -1,12 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
 
 from src.db.db import get_db_session
 from src.services.simulation.simulation import Simulation
-from src.services.test.functions import login_with_fake_admin
 from src.services.test.populate_fishing.api import populate_fishing_with_random_data
-from src.utils.client import get_async_client
-
 
 simulation = APIRouter()
 
@@ -14,18 +12,22 @@ simulation = APIRouter()
 @simulation.post('/')
 async def start_simulation(
         db: AsyncSession = Depends(get_db_session),
-        no_of_fishing_waters='1',
-        no_of_fishes='1000'
+        no_of_fishing_waters='2',
+        no_of_fishes='1000',
+        no_of_fishermen='3',
+        no_of_initial_catches='0'
 ):
-    # Authorize user
-    response = await login_with_fake_admin(db)
-
-    # Populate fishing db with random data
-    from src.main import app
-    client = get_async_client(app)
-
-    await populate_fishing_with_random_data(
-        db, client, response.headers, int(no_of_fishing_waters), int(no_of_fishes))
 
     simulator = Simulation()
+    if not no_of_fishing_waters.isnumeric():
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, 'Number of fishing waters must be an integer.')
+    if not no_of_fishes.isnumeric():
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, 'Number of fishes must be an integer.')
+    if not no_of_fishermen.isnumeric():
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, 'Number of fishermen must be an integer.')
+    if not no_of_initial_catches.isnumeric():
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, 'Number of initial catches must be an integer.')
+
+    await populate_fishing_with_random_data(
+        db, int(no_of_fishing_waters), int(no_of_fishes), int(no_of_fishermen), int(no_of_initial_catches))
     await simulator.run(db)

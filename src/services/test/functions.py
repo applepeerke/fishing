@@ -30,29 +30,26 @@ fake_roles = ['fake_admin',
               'fake_fishingwater_manager']
 
 
-async def login_with_fake_admin(
-        db, clear_fake_db=True, response=None, email=None, password=None, role_names=None) -> Response:
+async def login_with_fake_admin(db, email=None, password=None, role_names=None) -> Response:
     # Authorize user
     email = 'fakedummy@example.nl' if not email else email
     password = 'FakeWelcome01!' if not password else password
     role_names = ['fake_admin'] if not role_names else role_names
-    authentication: Authentication = await _create_fake_authenticated_user(
-        db, email, password, role_names, clear_fake_db=clear_fake_db)
-    if not response:
-        response = Response()
+    authentication: Authentication = await _create_fake_authenticated_user(db, email, password, role_names)
+    response = Response()
     response.headers.append(AUTHORIZATION, f'{authentication.token_type} {authentication.access_token}')
     return response
 
 
-async def _create_fake_authenticated_user(db, email, password, role_names: list, clear_fake_db=True) -> Authentication:
+async def _create_fake_authenticated_user(db, email, password, role_names: list) -> Authentication:
     if not email or not password or not role_names:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='Email, password and role name(s) are required.')
 
-    if clear_fake_db:
-        await _delete_item(db, User, User.email, email)
-        [await _delete_item(db, Role, Role.name, name) for name in fake_roles]
-        [await _delete_item(db, ACL, ACL.name, name) for name in fake_acls]
-        [await _delete_item(db, Scope, Scope.scope_name, _get_scope_name(list(d.values()))) for d in fake_scopes]
+    # clear fake login data:
+    await _delete_item(db, User, User.email, email)
+    [await _delete_item(db, Role, Role.name, name) for name in fake_roles]
+    [await _delete_item(db, ACL, ACL.name, name) for name in fake_acls]
+    [await _delete_item(db, Scope, Scope.scope_name, _get_scope_name(list(d.values()))) for d in fake_scopes]
 
     # Create fake Roles, with their ACLs and Scopes.
     roles: [Role] = await create_fake_role_set(db)
