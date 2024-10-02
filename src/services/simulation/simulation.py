@@ -12,6 +12,11 @@ from src.services.simulation.planning import Planning
 from src.utils.functions import get_random_item
 from src.utils.logging.log import logger
 
+SIM_FISHES = 'fishes'
+SIM_INITIAL_FISH_COUNT = 'initial_fish_count'
+SIM_CAUGHT = 'caught'
+SIM_ADDED = 'added'
+
 
 class Simulation:
 
@@ -22,13 +27,13 @@ class Simulation:
         self._fishes_per_species_per_water = {}  # {water_id: {species_name: fishes}}
         self._starting_hours_of_fishing_sessions_today = {}
 
-    async def run(self, db):
+    async def run(self, db, start_year: int, no_of_fishing_days: int):
         """
         Runs from the data in the db, which was created in method "populate_fishing_with_random_data".
         """
         # Create fishing planning
         planning = Planning()
-        calendar = await planning.create_planning(db, year=2025)
+        calendar = await planning.create_planning(db, start_year, no_of_fishing_days)
         self._fishes_per_species_per_water = {}
 
         # Get fish species definitions
@@ -43,8 +48,19 @@ class Simulation:
             for species_enum in self._species_def
         }
 
+        # Initialize simulation data.
+        [self._initialize_simulation_data(water_id=water_id, species_name=species_name)
+            for water_id, water in self._fishing_waters.items()
+            for species_name, specieses in fish_specieses.items()
+            for _ in specieses]
+
         # Add a random fish per water per species occurrences.
-        [self._add_random_fish(water_id=water_id, species_name=species_name)
+        [self._add_simulation_data(
+            water_id=water_id,
+            species_name=species_name,
+            att_name=SIM_FISHES,
+            att_value=fishspecies_to_random_fish(species_name)
+        )
             for water_id, water in self._fishing_waters.items()
             for species_name, specieses in fish_specieses.items()
             for _ in specieses]
@@ -58,28 +74,56 @@ class Simulation:
 
         # Logging header
         logger.info(STRIPE)
-        logger.info(f'Fishermen: {", ".join(fishermen_names)}')
-        logger.info('Fishingwaters:')
+        logger.info(f'Fishermen . . . : {", ".join(fishermen_names)}')
+        logger.info('Fishingwaters . :')
 
         for water_id, water in self._fishing_waters.items():
             logger.info(
-                (f'{self._get_water_name(water_id)}: {", ".join([
-                    f'{species_name.value}({len(specieses)})' 
+                (f'  {self._get_water_name(water_id)} m3={water.m3}, fish_density={round(water.density, 2)}: '
+                 f'{", ".join([f'{species_name.value}({len(specieses)})' 
                     for species_name, specieses in fish_specieses.items()])}')
 )
+        logger.info(f'Start year . . . : {start_year}')
+        logger.info(f'Fishing days . . : {no_of_fishing_days}')
         logger.info(STRIPE)
+
+        if not fishermen_names or not self._fishing_waters:
+            return
+
         # Fish the year around
         [self._process_day(calender_date, fishermen)
          for calender_date, fishermen in calendar.items() if fishermen]
 
+        # Summary
+        logger.info(STRIPE)
+        logger.info('Fishes caught:')
+        for water_id in self._fishes_per_species_per_water:
+            logger.info(f'  Water: {self._get_water_name(water_id)}:')
+            for species_enum, data in self._fishes_per_species_per_water[water_id].items():
+                caught = data[SIM_CAUGHT]
+                new_fishes = data[SIM_ADDED]
+                suffix = f'{len(new_fishes)} were added (floating water or sea).' if len(new_fishes) > 0 else ''
+                if len(caught) > 0:
+                    initial_count = data[SIM_INITIAL_FISH_COUNT]
+                    logger.info(f'    {species_enum.value}: '
+                                f'{len(caught)} of {initial_count} caught. {suffix}')
         logger.info(STRIPE)
 
-    def _add_random_fish(self, water_id, species_name):
+    def _initialize_simulation_data(self, water_id, species_name):
+
         if water_id not in self._fishes_per_species_per_water:
             self._fishes_per_species_per_water[water_id] = {}
-        if species_name not in self._fishes_per_species_per_water[water_id]:
-            self._fishes_per_species_per_water[water_id][species_name] = []
-        self._fishes_per_species_per_water[water_id][species_name].append(fishspecies_to_random_fish(species_name))
+        if species_name not in self._fishes_per_species_per_water:
+            self._fishes_per_species_per_water[water_id][species_name] = {}
+            self._fishes_per_species_per_water[water_id][species_name][SIM_FISHES] = []
+            self._fishes_per_species_per_water[water_id][species_name][SIM_INITIAL_FISH_COUNT] = 0
+            self._fishes_per_species_per_water[water_id][species_name][SIM_CAUGHT] = []
+            self._fishes_per_species_per_water[water_id][species_name][SIM_ADDED] = []
+
+    def _add_simulation_data(self, water_id, species_name, att_name, att_value):
+        self._fishes_per_species_per_water[water_id][species_name][att_name].append(att_value)
+        if att_name == SIM_FISHES:
+            self._fishes_per_species_per_water[water_id][species_name][SIM_INITIAL_FISH_COUNT] += 1
 
     def _process_day(self, calender_date, fishermen):
         """
@@ -133,25 +177,41 @@ class Simulation:
         # Must not already being fishing (having a not_empty session)
         if fullname in self._fishing_session and self._fishing_session[fullname]:
             return
-        fishingwater = self._get_random_fishingwater(fisherman)
+
+        # Determine the fishing water
+        fishingwater: FishingWater = self._get_random_fishingwater(fisherman)
         if not fishingwater:
             logger.warning(f'{self._get_log_prefix(calender_date, hour)} '
                            f'{fullname} could NOT start fishing. He has no fishing water.')
 
-        # Calculate expected encounters per hour
-        fish_relative_density = self._species_def[fisherman.fish_species].relative_density
-        expected_encounters_per_hour = fishingwater.density * fish_relative_density / 100
+        species: FishSpecies = self._species_def[fisherman.fish_species]
+
         self._fishing_session[fullname] = FishingSession(
             fishingwater_id=fishingwater.id,
-            species=self._species_def[fisherman.fish_species],
+            species=species,
             hours_fished=0,
             session_duration=fisherman.fishing_session_duration,
             caught_fishes=set(),
             encounters=0.0,
-            encounters_per_hour_expected=expected_encounters_per_hour
+            encounters_per_hour_expected=self._calculate_encounters_per_hour(fishingwater, species)
         )
         logger.info(f'{self._get_log_prefix(calender_date, hour)}'
                     f'{fullname} starts fishing at {self._get_water_name(fishingwater.id)}.')
+
+    @staticmethod
+    def _calculate_encounters_per_hour(fishingwater: FishingWater, species: FishSpecies):
+        """
+        Calculate expected encounters per hour. Recalculate after every catch.
+        Minimum is 1 encounter per 5 hour.
+        """
+        fish_relative_density = species.relative_density
+        # Fish not present in the water: Useless fishing here.
+        if fishingwater.density == 0:
+            logger.info(
+                f'It is useless fishing here. The {species.species_name} is not present in {fishingwater.location}.')
+            return 0
+        expected_encounters_per_hour = max(fishingwater.density * fish_relative_density / 100, 0.2)
+        return expected_encounters_per_hour
 
     def _end_fishing(self, session, fullname, calender_date, hour):
         if session.caught_fishes:
@@ -182,7 +242,7 @@ class Simulation:
                 # Continue fishing
                 session.encounters = 0.0
 
-    def _evaluate_encounter(self, fisherman_fullname, session, calender_date, hour):
+    def _evaluate_encounter(self, fisherman_fullname, session: FishingSession, calender_date, hour):
         species_name = session.species.species_name
 
         # Fish was caught
@@ -195,8 +255,13 @@ class Simulation:
         # Keep the fish in a life-net
         session.caught_fishes.append(valid_fish)
 
+        # Recalculate fish water density
+        fishingwater = self._fishing_waters[session.fishingwater_id]
+        fishingwater.add_fishes_to_still_water(-1)
+        session.encounters_per_hour_expected = self._calculate_encounters_per_hour(fishingwater, session.species)
+
         # Last fish of this species in the water?
-        species_fishes = self._fishes_per_species_per_water[session.fishingwater_id][species_name]
+        species_fishes = self._fishes_per_species_per_water[session.fishingwater_id][species_name][SIM_FISHES]
         smart_fishes_count = sum(1 for f in species_fishes if f.caught_count > 0)
         suffix = ' THIS WAS THE LAST (NOT SMART) FISH !!!' \
             if len(species_fishes) == smart_fishes_count \
@@ -213,7 +278,13 @@ class Simulation:
 
     def _encounter_random_fish(self, water_id, species_name) -> Fish | None:
         self._remark = ''
-        fishes_per_species = self._fishes_per_species_per_water[water_id][species_name]
+
+        # No fish of this species.
+        if species_name not in self._fishes_per_species_per_water[water_id]:
+            self._remark = f' Fish species {species_name} does not occur in this water.'
+            return None
+
+        fishes_per_species = self._fishes_per_species_per_water[water_id][species_name][SIM_FISHES]
 
         # No fish of this species left.
         if not fishes_per_species:
@@ -222,6 +293,12 @@ class Simulation:
 
         fish = fishes_per_species.pop(0)  # Not last one, because it may be appended again.
 
+        # Too smart: not hooked.
+        if fish.caught_count > 0:
+            fishes_per_species.append(fish)
+            self._remark = ' Fish was not hooked, it was caught earlier.'
+            return None
+
         # Too small: throw back.
         if fish.length <= fish.minium_length_to_keep:
             fish.caught_count += 1
@@ -229,18 +306,15 @@ class Simulation:
             self._remark = ' Fish thrown back, it has not the required minimum length.'
             return None
 
-        # Too smart: not hooked.
-        if fish.caught_count > 0:
-            fishes_per_species.append(fish)
-            self._remark = ' Fish was not hooked, it was caught earlier.'
-            return None
-
         # Floating water: add a new random fish
         if self._is_water_floating(water_id):
-            fishes_per_species.append(fishspecies_to_random_fish(species_name))
-            self._remark = ' Fish added (this is floating water).'
+            new_fish = fishspecies_to_random_fish(species_name)
+            fishes_per_species.append(new_fish)
+            self._add_simulation_data(water_id, species_name, att_name=SIM_ADDED, att_value=new_fish)
+            self._remark = ' A same fish species added to the floating water.'
 
-        # Valid fish.
+        # Valid caught fish.
+        self._add_simulation_data(water_id, species_name, att_name=SIM_CAUGHT, att_value=fish)
         return fish
 
     def _get_water_name(self, water_id) -> str:

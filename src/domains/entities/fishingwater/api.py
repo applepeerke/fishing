@@ -22,6 +22,7 @@ async def create_fishingwater(
     new_fishing = FishingWater(
         water_type=fishingwater_create.water_type,
         location=fishingwater_create.location,
+        fishes_count=fishingwater_create.fishes_count,
         density=fishingwater_create.density,
         m3=fishingwater_create.m3
     )
