@@ -65,3 +65,7 @@ class FishingSession:
     @encounters.setter
     def encounters(self, value):
         self._encounters = value
+
+    @encounters_per_hour_expected.setter
+    def encounters_per_hour_expected(self, value):
+        self._encounters_per_hour_expected = value

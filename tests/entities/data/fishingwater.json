@@ -4,6 +4,7 @@
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
      "water_type": "Pond",
+     "fishes_count": 300,
      "density": 1.0,
      "m3": 10000
    }
@@ -12,6 +13,7 @@
    "payload": {
      "location": "Leiden-ZW-kanaal",
      "water_type": "River",
+     "fishes_count": 0,
      "density": 0.5,
      "m3": 0
    },
@@ -35,6 +37,7 @@
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
      "water_type": "River",
+     "fishes_count": 0,
      "density": 0.3,
      "m3": 0
    },
@@ -42,6 +45,7 @@
      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
      "location": "Leiden-ZW",
      "water_type": "River",
+     "fishes_count": 0,
      "density": 0.3,
      "m3": 0
    }
