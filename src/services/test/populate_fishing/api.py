@@ -22,6 +22,7 @@ async def create_random_fishing_data(
 
     # Populate fishing db with random data
     await populate_fishing_with_random_data(
+        db,
         no_of_fishingwaters=int(no_of_fishing_waters),
         no_of_fishermen=int(no_of_fishermen),
         no_of_fish_species=int(no_of_fish_species),

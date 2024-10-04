@@ -4710,3 +4710,552 @@
 2024-10-04 18:25:36,986 - INFO -     Ale: 8 of 100 caught. 
 2024-10-04 18:25:36,986 - INFO - ---------------------------------------------------------------------------------------------------------------------------------
 2024-10-04 18:25:36,987 - INFO - src.middleware: End POST   simulation/?no_of_fishing_waters=1&no_of_fishermen=1&no_of_fish_species=1&no_... Duration: 0.3406364170368761
+2024-10-04 18:32:51,929 - INFO - src.middleware: Str POST   simulation/?no_of_fishing_waters=5&no_of_fishermen=10&no_of_fish_species=7&no...
+2024-10-04 18:32:56,023 - INFO - ---------------------------------------------------------------------------------------------------------------------------------
+2024-10-04 18:32:56,023 - INFO - Fishermen . . . : Klaas Huibrechts (Ale), Agnes Huibrechts (Agijbrtc), Ans Klaassen (Carp), Harrie Huibrechts (Carp)
+2024-10-04 18:32:56,024 - INFO - Fishingwaters . :
+2024-10-04 18:32:56,024 - INFO -   Warmond-Sea-NW (Sea) m3=0, fish_density=0.2: Ale(150), Carp(200), Perch(300), Roach(1000), Pike(100), Agijbrtc(490), Akoyij(840)
+2024-10-04 18:32:56,024 - INFO -   Abcoude-Pond-NW (Canal) m3=0, fish_density=0.2: Ale(150), Carp(200), Perch(300), Roach(1000), Pike(100), Agijbrtc(490), Akoyij(840)
+2024-10-04 18:32:56,024 - INFO -   Zoetermeer-River-N (Canal) m3=0, fish_density=0.2: Ale(150), Carp(200), Perch(300), Roach(1000), Pike(100), Agijbrtc(490), Akoyij(840)
+2024-10-04 18:32:56,024 - INFO -   Leiden-Pond-N (Pond) m3=7493, fish_density=0.13: Ale(150), Carp(200), Perch(300), Roach(1000), Pike(100), Agijbrtc(490), Akoyij(840)
+2024-10-04 18:32:56,024 - INFO -   Zoeterwoude-Sea-Z (River) m3=0, fish_density=0.2: Ale(150), Carp(200), Perch(300), Roach(1000), Pike(100), Agijbrtc(490), Akoyij(840)
+2024-10-04 18:32:56,024 - INFO - Start year . . . : 2025
+2024-10-04 18:32:56,024 - INFO - Fishing days . . : 30
+2024-10-04 18:32:56,024 - INFO - ---------------------------------------------------------------------------------------------------------------------------------
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 15.00: Agnes Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 17.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.472 lbs.
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 4.216 lbs.
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 20.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.664 lbs.
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 21.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 5.704 lbs.
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 22.00: Klaas Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 23.00: Harrie Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 23.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 4.96 lbs.
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 23.00: Ans Klaassen starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,024 - INFO - 2025-01-01-Wed - 23.00: Klaas Huibrechts caught a Ale of 30 cm and 0.756 lbs.
+2024-10-04 18:32:56,024 - INFO - 2025-01-02-Thu - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,024 - INFO - 2025-01-02-Thu - 01.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.664 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 01.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 02.00: Klaas Huibrechts almost caught a Ale. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 1 Carp.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 03.00: Harrie Huibrechts caught a Carp of 40 cm and 7.272 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 04.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.72 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 05.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 05.00: Klaas Huibrechts caught a Ale of 115 cm and 0.8 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 07.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.432 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 08.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 10.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 9.424 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 11.00: Klaas Huibrechts caught a Ale of 35 cm and 0.8 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 13.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.976 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 14.00: Klaas Huibrechts caught a Ale of 70 cm and 0.8 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 16.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.224 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 17.00: Klaas Huibrechts caught a Ale of 110 cm and 0.8 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 19.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.728 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 20.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 22.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.48 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 23.00: Harrie Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 23.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs.
+2024-10-04 18:32:56,025 - INFO - 2025-01-02-Thu - 23.00: Ans Klaassen starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 00.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.912 lbs.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 01.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 8 Ale.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 01.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 02.00: Agnes Huibrechts ends fishing after 11 hours. The catch was 14 Agijbrtc.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 03.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 1 Carp.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 05.00: Harrie Huibrechts caught a Carp of 120 cm and 54.54 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 07.00: Harrie Huibrechts caught a Carp of 60 cm and 10.908 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 09.00: Harrie Huibrechts caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 11.00: Harrie Huibrechts caught a Carp of 110 cm and 19.998 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 11.00: Agnes Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 13.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 13.00: Agnes Huibrechts caught a Agijbrtc of 72 cm and 1.488 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 15.00: Harrie Huibrechts caught a Carp of 110 cm and 19.998 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 15.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 6.696 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 17.00: Harrie Huibrechts caught a Carp of 120 cm and 54.54 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 17.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 12.4 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,026 - INFO - 2025-01-03-Fri - 19.00: Harrie Huibrechts caught a Carp of 30 cm and 5.454 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 19.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.472 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 20.00: Klaas Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 21.00: Harrie Huibrechts caught a Carp of 120 cm and 56.358 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 21.00: Ans Klaassen starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 21.00: Agnes Huibrechts caught a Agijbrtc of 96 cm and 1.984 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 21.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 22.00: Agnes Huibrechts ends fishing after 11 hours. The catch was 5 Agijbrtc.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-03-Fri - 23.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 01.00: Harrie Huibrechts caught a Carp of 100 cm and 18.18 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 01.00: Ans Klaassen caught a Carp of 120 cm and 45.45 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 04.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 04.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 05.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 14 Carp.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 07.00: Ans Klaassen caught a Carp of 30 cm and 5.454 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 10.00: Ans Klaassen caught a Carp of 120 cm and 36.36 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 13.00: Ans Klaassen caught a Carp of 120 cm and 39.996 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 16.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 19.00: Ans Klaassen caught a Carp of 120 cm and 36.36 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 20.00: Klaas Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 21.00: Harrie Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 22.00: Ans Klaassen caught a Carp of 120 cm and 50.904 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 23.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs.
+2024-10-04 18:32:56,027 - INFO - 2025-01-04-Sat - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,028 - INFO - 2025-01-04-Sat - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 01.00: Ans Klaassen caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 01.00: Ans Klaassen ends fishing after 4 hours. The catch was 10 Carp.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 49.086 lbs.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 03.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 20.00: Harrie Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 20.00: Ans Klaassen starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 21.00: Klaas Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 21.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 22.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 23.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs.
+2024-10-04 18:32:56,028 - INFO - 2025-01-05-Sun - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 00.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 00.00: Ans Klaassen caught a Carp of 120 cm and 39.996 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 00.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 56.358 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 02.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 20.00: Klaas Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 22.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 23.00: Harrie Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,028 - INFO - 2025-01-06-Mon - 23.00: Ans Klaassen starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,028 - INFO - 2025-01-07-Tue - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 39.996 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-07-Tue - 01.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-07-Tue - 02.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,028 - INFO - 2025-01-07-Tue - 03.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 04.00: Harrie Huibrechts caught a Carp of 110 cm and 19.998 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 05.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 19.00: Harrie Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 19.00: Klaas Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 20.00: Harrie Huibrechts caught a Carp of 120 cm and 27.27 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 21.00: Klaas Huibrechts caught a Ale of 115 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 22.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 22.00: Harrie Huibrechts caught a Carp of 90 cm and 16.362 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-07-Tue - 23.00: Ans Klaassen starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 39.996 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 01.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 01.00: Ans Klaassen caught a Carp of 120 cm and 30.906 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 02.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 10.00: Agnes Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 12.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.44 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 13.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.656 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 15.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.408 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 16.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.432 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 18.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,029 - INFO - 2025-01-08-Wed - 19.00: Ans Klaassen starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 19.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.936 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 20.00: Harrie Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 20.00: Ans Klaassen caught a Carp of 40 cm and 7.272 lbs.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 21.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 5.456 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 21.00: Harrie Huibrechts caught a Carp of 120 cm and 36.36 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 21.00: Agnes Huibrechts ends fishing after 11 hours. The catch was 6 Agijbrtc.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 22.00: Klaas Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 22.00: Ans Klaassen caught a Carp of 120 cm and 27.27 lbs.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 36.36 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 23.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,030 - INFO - 2025-01-08-Wed - 23.00: Klaas Huibrechts caught a Ale of 40 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 00.00: Harrie Huibrechts caught a Carp of 40 cm and 7.272 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 02.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 02.00: Klaas Huibrechts caught a Ale of 65 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 05.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 08.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 11.00: Klaas Huibrechts caught a Ale of 70 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 14.00: Klaas Huibrechts caught a Ale of 105 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 17.00: Klaas Huibrechts caught a Ale of 50 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 20.00: Klaas Huibrechts almost caught a Ale. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 21.00: Harrie Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 22.00: Ans Klaassen starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 23.00: Klaas Huibrechts caught a Ale of 25 cm and 0.63 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-09-Thu - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 38.178 lbs.
+2024-10-04 18:32:56,030 - INFO - 2025-01-10-Fri - 00.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,030 - INFO - 2025-01-10-Fri - 01.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 8 Ale.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 02.00: Ans Klaassen ends fishing after 4 hours. The catch was 1 Carp.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 03.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 05.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 06.00: Agnes Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 07.00: Harrie Huibrechts caught a Carp of 120 cm and 27.27 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 08.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.728 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 09.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 10.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 6.696 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 11.00: Harrie Huibrechts caught a Carp of 120 cm and 21.816 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 12.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.664 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 13.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 14.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.168 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 15.00: Harrie Huibrechts caught a Carp of 120 cm and 23.634 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 16.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 12.152 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 17.00: Agnes Huibrechts ends fishing after 11 hours. The catch was 5 Agijbrtc.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 17.00: Harrie Huibrechts caught a Carp of 120 cm and 36.36 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 19.00: Harrie Huibrechts caught a Carp of 120 cm and 34.542 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 20.00: Klaas Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 21.00: Ans Klaassen starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 21.00: Klaas Huibrechts caught a Ale of 80 cm and 0.8 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 21.00: Harrie Huibrechts caught a Carp of 120 cm and 50.904 lbs.
+2024-10-04 18:32:56,031 - INFO - 2025-01-10-Fri - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,032 - INFO - 2025-01-10-Fri - 23.00: Ans Klaassen caught a Carp of 20 cm and 3.636 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-10-Fri - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 01.00: Ans Klaassen almost caught a Carp. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 02.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 03.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 14 Carp.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 04.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 07.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 10.00: Ans Klaassen caught a Carp of 120 cm and 49.086 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 13.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 16.00: Ans Klaassen caught a Carp of 70 cm and 12.726 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 19.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 20.00: Harrie Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 21.00: Klaas Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-11-Sat - 22.00: Ans Klaassen caught a Carp of 120 cm and 36.36 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 00.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 00.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 27.27 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 01.00: Ans Klaassen caught a Carp of 60 cm and 10.908 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 01.00: Ans Klaassen ends fishing after 4 hours. The catch was 9 Carp.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 02.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 20.00: Harrie Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 20.00: Ans Klaassen starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 21.00: Klaas Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 21.00: Harrie Huibrechts caught a Carp of 120 cm and 34.542 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 22.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,032 - INFO - 2025-01-12-Sun - 23.00: Klaas Huibrechts almost caught a Ale. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,033 - INFO - 2025-01-12-Sun - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 32.724 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 00.00: Klaas Huibrechts ends fishing after 3 hours. No catch.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 00.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 00.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 02.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 20.00: Klaas Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 21.00: Harrie Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 21.00: Ans Klaassen starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 22.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 27.27 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,033 - INFO - 2025-01-13-Mon - 23.00: Ans Klaassen caught a Carp of 120 cm and 39.996 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 23.634 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 01.00: Ans Klaassen caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 01.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 02.00: Harrie Huibrechts caught a Carp of 110 cm and 19.998 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 03.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 21.00: Harrie Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 21.00: Klaas Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 32.724 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 23.00: Klaas Huibrechts almost caught a Ale. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,033 - INFO - 2025-01-14-Tue - 23.00: Ans Klaassen starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,033 - INFO - 2025-01-15-Wed - 00.00: Klaas Huibrechts ends fishing after 3 hours. No catch.
+2024-10-04 18:32:56,033 - INFO - 2025-01-15-Wed - 00.00: Harrie Huibrechts caught a Carp of 90 cm and 16.362 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-15-Wed - 01.00: Ans Klaassen caught a Carp of 120 cm and 29.088 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-15-Wed - 02.00: Harrie Huibrechts caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-15-Wed - 02.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,033 - INFO - 2025-01-15-Wed - 03.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,033 - INFO - 2025-01-15-Wed - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 13.00: Agnes Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 15.00: Agnes Huibrechts caught a Agijbrtc of 48 cm and 0.992 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 16.00: Agnes Huibrechts caught a Agijbrtc of 96 cm and 1.984 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 4.712 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 19.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 5.952 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 21.00: Agnes Huibrechts caught a Agijbrtc of 84 cm and 1.736 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 22.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 4.96 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 23.00: Harrie Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 23.00: Klaas Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,034 - INFO - 2025-01-15-Wed - 23.00: Ans Klaassen starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 00.00: Agnes Huibrechts caught a Agijbrtc of 84 cm and 1.736 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 01.00: Klaas Huibrechts caught a Ale of 50 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 01.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 03.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 5.952 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 1 Carp.
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 03.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,034 - INFO - 2025-01-16-Thu - 04.00: Klaas Huibrechts caught a Ale of 80 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 05.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 06.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 07.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 09.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.968 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 10.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 12.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 9.176 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 13.00: Klaas Huibrechts caught a Ale of 90 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 15.00: Agnes Huibrechts caught a Agijbrtc of 84 cm and 1.736 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 16.00: Klaas Huibrechts caught a Ale of 120 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.664 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 19.00: Klaas Huibrechts almost caught a Ale. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 21.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.68 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 21.00: Ans Klaassen starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 22.00: Harrie Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,035 - INFO - 2025-01-16-Thu - 22.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 00.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.912 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 00.00: Ans Klaassen caught a Carp of 120 cm and 56.358 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 00.00: Harrie Huibrechts caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 00.00: Agnes Huibrechts ends fishing after 11 hours. The catch was 14 Agijbrtc.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 00.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 01.00: Ans Klaassen ends fishing after 4 hours. The catch was 1 Carp.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 02.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 8 Ale.
+2024-10-04 18:32:56,035 - INFO - 2025-01-17-Fri - 02.00: Harrie Huibrechts caught a Carp of 120 cm and 21.816 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 04.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 06.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 07.00: Agnes Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 08.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 09.00: Agnes Huibrechts caught a Agijbrtc of 96 cm and 1.984 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 10.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 11.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 9.92 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 12.00: Harrie Huibrechts caught a Carp of 120 cm and 52.722 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 13.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.408 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 14.00: Harrie Huibrechts almost caught a Carp. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 15.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 6.2 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 16.00: Harrie Huibrechts caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 17.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 6.448 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 18.00: Harrie Huibrechts caught a Carp of 120 cm and 56.358 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 18.00: Agnes Huibrechts ends fishing after 11 hours. The catch was 5 Agijbrtc.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 20.00: Klaas Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 20.00: Harrie Huibrechts caught a Carp of 120 cm and 32.724 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 21.00: Klaas Huibrechts caught a Ale of 55 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 22.00: Ans Klaassen starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 22.00: Harrie Huibrechts caught a Carp of 30 cm and 5.454 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,036 - INFO - 2025-01-17-Fri - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 00.00: Ans Klaassen caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 29.088 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 03.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 03.00: Harrie Huibrechts caught a Carp of 20 cm and 3.636 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 04.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 13 Carp.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 06.00: Ans Klaassen caught a Carp of 120 cm and 52.722 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 09.00: Ans Klaassen caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 12.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 15.00: Ans Klaassen caught a Carp of 120 cm and 32.724 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 18.00: Ans Klaassen caught a Carp of 120 cm and 49.086 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 19.00: Klaas Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 20.00: Harrie Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 21.00: Ans Klaassen caught a Carp of 120 cm and 52.722 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 22.00: Klaas Huibrechts caught a Ale of 90 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 22.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,037 - INFO - 2025-01-18-Sat - 22.00: Harrie Huibrechts caught a Carp of 60 cm and 10.908 lbs.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 00.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 02.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 02.00: Ans Klaassen caught a Carp of 120 cm and 34.542 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 02.00: Ans Klaassen ends fishing after 4 hours. The catch was 10 Carp.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 19.00: Harrie Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 20.00: Klaas Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 20.00: Harrie Huibrechts caught a Carp of 120 cm and 30.906 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 22.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,037 - INFO - 2025-01-19-Sun - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 39.996 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-19-Sun - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,038 - INFO - 2025-01-19-Sun - 23.00: Ans Klaassen starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 50.904 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 01.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 01.00: Ans Klaassen caught a Carp of 120 cm and 58.176 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 03.00: Ans Klaassen caught a Carp of 90 cm and 16.362 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 19.00: Klaas Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 20.00: Ans Klaassen starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 21.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 22.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 22.00: Ans Klaassen caught a Carp of 120 cm and 52.722 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-20-Mon - 23.00: Harrie Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 00.00: Ans Klaassen caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 00.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 02.00: Harrie Huibrechts caught a Carp of 100 cm and 18.18 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 04.00: Harrie Huibrechts caught a Carp of 120 cm and 25.452 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 05.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 19.00: Harrie Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 20.00: Harrie Huibrechts caught a Carp of 120 cm and 56.358 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 21.00: Ans Klaassen starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 22.00: Klaas Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 23.634 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-21-Tue - 23.00: Ans Klaassen caught a Carp of 90 cm and 16.362 lbs.
+2024-10-04 18:32:56,038 - INFO - 2025-01-22-Wed - 00.00: Klaas Huibrechts caught a Ale of 125 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-22-Wed - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 36.36 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,038 - INFO - 2025-01-22-Wed - 01.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 01.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 01.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 01.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 13.00: Agnes Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 15.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.656 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 16.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.688 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 9.672 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 19.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.688 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 20.00: Harrie Huibrechts starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 20.00: Klaas Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 20.00: Ans Klaassen starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 21.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.472 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 21.00: Harrie Huibrechts almost caught a Carp. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 21.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 21.00: Ans Klaassen caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 22.00: Agnes Huibrechts caught a Agijbrtc of 96 cm and 1.984 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 52.722 lbs.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 23.00: Klaas Huibrechts caught a Ale of 115 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 23.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 2 Ale.
+2024-10-04 18:32:56,039 - INFO - 2025-01-22-Wed - 23.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-23-Thu - 00.00: Agnes Huibrechts caught a Agijbrtc of 48 cm and 0.992 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,039 - INFO - 2025-01-23-Thu - 00.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,039 - INFO - 2025-01-23-Thu - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 39.996 lbs.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 02.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 03.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.936 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 06.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.408 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 09.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.16 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 12.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 12.4 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 15.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 6.696 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 9.424 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 19.00: Harrie Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 21.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.416 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 21.00: Harrie Huibrechts caught a Carp of 100 cm and 18.18 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-23-Thu - 23.00: Ans Klaassen starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,040 - INFO - 2025-01-24-Fri - 00.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.192 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-24-Fri - 00.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-24-Fri - 00.00: Agnes Huibrechts ends fishing after 11 hours. The catch was 15 Agijbrtc.
+2024-10-04 18:32:56,040 - INFO - 2025-01-24-Fri - 01.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-24-Fri - 02.00: Harrie Huibrechts caught a Carp of 120 cm and 47.268 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,040 - INFO - 2025-01-24-Fri - 03.00: Ans Klaassen ends fishing after 4 hours. The catch was 1 Carp.
+2024-10-04 18:32:56,040 - INFO - 2025-01-24-Fri - 04.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 06.00: Harrie Huibrechts caught a Carp of 120 cm and 59.994 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 08.00: Harrie Huibrechts caught a Carp of 40 cm and 7.272 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 10.00: Harrie Huibrechts caught a Carp of 120 cm and 52.722 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 12.00: Harrie Huibrechts caught a Carp of 120 cm and 36.36 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 14.00: Harrie Huibrechts caught a Carp of 120 cm and 39.996 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 16.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 18.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 18.00: Agnes Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 20.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 20.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 22.00: Ans Klaassen starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 22.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.928 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 22.00: Harrie Huibrechts caught a Carp of 120 cm and 49.086 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-24-Fri - 23.00: Klaas Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 00.00: Ans Klaassen caught a Carp of 120 cm and 38.178 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 00.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.912 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 00.00: Harrie Huibrechts caught a Carp of 50 cm and 9.09 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 01.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 14 Carp.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 01.00: Klaas Huibrechts caught a Ale of 145 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 02.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 03.00: Ans Klaassen caught a Carp of 120 cm and 58.176 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 03.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.656 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,041 - INFO - 2025-01-25-Sat - 06.00: Ans Klaassen caught a Carp of 120 cm and 38.178 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 06.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.48 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 09.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 09.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.232 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 12.00: Ans Klaassen caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 12.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 15.00: Ans Klaassen caught a Carp of 120 cm and 32.724 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 15.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.184 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 18.00: Ans Klaassen caught a Carp of 120 cm and 25.452 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.936 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 19.00: Klaas Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 21.00: Harrie Huibrechts starts fishing at Zoetermeer-River-N (Canal).
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 21.00: Ans Klaassen caught a Carp of 120 cm and 38.178 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 21.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.688 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 22.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 22.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,042 - INFO - 2025-01-25-Sat - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-26-Sun - 00.00: Ans Klaassen caught a Carp of 90 cm and 16.362 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-26-Sun - 00.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,042 - INFO - 2025-01-26-Sun - 01.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-26-Sun - 02.00: Ans Klaassen caught a Carp of 60 cm and 10.908 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-26-Sun - 02.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.16 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,042 - INFO - 2025-01-26-Sun - 02.00: Ans Klaassen ends fishing after 4 hours. The catch was 10 Carp.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 03.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 04.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.72 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 06.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 08.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.728 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 10.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.432 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 12.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.728 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 14.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 4.464 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 16.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.224 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.656 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 20.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.408 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 21.00: Klaas Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 21.00: Ans Klaassen starts fishing at Leiden-Pond-N (Pond).
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 22.00: Agnes Huibrechts caught a Agijbrtc of 60 cm and 1.24 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 23.00: Harrie Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 23.00: Klaas Huibrechts almost caught a Ale. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,043 - INFO - 2025-01-26-Sun - 23.00: Ans Klaassen caught a Carp of 120 cm and 58.176 lbs.
+2024-10-04 18:32:56,043 - INFO - 2025-01-27-Mon - 00.00: Klaas Huibrechts ends fishing after 3 hours. No catch.
+2024-10-04 18:32:56,043 - INFO - 2025-01-27-Mon - 00.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 6.2 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,043 - INFO - 2025-01-27-Mon - 00.00: Harrie Huibrechts caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 01.00: Ans Klaassen caught a Carp of 120 cm and 47.268 lbs.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 01.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 02.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.728 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 02.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 04.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 5.208 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 04.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 05.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 06.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 08.00: Agnes Huibrechts almost caught a Agijbrtc. Fish thrown back, it has not the required minimum length.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 10.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 4.96 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 12.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.408 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 14.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 7.688 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 16.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 12.152 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.912 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 19.00: Klaas Huibrechts starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 19.00: Ans Klaassen starts fishing at Warmond-Sea-NW (Sea).
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 20.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 3.224 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 21.00: Klaas Huibrechts caught a Ale of 30 cm and 0.756 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 21.00: Ans Klaassen caught a Carp of 120 cm and 23.634 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 22.00: Harrie Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,044 - INFO - 2025-01-27-Mon - 22.00: Klaas Huibrechts ends fishing after 3 hours. The catch was 1 Ale.
+2024-10-04 18:32:56,045 - INFO - 2025-01-27-Mon - 22.00: Agnes Huibrechts caught a Agijbrtc of 84 cm and 1.736 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-27-Mon - 23.00: Ans Klaassen caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-27-Mon - 23.00: Ans Klaassen ends fishing after 4 hours. The catch was 2 Carp.
+2024-10-04 18:32:56,045 - INFO - 2025-01-27-Mon - 23.00: Harrie Huibrechts caught a Carp of 120 cm and 23.634 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 00.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 11.904 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 01.00: Harrie Huibrechts caught a Carp of 20 cm and 3.636 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 02.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 5.456 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 03.00: Harrie Huibrechts caught a Carp of 120 cm and 60.0 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 04.00: Harrie Huibrechts ends fishing after 6 hours. The catch was 3 Carp.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 04.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.912 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 06.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 10.912 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 08.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 4.216 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 10.00: Agnes Huibrechts caught a Agijbrtc of 60 cm and 1.24 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 12.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.68 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 14.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.232 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 16.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 6.696 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,045 - INFO - 2025-01-28-Tue - 18.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 8.432 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,046 - INFO - 2025-01-28-Tue - 20.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 2.976 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,046 - INFO - 2025-01-28-Tue - 21.00: Harrie Huibrechts starts fishing at Zoeterwoude-Sea-Z (River).
+2024-10-04 18:32:56,046 - INFO - 2025-01-28-Tue - 21.00: Klaas Huibrechts starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,046 - INFO - 2025-01-28-Tue - 22.00: Agnes Huibrechts caught a Agijbrtc of 105 cm and 9.672 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,046 - INFO - 2025-01-28-Tue - 22.00: Harrie Huibrechts caught a Carp of 80 cm and 14.544 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,046 - INFO - 2025-01-28-Tue - 23.00: Klaas Huibrechts caught a Ale of 150 cm and 0.8 lbs. A same fish species added to the floating water.
+2024-10-04 18:32:56,046 - INFO - 2025-01-28-Tue - 23.00: Ans Klaassen starts fishing at Abcoude-Pond-NW (Canal).
+2024-10-04 18:32:56,046 - INFO - ---------------------------------------------------------------------------------------------------------------------------------
+2024-10-04 18:32:56,046 - INFO - Fishes caught:
+2024-10-04 18:32:56,046 - INFO -   Water: Warmond-Sea-NW (Sea):
+2024-10-04 18:32:56,046 - INFO -     Ale: 4 of 150 caught. 4 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -     Carp: 20 of 200 caught. 20 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -     Agijbrtc: 5 of 490 caught. 5 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -   Water: Abcoude-Pond-NW (Canal):
+2024-10-04 18:32:56,046 - INFO -     Ale: 5 of 150 caught. 5 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -     Carp: 31 of 200 caught. 31 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -   Water: Zoetermeer-River-N (Canal):
+2024-10-04 18:32:56,046 - INFO -     Ale: 13 of 150 caught. 13 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -     Carp: 48 of 200 caught. 48 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -     Agijbrtc: 59 of 490 caught. 59 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -   Water: Leiden-Pond-N (Pond):
+2024-10-04 18:32:56,046 - INFO -     Ale: 11 of 150 caught. 
+2024-10-04 18:32:56,046 - INFO -     Carp: 30 of 200 caught. 
+2024-10-04 18:32:56,046 - INFO -     Agijbrtc: 14 of 490 caught. 
+2024-10-04 18:32:56,046 - INFO -   Water: Zoeterwoude-Sea-Z (River):
+2024-10-04 18:32:56,046 - INFO -     Ale: 10 of 150 caught. 10 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -     Carp: 48 of 200 caught. 48 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO -     Agijbrtc: 26 of 490 caught. 26 were added (floating water or sea).
+2024-10-04 18:32:56,046 - INFO - ---------------------------------------------------------------------------------------------------------------------------------
+2024-10-04 18:32:56,053 - INFO - src.middleware: End POST   simulation/?no_of_fishing_waters=5&no_of_fishermen=10&no_of_fish_species=7&no... Duration: 4.123448750004172
+2024-10-04 18:36:07,796 - INFO - src.middleware: Str POST   test/login/?email=fakedummy%40example.nl&password=FakeWelcome01%21&role_name=...
+2024-10-04 18:36:08,265 - INFO - src.middleware: End POST   test/login/?email=fakedummy%40example.nl&password=FakeWelcome01%21&role_name=... Duration: 0.46842987497802824
+2024-10-04 18:37:10,343 - INFO - src.middleware: Str POST   test/populate_db/?no_of_fishing_waters=2&no_of_fishermen=10&no_of_fish_specie...
+2024-10-04 18:37:50,651 - INFO - src.middleware: Str POST   test/populate_db/?no_of_fishing_waters=2&no_of_fishermen=10&no_of_fish_specie...
+2024-10-04 18:37:53,976 - INFO - src.middleware: End POST   test/populate_db/?no_of_fishing_waters=2&no_of_fishermen=10&no_of_fish_specie... Duration: 3.324591042008251
+2024-10-04 18:40:09,421 - INFO - src.middleware: Str POST   fishspecies/                                                                    
+2024-10-04 18:40:09,501 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.07935891597298905
+2024-10-04 18:41:06,480 - INFO - src.middleware: Str POST   fishspecies/                                                                    
+2024-10-04 18:41:06,559 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.07752258301479742
+2024-10-04 18:44:12,715 - INFO - src.middleware: Str POST   fishspecies/                                                                    
+2024-10-04 18:44:12,835 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.11946912499843165
+2024-10-04 18:45:21,647 - INFO - src.middleware: Str POST   fishspecies/                                                                    
+2024-10-04 18:45:21,747 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.09940179198747501
+2024-10-04 18:45:55,195 - INFO - src.middleware: Str POST   fishspecies/                                                                    
+2024-10-04 18:45:55,197 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.0019022920168936253
+2024-10-04 18:46:08,789 - INFO - src.middleware: Str POST   fishspecies/                                                                    
+2024-10-04 18:46:08,922 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.13242691603954881
