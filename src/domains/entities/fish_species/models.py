@@ -6,7 +6,7 @@ from sqlalchemy import (Column, String, func, Integer, ARRAY)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.db import Base
-from src.domains.entities.enums import ActiveAt, SpeciesEnum, CarpSubspecies
+from src.domains.entities.enums import ActiveAt, CarpSubspecies
 
 HOURS_OF_ACTIVITY = {
     ActiveAt.Day: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
@@ -34,8 +34,8 @@ class FishSpecies(Base):
 
 # Pydantic models
 class FishSpeciesModel(BaseModel):
-    species_name: SpeciesEnum
-    subspecies_name: Optional[CarpSubspecies]
+    species_name: str = Field(min_length=3, max_length=50)
+    subspecies_name: Optional[CarpSubspecies | str | None]
     active_at: ActiveAt
     relative_density: int = Field(ge=1, le=100)
     minimum_length_to_keep_cm: int = Field(ge=10, le=80)

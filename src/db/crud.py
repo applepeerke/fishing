@@ -74,4 +74,3 @@ async def delete(db, obj_def, id) -> bool:
     await db.delete(obj)
     await db.commit()
     return True
-

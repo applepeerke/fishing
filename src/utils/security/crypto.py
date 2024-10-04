@@ -16,8 +16,6 @@ import string
 
 import bcrypt
 
-from src.utils.functions import is_debug_mode
-
 
 def get_salted_hash(password: str) -> str:
     if not password:
