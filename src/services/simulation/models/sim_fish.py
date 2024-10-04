@@ -1,18 +1,16 @@
 import random
-from numpy import random as np_random
-from src.domains.entities.enums import SpeciesEnum, ActiveAt, CarpSubspecies
-from src.utils.functions import get_random_name
 
-hours_of_activity = {
-    ActiveAt.Day: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-    ActiveAt.Night: [18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6],
-    ActiveAt.Both: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
-}
+from numpy import random as np_random
+
+from src.domains.entities.enums import SpeciesEnum, ActiveAt, CarpSubspecies
+from src.domains.entities.fish_species.models import HOURS_OF_ACTIVITY
+from src.utils.functions import get_random_name
 
 age_division = np_random.normal(loc=8, scale=3, size=(1, 100))[0]
 
+rng = random.SystemRandom()
 
-class Fish:
+class SimFish:
     @property
     def name(self):
         return self._name
@@ -36,11 +34,15 @@ class Fish:
         self._length = 0
 
 
-class FishSpecies(Fish):
+class SimFishSpecies(SimFish):
 
     @property
     def species_name(self):
         return self._species_name
+
+    @property
+    def subspecies_name(self):
+        return self._subspecies_name
 
     @property
     def active_at(self):
@@ -63,6 +65,14 @@ class FishSpecies(Fish):
         return self._yearly_growth_in_g
 
     @property
+    def max_weight_g(self):
+        return self._max_weight_g
+
+    @property
+    def max_length_cm(self):
+        return self._max_length_cm
+
+    @property
     def minium_length_to_keep(self):
         return self._minimum_length_to_keep
 
@@ -83,8 +93,8 @@ class FishSpecies(Fish):
                  relative_density: int,
                  yearly_growth_in_cm: int,
                  yearly_growth_in_g: int,
-                 max_length: int,
-                 max_weight: int,
+                 max_length_cm: int,
+                 max_weight_g: int,
                  minimum_length_to_keep: int
                  ):
         """
@@ -93,35 +103,35 @@ class FishSpecies(Fish):
         @param relative_density: no. of fishes of this species compared to Roach = 100.
         @param yearly_growth_in_cm: % increase of body length per year (in cm).
         @param yearly_growth_in_g:  % increase of body mass per year (in g).
-        @param max_length:  % maximum length in cm.
-        @param max_weight:  % maximum weight in g.
+        @param max_length_cm:  % maximum length in cm.
+        @param max_weight_g:  % maximum weight in g.
         @param minimum_length_to_keep: minimum length to keep a catch.
         """
         super().__init__()
         self._species_name = species_name
         self._subspecies_name = subspecies_name
         self._active_at = active_at
-        self._max_length = max_length
-        self._max_weight = max_weight
+        self._max_length_cm = max_length_cm
+        self._max_weight_g = max_weight_g
         self._yearly_growth_in_cm = self._get_random_growth(yearly_growth_in_cm)
         self._yearly_growth_in_g = self._get_random_growth(yearly_growth_in_g)
         self._relative_density = relative_density
-        self._hours_of_activity = hours_of_activity[active_at]
+        self._hours_of_activity = HOURS_OF_ACTIVITY[active_at]
         self._minimum_length_to_keep = minimum_length_to_keep
 
         # Carp: 5-12 cm/year, max. 120 => random growth * age
         #       0.5-5 lbs/year, max. 80 => random growth * age
-        self._length = min(self._age * self._yearly_growth_in_cm, self._max_length)
-        self._weight_in_g = min(self._age * self._yearly_growth_in_g, self._max_weight)
+        self._length = min(self._age * self._yearly_growth_in_cm, self._max_length_cm)
+        self._weight_in_g = min(self._age * self._yearly_growth_in_g, self._max_weight_g)
         self._caught_count = 0
 
     @staticmethod
     def _get_random_growth(growth_rate):
         """ Fuzz some with the growth rate """
-        return growth_rate + random.randint(0, growth_rate) - int((growth_rate / 2))
+        return growth_rate + rng.randint(0, growth_rate) - int((growth_rate / 2))
 
 
-class Ale(FishSpecies):
+class SimAle(SimFishSpecies):
     def __init__(self):
         super().__init__(
             SpeciesEnum.Ale,
@@ -136,7 +146,7 @@ class Ale(FishSpecies):
         )
 
 
-class Carp(FishSpecies):
+class SimCarp(SimFishSpecies):
     def __init__(self):
         super().__init__(
             SpeciesEnum.Carp,
@@ -151,7 +161,7 @@ class Carp(FishSpecies):
         )
 
 
-class Pike(FishSpecies):
+class SimPike(SimFishSpecies):
     def __init__(self):
         super().__init__(
             SpeciesEnum.Pike,
@@ -166,7 +176,7 @@ class Pike(FishSpecies):
         )
 
 
-class Perch(FishSpecies):
+class SimPerch(SimFishSpecies):
     def __init__(self):
         super().__init__(
             SpeciesEnum.Perch,
@@ -181,7 +191,7 @@ class Perch(FishSpecies):
         )
 
 
-class Roach(FishSpecies):
+class SimRoach(SimFishSpecies):
     def __init__(self):
         super().__init__(
             SpeciesEnum.Roach,

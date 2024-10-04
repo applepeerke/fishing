@@ -15,7 +15,6 @@ DETAIL = 'detail'
 PAYLOAD = 'payload'
 EXPECT = 'expect'
 EXPECT_DB = 'expect_db'
-INITIAL_DATA = 'initial_data'
 
 STATUS_CODE = 'status_code'
 
@@ -26,4 +25,12 @@ PASSWORD = 'password'
 LOGIN = 'login'
 LOGOUT = 'logout'
 FISHINGWATER = 'fishingwater'
+FISHSPECIES = 'fishspecies'
 SCOPES = 'scopes'
+
+# json
+INITIAL_DATA = 'initial_data'
+CREATE = 'create'
+UPDATE = 'update'
+READ = 'read'
+DELETE = 'read'

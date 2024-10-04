@@ -7,8 +7,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db import Base
 from src.domains.entities.enums import SpeciesEnum, Frequency, FishermanStatus
-from src.domains.entities.fishspecies.models import FishSpeciesModel
+from src.domains.entities.fish.models import FishModel
 from src.domains.entities.fishingday.models import FishingDayBase, fisherman_fishingday
+from src.domains.entities.fish_species.models import FishSpeciesModel
 from src.utils.functions import get_random_name
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
@@ -33,7 +34,7 @@ class Fisherman(Base):
         'FishingWater', secondary=fishingwater_fisherman, back_populates='fishermen',
         passive_deletes=True, lazy='selectin')
     fishes = relationship(
-        'FishSpecies', back_populates='fisherman', cascade='all, delete-orphan', lazy='selectin')
+        'Fish', back_populates='fisherman', cascade='all, delete-orphan', lazy='selectin')
     fishing_days = relationship(
         'FishingDay', secondary=fisherman_fishingday, back_populates='fisherman', lazy='selectin')
 
@@ -52,7 +53,7 @@ class FishermanRead(FishermanBase):
     id: UUID4
     # Relations
     # fishingwaters: Optional[List['FishingWaterBase']] = []
-    fishes: Optional[List[FishSpeciesModel]] = []
+    fishes: Optional[List[FishModel]] = []
     fishing_days: Optional[List[FishingDayBase]] = []
 
 

@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 05024d752f66
+Revision ID: 107add59f171
 Revises: 
-Create Date: 2024-10-02 11:06:01.489305
+Create Date: 2024-10-04 15:17:53.394874
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '05024d752f66'
+revision: str = '107add59f171'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -71,6 +71,26 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_fishingwater_water_type'), 'fishingwater', ['water_type'], unique=False)
+    op.create_table('fishspecies',
+    sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.Column('species_name', sa.String(), nullable=False),
+    sa.Column('subspecies_name', sa.String(), nullable=True),
+    sa.Column('active_at', sa.String(), nullable=False),
+    sa.Column('relative_density', sa.Integer(), nullable=False),
+    sa.Column('minimum_length_to_keep_cm', sa.Integer(), nullable=False),
+    sa.Column('max_length_cm', sa.Integer(), nullable=False),
+    sa.Column('max_weight_g', sa.Integer(), nullable=False),
+    sa.Column('yearly_growth_in_cm', sa.Integer(), nullable=False),
+    sa.Column('yearly_growth_in_g', sa.Integer(), nullable=False),
+    sa.Column('hours_of_activity', sa.ARRAY(sa.Integer()), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('created_by', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_by', sa.String(), nullable=True),
+    sa.Column('update_count', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_fishspecies_species_name'), 'fishspecies', ['species_name'], unique=False)
     op.create_table('role',
     sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
@@ -119,6 +139,26 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['scope_id'], ['scope.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('acl_id', 'scope_id')
     )
+    op.create_table('fish',
+    sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.Column('fishspecies_id', sa.Uuid(), nullable=False),
+    sa.Column('status', sa.String(), nullable=False),
+    sa.Column('age', sa.Integer(), nullable=True),
+    sa.Column('length_cm', sa.Integer(), nullable=True),
+    sa.Column('weight_g', sa.Integer(), nullable=True),
+    sa.Column('caught_count', sa.Integer(), nullable=True),
+    sa.Column('fisherman_id', sa.Uuid(), nullable=True),
+    sa.Column('fishingwater_id', sa.Uuid(), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('created_by', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_by', sa.String(), nullable=True),
+    sa.Column('update_count', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['fisherman_id'], ['fisherman.id'], ),
+    sa.ForeignKeyConstraint(['fishingwater_id'], ['fishingwater.id'], ),
+    sa.ForeignKeyConstraint(['fishspecies_id'], ['fishspecies.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('fisherman_fishingday',
     sa.Column('fisherman_id', sa.Uuid(), nullable=False),
     sa.Column('fishingday_id', sa.Uuid(), nullable=False),
@@ -133,25 +173,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['fishingwater_id'], ['fishingwater.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('fishingwater_id', 'fisherman_id')
     )
-    op.create_table('fishspecies',
-    sa.Column('id', sa.Uuid(), server_default=sa.text('gen_random_uuid()'), nullable=False),
-    sa.Column('species_name', sa.String(), nullable=False),
-    sa.Column('subspecies_name', sa.String(), nullable=True),
-    sa.Column('active_at', sa.String(), nullable=False),
-    sa.Column('status', sa.String(), nullable=False),
-    sa.Column('relative_density', sa.Integer(), nullable=False),
-    sa.Column('fisherman_id', sa.Uuid(), nullable=True),
-    sa.Column('fishingwater_id', sa.Uuid(), nullable=True),
-    sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('created_by', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
-    sa.Column('updated_by', sa.String(), nullable=True),
-    sa.Column('update_count', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['fisherman_id'], ['fisherman.id'], ),
-    sa.ForeignKeyConstraint(['fishingwater_id'], ['fishingwater.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_fishspecies_species_name'), 'fishspecies', ['species_name'], unique=False)
     op.create_table('role_acl',
     sa.Column('role_id', sa.Uuid(), nullable=False),
     sa.Column('acl_id', sa.Uuid(), nullable=False),
@@ -173,16 +194,17 @@ def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('user_role')
     op.drop_table('role_acl')
-    op.drop_index(op.f('ix_fishspecies_species_name'), table_name='fishspecies')
-    op.drop_table('fishspecies')
     op.drop_table('fishingwater_fisherman')
     op.drop_table('fisherman_fishingday')
+    op.drop_table('fish')
     op.drop_table('acl_scope')
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     op.drop_table('scope')
     op.drop_index(op.f('ix_role_name'), table_name='role')
     op.drop_table('role')
+    op.drop_index(op.f('ix_fishspecies_species_name'), table_name='fishspecies')
+    op.drop_table('fishspecies')
     op.drop_index(op.f('ix_fishingwater_water_type'), table_name='fishingwater')
     op.drop_table('fishingwater')
     op.drop_index(op.f('ix_fishingday_name'), table_name='fishingday')

@@ -3,6 +3,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.constants import ID, EMAIL, ROLE_NAMES
+from src.db import crud
 from src.services.test.functions import login_with_fake_admin
 from src.utils.tests.constants import PAYLOAD, EXPECT, INITIAL_DATA, SUCCESS, LOGIN, PASSWORD
 from src.utils.tests.functions import insert_record, assert_response, get_json
@@ -74,7 +75,7 @@ class CrudTest:
         except ResponseValidationError:
             pass
 
-    async def _preconditions(self, initial_data=None):
+    async def _preconditions(self, initial_data=None, fk_domains=None):
         """ Set preconditions for tests. After every test pytest has cleared the db. """
         if self._login:
             test_data_login = get_json(LOGIN)
@@ -95,3 +96,22 @@ class CrudTest:
         if initial_data:
             [await insert_record(self._db, self._model, initial_data[key])
              for key in initial_data if key.startswith(PAYLOAD)]
+
+    async def update_fixture_fk(self, obj_def, domain, crud_key):
+        # Get the json test fixture of the FK domain
+        obj_json = get_json(domain).get(INITIAL_DATA, {}).get(PAYLOAD, {})
+        # Add the FK record
+        await insert_record(self._db, obj_def, obj_json)
+        # Add the FK-id to the test fixtures.
+        obj = await crud.get_all(self._db, obj_def)
+        if obj and len(obj) == 1:
+            obj = obj[0]
+            self.update_fixture_leaf(INITIAL_DATA, PAYLOAD, f'{domain}_id', obj.id)
+            self.update_fixture_leaf(INITIAL_DATA, EXPECT, f'{domain}_id', obj.id)
+            self.update_fixture_leaf(crud_key, PAYLOAD, f'{domain}_id', obj.id)
+            self.update_fixture_leaf(crud_key, EXPECT, f'{domain}_id', obj.id)
+
+    def update_fixture_leaf(self, crud_key, payload_name, att_name, att_value):
+        leaf = self._test_data.get(crud_key, {}).get(payload_name, {})
+        if leaf:
+            leaf[att_name] = str(att_value)

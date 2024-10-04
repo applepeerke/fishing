@@ -1,0 +1,79 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "27c500db-54df-47d6-a71b-24ee52b4c7fd",
+     "status": "Sleeping",
+     "fishspecies_id": "b7167b58-4aa3-458b-9866-44bf622cca33",
+     "fisherman_id": null,
+     "fishingwater_id": null,
+     "age": 5,
+     "length_cm": 50,
+     "weight_g": 3000,
+     "caught_count": 0
+   }
+ },
+ "create": {
+   "payload": {
+     "status": "Sleeping",
+     "fishspecies_id": "b7167b58-4aa3-458b-9866-44bf622cca33",
+     "fisherman_id": null,
+     "fishingwater_id": null,
+     "age": 5,
+     "length_cm": 50,
+     "weight_g": 3000,
+     "caught_count": 0
+   },
+   "expect": {
+     "status": "Sleeping",
+     "fishspecies_id": "b7167b58-4aa3-458b-9866-44bf622cca33",
+     "fisherman_id": null,
+     "fishingwater_id": null,
+     "age": 5,
+     "length_cm": 50,
+     "weight_g": 3000,
+     "caught_count": 0
+   }
+ },
+ "read": {
+   "expect": {
+     "status": "Sleeping",
+     "fishspecies_id": "b7167b58-4aa3-458b-9866-44bf622cca33",
+     "fisherman_id": null,
+     "fishingwater_id": null,
+     "age": 5,
+     "length_cm": 50,
+     "weight_g": 3000,
+     "caught_count": 0
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "27c500db-54df-47d6-a71b-24ee52b4c7fd",
+     "status": "Feeding",
+     "fishspecies_id": "b7167b58-4aa3-458b-9866-44bf622cca33",
+     "fisherman_id": null,
+     "fishingwater_id": null, ,
+     "age": 5,
+     "length_cm": 50,
+     "weight_g": 3000,
+     "caught_count": 0
+   },
+   "expect": {
+     "id": "27c500db-54df-47d6-a71b-24ee52b4c7fd",
+     "status": "Feeding",
+     "fishspecies_id": "b7167b58-4aa3-458b-9866-44bf622cca33",
+     "fisherman_id": null,
+     "fishingwater_id": null,
+     "age": 5,
+     "length_cm": 50,
+     "weight_g": 3000,
+     "caught_count": 0
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The fish record has been deleted."
+   }
+ }
+}

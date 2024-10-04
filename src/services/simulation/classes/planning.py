@@ -10,6 +10,8 @@ from src.domains.entities.fisherman.models import Fisherman
 from src.utils.logging.log import logger
 from src.utils.tests.round_robin import RoundRobin
 
+rng = random.SystemRandom()
+
 
 class Planning:
 
@@ -17,7 +19,8 @@ class Planning:
         self._day_names = [self._get_day_name(2025, day) for day in range(1, 8)]
         self._daily_schedule = {}
 
-    async def create_planning(self, db: AsyncSession, year, no_of_fishing_days: int = 365) -> dict:
+    async def create_planning(
+            self, db: AsyncSession, year, no_of_fishing_days: int = 365, species_names: list = None) -> dict:
         """
         Create daily schedule for a year. Populate the schedule with the fishermen fishing days.
         @return Schedule = {'yyyy-mm-dd-dayname' : {fisherman_id}}
@@ -26,7 +29,10 @@ class Planning:
         self._get_daily_schedule_for_a_year(year, no_of_fishing_days)
 
         # Get all active fishermen
-        fishermen = [f for f in await crud.get_all(db, Fisherman) if f.fishingwaters and f.fishing_days]
+        fishermen = [f for f in await crud.get_all(db, Fisherman)
+                     if f.fishingwaters
+                     and f.fishing_days
+                     and species_names and f.fish_species in species_names]
 
         # Populate the schedule with the fishermen fishing days
         for fisherman in fishermen:
@@ -77,7 +83,7 @@ class Planning:
             count = 0
             while not found and count < 1000:
                 count += 1
-                day = random.randint(1, 28)  # random day number
+                day = rng.randint(1, 28)  # random day number
                 # Is it a fishing day?
                 for day_name in day_names:
                     key = self._get_ds_key(year, month, day, day_name)

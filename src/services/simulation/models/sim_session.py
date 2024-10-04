@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from src.domains.entities.fish.fish import FishSpecies
+from src.domains.entities.fish_species.models import FishSpecies
 
 
 class FishingSession:
