@@ -9,7 +9,6 @@ from src.db.db import Base
 from src.domains.entities.enums import SpeciesEnum, Frequency, FishermanStatus
 from src.domains.entities.fish.models import FishModel
 from src.domains.entities.fishingday.models import FishingDayBase, fisherman_fishingday
-from src.domains.entities.fish_species.models import FishSpeciesModel
 from src.utils.functions import get_random_name
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 

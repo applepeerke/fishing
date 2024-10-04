@@ -9,7 +9,6 @@ from src.db.db import Base
 from src.domains.entities.enums import WaterType
 from src.domains.entities.fish.models import FishModel
 from src.domains.entities.fisherman.models import FishermanBase, fishingwater_fisherman
-from src.domains.entities.fish_species.models import FishSpeciesModel
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
 FLOATING_WATER = (WaterType.Canal, WaterType.River, WaterType.Brook, WaterType.Sea)

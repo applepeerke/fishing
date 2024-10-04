@@ -5259,3 +5259,11 @@
 2024-10-04 18:45:55,197 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.0019022920168936253
 2024-10-04 18:46:08,789 - INFO - src.middleware: Str POST   fishspecies/                                                                    
 2024-10-04 18:46:08,922 - INFO - src.middleware: End POST   fishspecies/                                                                     Duration: 0.13242691603954881
+2024-10-04 18:47:34,560 - INFO - src.middleware: Str POST   fishingwater/                                                                   
+2024-10-04 18:47:34,711 - INFO - src.middleware: End POST   fishingwater/                                                                    Duration: 0.15008495800429955
+2024-10-04 18:49:07,293 - INFO - src.middleware: Str POST   fishingwater/                                                                   
+2024-10-04 18:49:07,392 - INFO - src.middleware: End POST   fishingwater/                                                                    Duration: 0.09643595799570903
+2024-10-04 18:49:47,701 - INFO - src.middleware: Str POST   fisherman/                                                                      
+2024-10-04 18:49:47,854 - INFO - src.middleware: End POST   fisherman/                                                                       Duration: 0.1520512499846518
+2024-10-04 18:50:40,089 - INFO - src.middleware: Str POST   fish/                                                                           
+2024-10-04 18:50:40,164 - INFO - src.middleware: End POST   fish/                                                                            Duration: 0.07563658303115517

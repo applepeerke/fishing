@@ -1,7 +1,5 @@
 import os
 
-from starlette.responses import Response
-
 from src.domains.login.token.constants import JWT_ACCESS_TOKEN_EXPIRY_SECONDS, JWT_REFRESH_TOKEN_EXPIRY_DAYS
 
 

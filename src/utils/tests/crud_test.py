@@ -75,7 +75,7 @@ class CrudTest:
         except ResponseValidationError:
             pass
 
-    async def _preconditions(self, initial_data=None, fk_domains=None):
+    async def _preconditions(self, initial_data=None):
         """ Set preconditions for tests. After every test pytest has cleared the db. """
         if self._login:
             test_data_login = get_json(LOGIN)
