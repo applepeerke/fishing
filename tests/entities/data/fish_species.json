@@ -1,0 +1,91 @@
+{
+ "initial_data": {
+   "payload": {
+     "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
+     "species_name": "Carp",
+     "subspecies_name": null,
+     "active_at": "Both",
+     "relative_density": 10,
+     "minimum_length_to_keep_cm": 15,
+     "max_length_cm": 120,
+     "max_weight_g": 30000,
+     "hours_of_activity": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+     "yearly_growth_in_cm": 10,
+     "yearly_growth_in_g": 50
+   }
+ },
+ "create": {
+   "payload": {
+     "species_name": "Roach",
+     "subspecies_name": null,
+     "active_at": "Day",
+     "relative_density": 100,
+     "minimum_length_to_keep_cm": 15,
+     "max_length_cm": 120,
+     "max_weight_g": 30000,
+     "hours_of_activity": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+     "yearly_growth_in_cm":5,
+     "yearly_growth_in_g": 10
+   },
+   "expect": {
+     "species_name": "Roach",
+     "subspecies_name": null,
+     "active_at": "Day",
+     "relative_density": 100,
+     "minimum_length_to_keep_cm": 15,
+     "max_length_cm": 120,
+     "max_weight_g": 30000,
+     "hours_of_activity": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+     "yearly_growth_in_cm": 5,
+     "yearly_growth_in_g": 10
+   }
+ },
+ "read": {
+   "expect": {
+     "species_name": "Carp",
+     "subspecies_name": null,
+     "active_at": "Both",
+     "relative_density": 10,
+     "minimum_length_to_keep_cm": 15,
+     "max_length_cm": 120,
+     "max_weight_g": 30000,
+     "hours_of_activity": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+     "yearly_growth_in_cm": 10,
+     "yearly_growth_in_g": 50
+   }
+ },
+ "update": {
+   "payload": {
+     "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
+     "species_name": "Carp",
+     "subspecies_name": "Wild",
+     "active_at": "Both",
+     "relative_density": 10,
+     "minimum_length_to_keep_cm": 15,
+     "max_length_cm": 120,
+     "max_weight_g": 30000,
+     "hours_of_activity": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+     "yearly_growth_in_cm": 10,
+     "yearly_growth_in_g": 50
+   },
+   "expect": {
+     "id": "41be8f34-7bd2-4cb2-bc11-91fe05512726",
+     "species_name": "Carp",
+     "subspecies_name": "Wild",
+     "active_at": "Both",
+     "relative_density": 10,
+     "minimum_length_to_keep_cm": 15,
+     "max_length_cm": 120,
+     "max_weight_g": 30000,
+     "hours_of_activity": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+     "yearly_growth_in_cm": 10,
+     "yearly_growth_in_g": 50
+   }
+ },
+ "delete": {
+   "expect": {
+     "status_code": 200,
+     "message": "The fishspecies record has been deleted."
+   }
+ }
+}

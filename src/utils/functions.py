@@ -5,6 +5,7 @@ import random
 from dateutil.relativedelta import relativedelta
 from src.utils.tests.constants import PAYLOAD
 
+rng = random.SystemRandom()
 
 NAME_CHARS = 'aaaaaabbcddeeeeeeffgghhiiiiijjkkllmmnnnooooooppqrrsssttuuuuuuvvwwxyyz'
 NAME_CHARS_LIST = [item for item in NAME_CHARS]
@@ -84,7 +85,7 @@ def get_pk(fixture, pk_name):
 
 def get_random_name(max_length=20) -> str:
     name = []
-    for i in range(random.randint(5, max(5, max_length))):
+    for i in range(rng.randint(5, max(5, max_length))):
         name.append(get_random_item(NAME_CHARS_LIST))
     return ''.join(name).title()
 
@@ -92,5 +93,20 @@ def get_random_name(max_length=20) -> str:
 def get_random_item(items: list):
     if not items:
         return None
-    index = random.randint(0, len(items) - 1)
+    index = rng.randint(0, len(items) - 1)
     return items[index]
+
+
+def get_random_index_set(items: list, random_subset_count: int) -> set:
+    set_count = len(items)
+    if set_count == 0:
+        return set()
+    if set_count == 1:
+        return {0}
+
+    index_set = set()
+    count = 0
+    while len(index_set) < random_subset_count and count < 1000:
+        count += 1
+        index_set.add(rng.randint(0, set_count - 1))  # get an index
+    return index_set

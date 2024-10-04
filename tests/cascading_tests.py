@@ -3,13 +3,14 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db import crud
-from src.domains.entities.enums import Frequency
-from src.domains.entities.fishspecies.models import FishSpecies
+from src.domains.entities.enums import Frequency, SpeciesEnum
+from src.domains.entities.fish.models import Fish
 from src.domains.entities.fisherman.models import Fisherman
 from src.domains.entities.fishingwater.models import FishingWater
+from src.domains.entities.fish_species.models import FishSpecies
 from src.domains.login.role.models import Role
 from src.domains.login.user.models import User
-from src.services.simulation.functions import create_a_random_fishspecies
+from src.services.simulation.classes.fish_population import FishPopulation
 
 
 @pytest.mark.asyncio
@@ -70,12 +71,20 @@ async def add_user_with_roles(db, email, roles: list = None) -> User:
 async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     """ No "cascading all, delete" is used in relationships because that deletes e.g. roles when a user is deleted."""
     # a. Create base data
-    # - Fish-1, 2, and 3
-    fish_1 = await crud.add(db, create_a_random_fishspecies())
-    fish_2 = await crud.add(db, create_a_random_fishspecies())
-    fish_3 = await crud.add(db, create_a_random_fishspecies())
-    assert len(await crud.get_all(db, FishSpecies)) == 3
-    # - Fisherman-1 and 2
+    fish_population = FishPopulation(db)
+    # All fish species
+    [await crud.add(db, fish_population.create_a_random_fish_species(e)) for e in SpeciesEnum]
+    # - FishSpecies 1, 2, and 3
+    fish_species_1 = await crud.get_one_where(db, FishSpecies, FishSpecies.species_name, SpeciesEnum.Carp)
+    fish_species_2 = await crud.get_one_where(db, FishSpecies, FishSpecies.species_name, SpeciesEnum.Ale)
+    fish_species_3 = await crud.get_one_where(db, FishSpecies, FishSpecies.species_name, SpeciesEnum.Roach)
+    # - Fish 1, 2, and 3
+    fish_1 = await crud.add(db, fish_population.create_random_fish(fish_species_1))
+    fish_2 = await crud.add(db, fish_population.create_random_fish(fish_species_2))
+    fish_3 = await crud.add(db, fish_population.create_random_fish(fish_species_3))
+
+    assert len(await crud.get_all(db, Fish)) == 3
+    # - Fisherman 1 and 2
     fisherman_1 = await crud.add(db, Fisherman(
         forename='Petri', surname='Heil', fish_species='Carp', frequency=Frequency.Weekly, fishing_session_duration=24,
         status='Sleeping'))
@@ -83,7 +92,7 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
         forename='John', surname='Catch', fish_species='Pike', frequency=Frequency.Weekly, fishing_session_duration=8,
         status='Sleeping'))
     assert len(await crud.get_all(db, Fisherman)) == 2
-    # - FishingWater-1 and 2
+    # - FishingWater 1 and 2
     fishingwater_1 = await crud.add(db, FishingWater(location='Leiden', water_type='River', density=0.4))
     fishingwater_2 = await crud.add(db, FishingWater(location='Voorschoten', water_type='Lake', density=1.0, m3=10000))
     assert len(await crud.get_all(db, FishingWater)) == 2
@@ -108,12 +117,12 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     await crud.delete(db, FishingWater, fishingwater_1.id)
     assert await crud.get_one(db, FishingWater, fishingwater_2.id) is not None
     assert len(await crud.get_all(db, Fisherman)) == 2
-    assert len(await crud.get_all(db, FishSpecies)) == 2  # With Fishingwater also fish is deleted .
+    assert len(await crud.get_all(db, Fish)) == 1  # With Fishingwater-1 also it's fishes are deleted .
     # e. Delete fisherman-1 - Caught Fish-1 should also be deleted.
     #    Fisherman 2 and fish 2 should still exist.
     await crud.delete(db, Fisherman, fisherman_1.id)
     assert len(await crud.get_all(db, Fisherman)) == 1
-    assert len(await crud.get_all(db, FishSpecies)) == 1
+    assert len(await crud.get_all(db, Fish)) == 1
     # f. Delete fishingwater-2 - Fisherman 2 should still exist.
     await crud.delete(db, FishingWater, fishingwater_2.id)
     assert await crud.get_one(db, Fisherman, fisherman_2.id) is not None
@@ -121,7 +130,7 @@ async def test_cascading_fishingwater(client: AsyncClient, db: AsyncSession):
     await crud.delete(db, Fisherman, fisherman_2.id)
     assert not await crud.get_all(db, FishingWater)
     assert not await crud.get_all(db, Fisherman)
-    assert not await crud.get_all(db, FishSpecies)
+    assert not await crud.get_all(db, Fish)
 
 
 async def catch_a_fish(db, fishingwater, fisherman, fish_to_catch):

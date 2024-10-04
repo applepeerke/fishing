@@ -7,8 +7,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db import Base
 from src.domains.entities.enums import WaterType
-from src.domains.entities.fishspecies.models import FishSpeciesModel
+from src.domains.entities.fish.models import FishModel
 from src.domains.entities.fisherman.models import FishermanBase, fishingwater_fisherman
+from src.domains.entities.fish_species.models import FishSpeciesModel
 from src.utils.security.input_validation import REGEX_ALPHANUM_PLUS
 
 FLOATING_WATER = (WaterType.Canal, WaterType.River, WaterType.Brook, WaterType.Sea)
@@ -27,7 +28,7 @@ class FishingWater(Base):
     fishermen = relationship(
         'Fisherman', secondary=fishingwater_fisherman, back_populates='fishingwaters', lazy='selectin')
     fishes = relationship(
-        'FishSpecies', back_populates='fishingwater', cascade='all, delete-orphan', lazy='selectin')
+        'Fish', back_populates='fishingwater', cascade='all, delete-orphan', lazy='selectin')
 
     def add_fishes_to_still_water(self, number: int = 0):
         if self.water_type in FLOATING_WATER or self.m3 == 0:
@@ -69,5 +70,5 @@ class FishingWaterBase(BaseModel):
 class FishingWaterRead(FishingWaterBase):
     id: UUID4
     # Relations
-    fishes: Optional[List[FishSpeciesModel]] = []
+    fishes: Optional[List[FishModel]] = []
     fishermen: Optional[List[FishermanBase]] = []
